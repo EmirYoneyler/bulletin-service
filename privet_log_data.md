@@ -12,3 +12,4 @@
 - [2026-05-11 17:54:56] locked in
 - [2026-05-11 17:56:58] Functional SpringBOOT files.
 - [2026-05-11 21:25:04] let's get it
+- [2026-05-11 21:28:37] Add full SQL implementation with repository
