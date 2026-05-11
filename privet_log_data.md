@@ -1,0 +1,2 @@
+- [2026-05-11 12:05:54] Fast api connectors.
+- [2026-05-11 12:26:10] Add full SQL implementation with repository
