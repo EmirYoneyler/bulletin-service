@@ -16,3 +16,4 @@
 - [2026-05-11 21:30:51] Functional SpringBOOT files.
 - [2026-05-13 21:04:21] Add full SQL implementation with repository
 - [2026-05-13 21:08:41] Admin endpoints to add/remove  list all items.
+- [2026-05-14 19:53:35] locked in
