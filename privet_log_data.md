@@ -20,3 +20,4 @@
 - [2026-05-14 19:56:56] Admin endpoints to add/remove  list all items.
 - [2026-05-15 10:32:01] Admin endpoints to add/remove  list all items.
 - [2026-05-15 10:34:07] locked in
+- [2026-05-15 16:00:08] User registration and login.Authentication
