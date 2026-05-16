@@ -28,3 +28,4 @@
 - [2026-05-15 23:34:17] User registration and login.Authentication
 - [2026-05-16 09:08:02] User registration and login.Authentication
 - [2026-05-16 15:47:31] locked in
+- [2026-05-16 23:09:46] Functional SpringBOOT files.
