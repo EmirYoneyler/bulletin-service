@@ -30,3 +30,4 @@
 - [2026-05-16 15:47:31] locked in
 - [2026-05-16 23:09:46] Functional SpringBOOT files.
 - [2026-05-16 23:09:54] User registration and login.Authentication
+- [2026-05-17 23:13:10] User registration and login.Authentication
