@@ -37,3 +37,4 @@
 - [2026-05-19 21:37:51] Add full SQL implementation with repository
 - [2026-05-19 21:38:01] User registration and login.Authentication
 - [2026-05-20 13:02:20] Expand DatabaseRepository with complete CRUD
+- [2026-05-20 13:02:30] Admin endpoints to add/remove  list all items.
