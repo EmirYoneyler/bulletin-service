@@ -52,3 +52,4 @@
 - [2026-05-26 11:34:35] Admin endpoints to add/remove  list all items.
 - [2026-05-26 12:42:45] Functional SpringBOOT files.
 - [2026-05-26 12:43:00] Add full SQL implementation with repository
+- [2026-05-26 21:56:58] User registration and login.Authentication
