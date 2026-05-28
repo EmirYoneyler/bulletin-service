@@ -57,3 +57,4 @@
 - [2026-05-27 12:47:09] let's get it
 - [2026-05-27 12:47:12] Expand DatabaseRepository with complete CRUD
 - [2026-05-28 11:46:50] Add full SQL implementation with repository
+- [2026-05-28 11:47:03] Admin endpoints to add/remove  list all items.
