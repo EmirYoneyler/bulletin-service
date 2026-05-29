@@ -63,3 +63,4 @@
 - [2026-05-29 16:26:04] Expand DatabaseRepository with complete CRUD
 - [2026-05-29 16:26:33] Fast api connectors.
 - [2026-05-29 19:51:06] User registration and login.Authentication
+- [2026-05-29 19:51:17] Functional SpringBOOT files.
