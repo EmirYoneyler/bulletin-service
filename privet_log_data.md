@@ -65,3 +65,4 @@
 - [2026-05-29 19:51:06] User registration and login.Authentication
 - [2026-05-29 19:51:17] Functional SpringBOOT files.
 - [2026-05-30 13:11:43] User registration and login.Authentication
+- [2026-05-30 13:11:48] Fast api connectors.
