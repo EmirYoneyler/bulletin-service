@@ -76,3 +76,4 @@
 - [2026-06-01 12:17:42] Add full SQL implementation with repository
 - [2026-06-01 18:48:41] Fast api connectors.
 - [2026-06-01 18:49:06] Add full SQL implementation with repository
+- [2026-06-01 21:31:07] Admin endpoints to add/remove  list all items.
