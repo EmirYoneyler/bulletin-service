@@ -88,3 +88,4 @@
 - [2026-06-03 22:38:10] Functional SpringBOOT files.
 - [2026-06-03 23:38:00] User registration and login.Authentication
 - [2026-06-03 23:38:10] Expand DatabaseRepository with complete CRUD
+- [2026-06-04 12:07:29] let's get it
