@@ -91,3 +91,4 @@
 - [2026-06-04 12:07:29] let's get it
 - [2026-06-04 12:07:35] User registration and login.Authentication
 - [2026-06-04 18:03:28] locked in
+- [2026-06-04 18:03:37] Fast api connectors.
