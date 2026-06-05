@@ -94,3 +94,4 @@
 - [2026-06-04 18:03:37] Fast api connectors.
 - [2026-06-05 15:10:23] locked in
 - [2026-06-05 15:10:27] Admin endpoints to add/remove  list all items.
+- [2026-06-05 22:05:35] Admin endpoints to add/remove  list all items.
