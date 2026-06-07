@@ -98,3 +98,4 @@
 - [2026-06-05 22:05:42] User registration and login.Authentication
 - [2026-06-06 22:35:48] User registration and login.Authentication
 - [2026-06-06 22:36:25] User registration and login.Authentication
+- [2026-06-07 12:26:50] Functional SpringBOOT files.
