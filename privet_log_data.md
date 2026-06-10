@@ -107,3 +107,4 @@
 - [2026-06-10 13:53:27] locked in
 - [2026-06-10 13:53:59] Fast api connectors.
 - [2026-06-10 19:49:22] Fast api connectors.
+- [2026-06-10 19:49:59] Add full SQL implementation with repository
