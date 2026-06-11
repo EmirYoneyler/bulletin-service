@@ -111,3 +111,4 @@
 - [2026-06-11 09:57:33] Admin endpoints to add/remove  list all items.
 - [2026-06-11 09:58:01] locked in
 - [2026-06-11 17:06:42] locked in
+- [2026-06-11 17:07:15] Add full SQL implementation with repository
