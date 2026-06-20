@@ -128,3 +128,4 @@
 - [2026-06-18 11:55:38] Fast api connectors.
 - [2026-06-19 10:39:14] let's get it
 - [2026-06-20 22:03:41] Add full SQL implementation with repository
+- [2026-06-20 22:04:23] User registration and login.Authentication
