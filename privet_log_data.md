@@ -138,3 +138,4 @@
 - [2026-06-23 16:57:35] Admin endpoints to add/remove  list all items.
 - [2026-06-23 16:57:57] Expand DatabaseRepository with complete CRUD
 - [2026-06-23 21:03:07] User registration and login.Authentication
+- [2026-06-23 21:03:23] Functional SpringBOOT files.
