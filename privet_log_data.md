@@ -160,3 +160,4 @@
 - [2026-06-29 12:57:51] Functional SpringBOOT files.
 - [2026-06-29 12:57:56] locked in
 - [2026-06-29 17:47:59] Expand DatabaseRepository with complete CRUD
+- [2026-06-29 17:48:01] Admin endpoints to add/remove  list all items.
