@@ -193,3 +193,4 @@
 - [2026-07-09 11:12:18] locked in
 - [2026-07-10 17:46:27] locked in
 - [2026-07-10 17:47:44] let's get it
+- [2026-07-15 10:49:10] Add full SQL implementation with repository
