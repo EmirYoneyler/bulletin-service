@@ -200,3 +200,4 @@
 - [2026-07-15 16:30:19] Add full SQL implementation with repository
 - [2026-07-15 16:30:48] Admin endpoints to add/remove  list all items.
 - [2026-07-17 11:04:18] Add full SQL implementation with repository
+- [2026-07-17 11:04:37] Functional SpringBOOT files.
