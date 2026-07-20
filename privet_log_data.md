@@ -220,3 +220,4 @@
 - [2026-07-20 12:35:02] Add full SQL implementation with repository
 - [2026-07-20 12:35:22] locked in
 - [2026-07-21 00:33:04] User registration and login.Authentication
+- [2026-07-21 00:33:18] Admin endpoints to add/remove  list all items.
