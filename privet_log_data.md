@@ -230,3 +230,4 @@
 - [2026-07-23 13:12:12] Functional SpringBOOT files.
 - [2026-07-23 13:12:54] Functional SpringBOOT files.
 - [2026-07-23 20:01:49] Admin endpoints to add/remove  list all items.
+- [2026-07-23 20:02:16] Fast api connectors.
