@@ -233,3 +233,4 @@
 - [2026-07-23 20:02:16] Fast api connectors.
 - [2026-07-23 22:24:13] User registration and login.Authentication
 - [2026-07-23 22:24:26] User registration and login.Authentication
+- [2026-07-24 19:31:31] Admin endpoints to add/remove  list all items.
