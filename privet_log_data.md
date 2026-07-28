@@ -235,3 +235,4 @@
 - [2026-07-23 22:24:26] User registration and login.Authentication
 - [2026-07-24 19:31:31] Admin endpoints to add/remove  list all items.
 - [2026-07-24 19:32:07] Functional SpringBOOT files.
+- [2026-07-28 18:11:51] locked in
