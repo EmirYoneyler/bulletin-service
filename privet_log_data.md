@@ -243,3 +243,4 @@
 - [2026-07-30 12:11:05] let's get it
 - [2026-07-30 20:00:32] let's get it
 - [2026-07-30 20:01:16] User registration and login.Authentication
+- [2026-07-31 11:42:32] Functional SpringBOOT files.
