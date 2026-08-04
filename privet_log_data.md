@@ -256,3 +256,4 @@
 - [2026-08-04 12:50:22] Add full SQL implementation with repository
 - [2026-08-04 12:50:53] Expand DatabaseRepository with complete CRUD
 - [2026-08-04 22:02:00] Add full SQL implementation with repository
+- [2026-08-04 22:02:37] Admin endpoints to add/remove  list all items.
