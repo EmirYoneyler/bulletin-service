@@ -272,3 +272,4 @@
 - [2026-08-09 21:19:22] Expand DatabaseRepository with complete CRUD
 - [2026-08-09 21:20:07] Fast api connectors.
 - [2026-08-10 12:35:52] Fast api connectors.
+- [2026-08-10 12:36:07] Admin endpoints to add/remove  list all items.
