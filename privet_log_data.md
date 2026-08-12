@@ -292,3 +292,4 @@
 - [2026-08-12 10:07:23] Functional SpringBOOT files.
 - [2026-08-12 10:08:24] locked in
 - [2026-08-12 23:17:28] let's get it
+- [2026-08-12 23:18:12] Admin endpoints to add/remove  list all items.
