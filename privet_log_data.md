@@ -305,3 +305,4 @@
 - [2026-08-17 12:06:33] Expand DatabaseRepository with complete CRUD
 - [2026-08-17 14:34:38] let's get it
 - [2026-08-17 14:34:49] Functional SpringBOOT files.
+- [2026-08-17 20:12:24] Admin endpoints to add/remove  list all items.
