@@ -316,3 +316,4 @@
 - [2026-08-20 18:24:38] Admin endpoints to add/remove  list all items.
 - [2026-08-20 19:38:59] Add full SQL implementation with repository
 - [2026-08-20 23:35:22] let's get it
+- [2026-08-20 23:35:42] User registration and login.Authentication
