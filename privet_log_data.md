@@ -340,3 +340,4 @@
 - [2026-08-25 14:29:57] User registration and login.Authentication
 - [2026-08-25 14:30:59] Functional SpringBOOT files.
 - [2026-08-25 23:23:17] let's get it
+- [2026-08-25 23:23:50] Admin endpoints to add/remove  list all items.
