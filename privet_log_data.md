@@ -366,3 +366,4 @@
 - [2026-09-01 19:11:51] Functional SpringBOOT files.
 - [2026-09-01 22:29:45] Add full SQL implementation with repository
 - [2026-09-01 22:29:58] let's get it
+- [2026-09-03 12:14:59] let's get it
