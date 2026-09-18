@@ -371,3 +371,4 @@
 - [2026-09-13 20:04:16] let's get it
 - [2026-09-18 11:33:07] Admin endpoints to add/remove  list all items.
 - [2026-09-18 14:26:59] locked in
+- [2026-09-18 14:27:26] Fast api connectors.
