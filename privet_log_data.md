@@ -379,3 +379,4 @@
 - [2026-09-21 22:06:10] Fast api connectors.
 - [2026-09-21 22:06:27] locked in
 - [2026-09-22 12:31:36] Fast api connectors.
+- [2026-09-22 20:28:42] User registration and login.Authentication
