@@ -381,3 +381,4 @@
 - [2026-09-22 12:31:36] Fast api connectors.
 - [2026-09-22 20:28:42] User registration and login.Authentication
 - [2026-09-22 20:28:48] Add full SQL implementation with repository
+- [2026-09-23 11:00:08] Admin endpoints to add/remove  list all items.
