@@ -403,3 +403,4 @@
 - [2026-09-28 21:24:03] Add full SQL implementation with repository
 - [2026-09-28 21:27:51] User registration and login.Authentication
 - [2026-09-28 21:27:59] Admin endpoints to add/remove  list all items.
+- [2026-09-29 11:53:49] Functional SpringBOOT files.
