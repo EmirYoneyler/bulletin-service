@@ -407,3 +407,4 @@
 - [2026-09-29 11:54:09] User registration and login.Authentication
 - [2026-09-29 15:14:18] User registration and login.Authentication
 - [2026-09-30 11:13:17] Admin endpoints to add/remove  list all items.
+- [2026-10-01 19:55:43] Fast api connectors.
