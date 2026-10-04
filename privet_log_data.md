@@ -426,3 +426,4 @@
 - [2026-10-04 19:23:56] Add full SQL implementation with repository
 - [2026-10-04 19:24:01] Add full SQL implementation with repository
 - [2026-10-04 22:39:13] Fast api connectors.
+- [2026-10-04 22:39:20] User registration and login.Authentication
