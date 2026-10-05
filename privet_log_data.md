@@ -430,3 +430,4 @@
 - [2026-10-05 10:21:27] Admin endpoints to add/remove  list all items.
 - [2026-10-05 10:21:33] User registration and login.Authentication
 - [2026-10-05 19:44:01] Fast api connectors.
+- [2026-10-05 22:08:28] Functional SpringBOOT files.
