@@ -439,3 +439,4 @@
 - [2026-10-07 12:05:20] Fast api connectors.
 - [2026-10-08 16:52:51] locked in
 - [2026-10-08 16:53:41] Functional SpringBOOT files.
+- [2026-10-08 19:01:34] User registration and login.Authentication
