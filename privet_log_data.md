@@ -477,3 +477,4 @@
 - [2026-10-16 14:12:25] Add full SQL implementation with repository
 - [2026-10-16 19:32:37] Functional SpringBOOT files.
 - [2026-10-16 19:32:45] Add full SQL implementation with repository
+- [2026-10-17 12:56:31] Fast api connectors.
