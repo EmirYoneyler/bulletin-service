@@ -500,3 +500,4 @@
 - [2026-10-25 22:53:05] Expand DatabaseRepository with complete CRUD
 - [2026-10-25 22:53:10] Functional SpringBOOT files.
 - [2026-10-26 17:51:49] Fast api connectors.
+- [2026-10-26 17:51:56] Admin endpoints to add/remove  list all items.
