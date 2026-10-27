@@ -502,3 +502,4 @@
 - [2026-10-26 17:51:49] Fast api connectors.
 - [2026-10-26 17:51:56] Admin endpoints to add/remove  list all items.
 - [2026-10-27 12:23:59] Add full SQL implementation with repository
+- [2026-10-27 12:24:17] let's get it
