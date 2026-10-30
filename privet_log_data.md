@@ -513,3 +513,4 @@
 - [2026-10-29 13:00:50] User registration and login.Authentication
 - [2026-10-29 16:59:30] Expand DatabaseRepository with complete CRUD
 - [2026-10-29 16:59:42] Add full SQL implementation with repository
+- [2026-10-30 11:25:16] Admin endpoints to add/remove  list all items.
