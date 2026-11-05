@@ -190,7 +190,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E1-5 · EvdsClient (TCMB)
-_Rehber: §7.2 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 32ea04a, ee28640, (kapanış commit'i)_
+_Rehber: §7.2 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 32ea04a, ee28640, 10a2e32_
 - [x] Seri kodları EVDS'de doğrulandı: TÜFE endeksi, USD/TRY, gram altın, TL mevduat faizi. `docs/decisions/002-evds.md` + `evds.series.*`. TÜFE `TP.TUKFIY2025.GENEL` (eski `TP.FG.J0` arşivde), USD `TP.DK.USD.A.YTL`, altın `TP.MK.KUL.YTL` (**aylık**, günlük yok → E1-7), mevduat `TP.TRY.MT06`. Doğrulama sitenin herkese açık arama servisiyle, anahtarsız
 - [x] Anahtar header'da (`EVDS_API_KEY`). Anahtar yoksa `EvdsClient` bean'i "disabled" moduna geçiyor ve uyarı logluyor
 - [x] `V6`: `macro_point` tablosu. `WeeklyMacroJob` (`0 0 7 * * MON`) + admin tetikleyicisi (`POST /api/admin/jobs/weekly-macro/run`, ayrı `evds-ingest` kilidi). Anahtarsız çalışma `SKIPPED` olarak kaydediliyor
@@ -200,7 +200,7 @@ _Rehber: §7.2 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 32ea04a, ee28640
 Alt görevler:
 1. [x] Araştırma (EVDS3, resmî kılavuz, seri kodları), ADR 002, fixture'lar, E1-7 kartı · 32ea04a
 2. [x] `EvdsClient` + ayarlar + devre dışı mod + yanıt ayrıştırıcı + testler (14 test) · ee28640
-3. [x] `V6` `macro_point` + `MacroIngestService` + `WeeklyMacroJob` + admin tetikleyicisi + E1-5b · (kapanış commit'i)
+3. [x] `V6` `macro_point` + `MacroIngestService` + `WeeklyMacroJob` + admin tetikleyicisi + E1-5b · 10a2e32
 
 _Elle (compose, anahtarsız): açılışta "EVDS_API_KEY is not set" uyarısı; `POST /api/admin/jobs/weekly-macro/run` → 200 `SKIPPED`; V6 mevcut volume'de uygulandı, E1-4'ün `ingest_run` satırları yeniden adlandırılan sütunlarla korundu. **Canlı EVDS verisi doğrulanmadı** (E1-5b)._
 
@@ -362,3 +362,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 | 2026-11-05 | E0-1, E0-2, E0-3, E0-4, E0-5, E0-6, E0-7 (yeni), E1-1 · 85+ test yeşil, CI yeşil | Yok. Uyarı: TEFAS'ın eski `BindHistoryInfo` uç noktası 404 (Notlar); E1-5'te EVDS anahtarı gerekecek | E1-2 · FundPrice tablosu (To Do'da E1-2, E1-3, E1-4) |
 | 2026-11-05 (2) | E1-2, E1-3 · 119 test yeşil (+2 `live`, ayrı çalışır) | Yok. TEFAS yeni servisi canlı doğrulandı (ADR 001); E1-5'te EVDS anahtarı gerekecek | E1-4 · Günlük fiyat işi + backfill |
 | 2026-11-05 (3) | E1-4 · 149 test yeşil (+2 `live`); günlük iş canlı TEFAS'la denendi | Yok. E1-5 EVDS anahtarı olmadan fixture'la yapılacak, canlı doğrulama için E1-5b `Blocked`'a açılacak | E1-5 · EvdsClient (To Do'da E1-5, E1-6, E2-1) |
+| 2026-11-05 (4) | E1-5 · 174 test yeşil (+3 `live`); EVDS anahtarsız devre dışı modda uçtan uca denendi | **E1-5b (Blocked):** EVDS API anahtarı gerekiyor → `.env` `EVDS_API_KEY` | E1-6 · BIST100 kıyas verisi (To Do'da E1-6, E2-1) |
