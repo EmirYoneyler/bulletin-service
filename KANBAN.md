@@ -24,19 +24,7 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-### E2-3 · BulletinFacts + FactFormatter
-_Bağımlı: E2-1 · Rehber: §7.4 · Başladı: 2026-11-05_
-- [ ] `Fact` ve `BulletinFacts` record'ları, anahtar şeması `docs/facts-keys.md` dosyasında
-- [ ] `FactsAssembler`: kullanıcı + hafta → facts (fonlar, portföy, kıyaslar, en çok yükselen/düşen, kaynak listesi)
-- [ ] `FactFormatter` Türkçe biçim testleri (`%3,2`, `%-0,9`, `1.250,50 TL`, `null` → "veri yok")
-- [ ] `GET /api/admin/bulletins/facts/preview?email=&week=` JSON önizleme
-
-Alt görevler:
-1. [x] `Fact`, `BulletinFacts`, `FactFormatter`, `FactKey` (anahtar şeması ve Türkçe açıklamalar) + `docs/facts-keys.md` + testler (29 test)
-2. [x] `HoldingsProvider` (E6-1'e kadar: TEFAS kodlu tüm fonlar, adetsiz) + `FactsAssembler` + testler (9 test)
-3. [ ] `GET /api/admin/bulletins/facts/preview` + testler + compose'da gerçek TEFAS verisiyle deneme
-
-_Not: Kullanıcı portföyü (`user_holding`) E6-1'de geliyor. O zamana kadar izleme listesi TEFAS kodu olan tüm fonlar ve portföy eşit ağırlıklı; `HoldingsProvider` arayüzü E6-1'de değiştirilecek._
+_(boş)_
 
 ---
 
@@ -175,6 +163,22 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E2-3 · BulletinFacts + FactFormatter
+_Bağımlı: E2-1 · Rehber: §7.4 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · fc8fa77, 25a1015, (kapanış commit'i)_
+- [x] `Fact` ve `BulletinFacts` record'ları, anahtar şeması `docs/facts-keys.md` dosyasında. Kodda tek kaynak `FactKey` (Türkçe açıklamalarla); doküman tutarlılığı testli
+- [x] `FactsAssembler`: kullanıcı + hafta → facts (fonlar, portföy, kıyaslar, en çok yükselen/düşen, kaynak listesi). Kullanıcı fonları E6-1'e kadar `HoldingsProvider` arkasında (TEFAS kodlu tüm fonlar, eşit ağırlık)
+- [x] `FactFormatter` Türkçe biçim testleri (`%3,2`, `%-0,9`, `1.250,50 TL`, `null` → "veri yok"). Yüzde 1, TL 2 ondalık, `HALF_UP`, `%-0,0` yok
+- [x] `GET /api/admin/bulletins/facts/preview?email=&week=` JSON önizleme: ham değer, Türkçe biçim ve açıklama yan yana; `week` yoksa son tamamlanan hafta, bitmemiş hafta 400
+
+Alt görevler:
+1. [x] `Fact`, `BulletinFacts`, `FactFormatter`, `FactKey` (anahtar şeması ve Türkçe açıklamalar) + `docs/facts-keys.md` + testler (29 test) · fc8fa77
+2. [x] `HoldingsProvider` (E6-1'e kadar: TEFAS kodlu tüm fonlar, adetsiz) + `FactsAssembler` + testler (9 test) · 25a1015
+3. [x] `GET /api/admin/bulletins/facts/preview` + testler + compose'da gerçek TEFAS verisiyle deneme · (kapanış commit'i)
+
+_Not: Kullanıcı portföyü (`user_holding`) E6-1'de geliyor. O zamana kadar izleme listesi TEFAS kodu olan tüm fonlar ve portföy eşit ağırlıklı; `HoldingsProvider` arayüzü E6-1'de değiştirilecek._
+
+_Elle (compose, gerçek TEFAS verisi, EVDS'siz): AAV Eylül backfill'i (22 satır) sonrası 26–30 Ekim önizlemesi: `fund.AAV.return.1w` = %-0,8 (56,021703 / 56,478084 − 1), `fund.AAV.return.mtd` = %-7,1 (56,021703 / 60,278547 − 1), elle kontrol edildi. Diğer fonlarda hafta başı fiyatı yok → "veri yok"; kıyaslar "veri yok" ve notta belirtildi._
 
 ### E2-2 · Reel getiri ve kıyaslar
 _Bağımlı: E1-5, E2-1 · Rehber: §7.3 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · eb7c300, cc53e7c_
