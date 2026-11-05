@@ -15,3 +15,4 @@ Her dosya tek bir kararı kısaca anlatır: bağlam, karar, sonuçlar. Numaralar
 | [008](008-testcontainers-without-docker.md) | Docker yokken entegrasyon testleri | kabul edildi |
 | [009](009-jwt-secret-fail-fast.md) | JWT anahtarının başlangıçta doğrulanması | kabul edildi |
 | [010](010-created-at-timezone.md) | `createdAt` saat dilimi | kabul edildi |
+| [011](011-return-calculations.md) | Getiri, oynaklık ve maksimum düşüş hesap kuralları (E2-1) | kabul edildi |

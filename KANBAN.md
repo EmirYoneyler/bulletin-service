@@ -24,21 +24,32 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-### E2-1 · FundStatsService
-_Bağımlı: E1-2 · Rehber: §7.3 · Başladı: 2026-11-05_
-- [ ] 1h / ay başından / yılbaşından / 1y getiri, 63 günlük yıllıklandırılmış oynaklık, maksimum düşüş
-- [ ] "Dönem başından önceki son işlem günü" kuralı ve tatil/eksik gün davranışı testli
-- [ ] Elle hesaplanmış beklenen değerlerle ≥ 10 birim testi. Eksik veride `null`, 0 değil
-
-Alt görevler:
-1. [x] Saf hesaplar (`analytics.ReturnMath`, `Periods`) + elle hesaplanmış birim testleri (24 test)
-2. [ ] `FundStatsService` (`fund_price` üzerinden) + entegrasyon testi + ADR 011 (hesap kuralları)
+_(boş)_
 
 ---
 
 ## 🔵 To Do
 
-_(boş: sıradaki kart seçilirken Backlog'dan 3 kart taşınır)_
+### E2-2 · Reel getiri ve kıyaslar
+_Bağımlı: E1-5, E2-1 · Rehber: §7.3_
+- [ ] `BenchmarkService`: USD/TRY, altın, mevduat (ve varsa BIST100) dönem getirisi
+- [ ] Reel getiri, TÜFE orantılama yöntemi `docs/decisions/004-real-return.md` dosyasında
+- [ ] Kullanılan TÜFE ayı sonuçla birlikte dönüyor ("Ekim 2026 TÜFE'si kullanıldı")
+
+### E2-3 · BulletinFacts + FactFormatter
+_Bağımlı: E2-1 · Rehber: §7.4_
+- [ ] `Fact` ve `BulletinFacts` record'ları, anahtar şeması `docs/facts-keys.md` dosyasında
+- [ ] `FactsAssembler`: kullanıcı + hafta → facts (fonlar, portföy, kıyaslar, en çok yükselen/düşen, kaynak listesi)
+- [ ] `FactFormatter` Türkçe biçim testleri (`%3,2`, `%-0,9`, `1.250,50 TL`, `null` → "veri yok")
+- [ ] `GET /api/admin/bulletins/facts/preview?email=&week=` JSON önizleme
+
+### E3-1 · LlmClient soyutlaması
+_Rehber: §4.1_
+- [ ] `LlmClient`, `LlmRequest`, `LlmResponse` (token, süre, model)
+- [ ] `TemplateLlmClient`: facts'teki yön ve sıralama bilgisiyle yer tutuculu, akıcı Türkçe metin üretiyor (en az 3 farklı cümle kalıbı, tekdüze görünmesin)
+- [ ] `OpenAiCompatibleLlmClient`: `llm.base-url`, `llm.model`, `llm.api-key` (boş olabilir), `llm.timeout`, JSON modu. Ollama, Gemini ve Groq için örnek ayarlar `.env.example`'da
+- [ ] `llm.provider=template|ollama|openai-compatible` ile bean seçimi. Varsayılan `template`
+- [ ] `MockRestServiceServer` ile OpenAI formatı testleri (başarı, 429, zaman aşımı)
 
 ---
 
@@ -51,30 +62,7 @@ _Kaynak: E1-5 araştırması · Rehber: §6.6, §7.2_
 - [ ] EVDS'de altın yalnızca aylık (`TP.MK.KUL.YTL`). Haftalık "altın" kıyası için ücretsiz ve kullanım koşullarına uygun günlük gram altın (TL) kaynağı araştırıldı. Karar ADR'de
 - [ ] Uygun kaynak yoksa bültende altın yalnızca ay başından / yılbaşından kıyasında gösteriliyor ve README "Bilinen sınırlar"a yazıldı
 
-### E2 · Deterministik analitik
-
-#### E2-2 · Reel getiri ve kıyaslar
-_Bağımlı: E1-5, E2-1 · Rehber: §7.3_
-- [ ] `BenchmarkService`: USD/TRY, altın, mevduat (ve varsa BIST100) dönem getirisi
-- [ ] Reel getiri, TÜFE orantılama yöntemi `docs/decisions/004-real-return.md` dosyasında
-- [ ] Kullanılan TÜFE ayı sonuçla birlikte dönüyor ("Ekim 2026 TÜFE'si kullanıldı")
-
-#### E2-3 · BulletinFacts + FactFormatter
-_Bağımlı: E2-1 · Rehber: §7.4_
-- [ ] `Fact` ve `BulletinFacts` record'ları, anahtar şeması `docs/facts-keys.md` dosyasında
-- [ ] `FactsAssembler`: kullanıcı + hafta → facts (fonlar, portföy, kıyaslar, en çok yükselen/düşen, kaynak listesi)
-- [ ] `FactFormatter` Türkçe biçim testleri (`%3,2`, `%-0,9`, `1.250,50 TL`, `null` → "veri yok")
-- [ ] `GET /api/admin/bulletins/facts/preview?email=&week=` JSON önizleme
-
 ### E3 · Bülten üretimi (LLM, ücretsiz)
-
-#### E3-1 · LlmClient soyutlaması
-_Rehber: §4.1_
-- [ ] `LlmClient`, `LlmRequest`, `LlmResponse` (token, süre, model)
-- [ ] `TemplateLlmClient`: facts'teki yön ve sıralama bilgisiyle yer tutuculu, akıcı Türkçe metin üretiyor (en az 3 farklı cümle kalıbı, tekdüze görünmesin)
-- [ ] `OpenAiCompatibleLlmClient`: `llm.base-url`, `llm.model`, `llm.api-key` (boş olabilir), `llm.timeout`, JSON modu. Ollama, Gemini ve Groq için örnek ayarlar `.env.example`'da
-- [ ] `llm.provider=template|ollama|openai-compatible` ile bean seçimi. Varsayılan `template`
-- [ ] `MockRestServiceServer` ile OpenAI formatı testleri (başarı, 429, zaman aşımı)
 
 #### E3-2 · Writer adımı ve yer tutucu renderer'ı
 _Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6_
@@ -188,6 +176,18 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E2-1 · FundStatsService
+_Bağımlı: E1-2 · Rehber: §7.3 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 56dbb3b, (kapanış commit'i)_
+- [x] 1h / ay başından / yılbaşından / 1y getiri, 63 günlük yıllıklandırılmış oynaklık, maksimum düşüş (1 yıllık pencere). `analytics.ReturnMath` saf hesaplar, `FundStatsService` `fund_price` üzerinden `FundStats`
+- [x] "Dönem başından önceki son işlem günü" kuralı ve tatil/eksik gün davranışı testli (29 Ekim tatili, hafta sonu `asOf`, 31 Aralık eksik). Ek kural: başlangıç fiyatı dönem başından 14 günden eskiyse eksik sayılır (ADR 011)
+- [x] Elle hesaplanmış beklenen değerlerle ≥ 10 birim testi. Eksik veride `null`, 0 değil (`ReturnMathTest` 24 + `FundStatsServiceTest` 3)
+
+Alt görevler:
+1. [x] Saf hesaplar (`analytics.ReturnMath`, `Periods`) + elle hesaplanmış birim testleri (24 test) · 56dbb3b
+2. [x] `FundStatsService` (`fund_price` üzerinden) + entegrasyon testi + ADR 011 (hesap kuralları) · (kapanış commit'i)
+
+_HTTP davranışı değişmedi (önizleme uç noktası E2-3'te); doğrulama Testcontainers üzerinden gerçek `fund_price` tablosuyla yapıldı._
 
 ### E1-6 · BIST100 kıyas verisi
 _Başladı: 2026-11-05 · Bitti: 2026-11-05 · e71afde_
