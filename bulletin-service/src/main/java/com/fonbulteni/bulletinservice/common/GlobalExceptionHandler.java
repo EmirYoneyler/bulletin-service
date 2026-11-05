@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -58,6 +59,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         List<ApiError.FieldViolation> fields = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> new ApiError.FieldViolation(error.getField(), error.getDefaultMessage()))
+                .toList();
+        ApiError body = apiError(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED",
+                "İstek doğrulanamadı.", pathOf(request), fields);
+        return new ResponseEntity<>(body, headers, HttpStatus.BAD_REQUEST);
+    }
+
+    /** Constraint violations on {@code @RequestParam}/{@code @PathVariable} (Spring's built-in method validation). */
+    @Override
+    protected ResponseEntity<Object> handleHandlerMethodValidationException(
+            HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        List<ApiError.FieldViolation> fields = ex.getParameterValidationResults().stream()
+                .flatMap(result -> result.getResolvableErrors().stream()
+                        .map(error -> new ApiError.FieldViolation(
+                                result.getMethodParameter().getParameterName(), error.getDefaultMessage())))
                 .toList();
         ApiError body = apiError(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED",
                 "İstek doğrulanamadı.", pathOf(request), fields);

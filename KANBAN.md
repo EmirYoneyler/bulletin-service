@@ -15,16 +15,7 @@ _(boş)_
 
 ## 🟡 In Progress
 
-### E0-6 · JWT güvenliği
-_Bağımlı: E0-4 · Rehber: §7.7 · Başladı: 2026-11-05_
-- [x] `JwtAuthFilter` + `SecurityConfig` yetki matrisi (GET funds açık, yazma ve `/api/admin/**` ADMIN, `/api/me/**` oturumlu). Listede olmayan her yol varsayılan olarak oturum istiyor
-- [ ] `dev` profilinde `POST /api/dev/token?email=&role=` test token'ı üretiyor
-- [x] `@WebMvcTest` ile 401/403/200 senaryoları (`SecurityConfigTest`, 17 test)
-- [ ] README'ye "API artık yazma işlemleri için token istiyor" notu
-
-Alt görevler:
-1. [x] `JwtAuthFilter`, yetki matrisi, `ApiError` biçiminde 401/403, CORS preflight, testler
-2. [ ] `dev` token uç noktası + README notu
+_(boş)_
 
 ---
 
@@ -224,8 +215,21 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
+### E0-6 · JWT güvenliği
+_Bağımlı: E0-4 · Rehber: §7.7 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · bda2984, (kapanış commit'i)_
+- [x] `JwtAuthFilter` + `SecurityConfig` yetki matrisi (GET funds açık, yazma ve `/api/admin/**` ADMIN, `/api/me/**` oturumlu). Listede olmayan her yol varsayılan olarak oturum istiyor
+- [x] `dev` profilinde `POST /api/dev/token?email=&role=` test token'ı üretiyor. Başka profilde yol 404; açılışta uyarı logu
+- [x] `@WebMvcTest` ile 401/403/200 senaryoları (`SecurityConfigTest` 17, `DevTokenControllerTest` 6 test)
+- [x] README'ye "API artık yazma işlemleri için token istiyor" notu (yetki tablosu ve dev token örneğiyle)
+
+Alt görevler:
+1. [x] `JwtAuthFilter`, yetki matrisi, `ApiError` biçiminde 401/403, CORS preflight, testler · bda2984
+2. [x] `dev` token uç noktası + README notu · (kapanış commit'i)
+
+_Elle (compose, dev profili): USER token'la `POST /api/funds` → 403, ADMIN token'la → 200._
+
 ### E0-5 · CI
-_Başladı: 2026-11-05 · Bitti: 2026-11-05 · 887502b, (kapanış commit'i)_
+_Başladı: 2026-11-05 · Bitti: 2026-11-05 · 887502b, 74af71e_
 - [x] `.github/workflows/ci.yml`: push ve PR'da, JDK 17 (temurin), Maven cache, `./mvnw -B verify` (integration testleri dahil, Testcontainers). Ek adım: CI'da atlanan test varsa job kırmızıya düşüyor (ADR 008)
 - [x] JaCoCo raporu artifact olarak yükleniyor (`jacoco-report`, ilk koşuda ~265 KB)
 - [x] İkinci job: `docker compose up -d` → `curl --retry` ile `/api/funds` smoke testi → `down`
@@ -287,6 +291,8 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 - E0-2 elle doğrulama: `JWT_SECRET` olmadan jar "APPLICATION FAILED TO START" ile çıkıyor; `dev` profiliyle geçici bir Postgres'e karşı açıldı, `GET /api/funds` → 200 `[]`.
 - E0-4: Ana sınıftaki `@EnableJpaRepositories`, `@EntityScan` ve `scanBasePackages` kaldırıldı. Hepsi zaten Boot'un varsayılanıydı (paketler ana paketin altında), ama açıkça yazılmaları `@WebMvcTest` dilimlerinin JPA olmadan açılmasını engelliyordu.
 - E0-4: `common.TimeConfig` İstanbul saat dilimli bir `Clock` bean'i sağlıyor. Zamana bağlı yeni kod `LocalDateTime.now()` yerine bunu kullanmalı (bkz. E0-7).
+- E0-6: auth-service bu repoda olmadığı için token'daki `role` claim'inin tam biçimi doğrulanamadı. Filtre `ADMIN`, `admin` ve `ROLE_ADMIN` biçimlerinin hepsini `ROLE_ADMIN`'e çeviriyor. Geçersiz ya da süresi dolmuş token isteği anonim bırakıyor; herkese açık GET'ler çalışmaya devam ediyor, korumalı yollar 401 dönüyor.
+- E0-6: `@CrossOrigin(origins = "http://localhost:3000")` korunuyor ve Security'nin CORS desteği bunu okuyor, yani tarayıcı preflight'ı token istemiyor.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
