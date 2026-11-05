@@ -1,8 +1,9 @@
 # Kanban: Fon Bülteni Kendini Yazsın
 
-> Kurallar ve çalışma protokolü için bkz. [`AGENT_PROMPT.md`](./AGENT_PROMPT.md).
-> Aynı anda yalnızca **1** kart `In Progress` olabilir. Her kart bittiğinde: test → bu dosyayı güncelle → commit → push.
-> Kart biçimi: `ID · Başlık` + kabul kriterleri. Taşırken kartı bütün halinde (kriterleriyle) taşı.
+> Kurallar, teknik rehber ve çalışma protokolü: [`AGENT_PROMPT.md`](./AGENT_PROMPT.md) (özellikle §6 Değişmez kurallar ve §9 Kanban protokolü).
+> Aynı anda yalnızca **1** kart `In Progress` olabilir. Her kart bittiğinde: `./mvnw -q verify` → bu dosyayı güncelle → commit → push.
+> Kart biçimi: `ID · Başlık` + _Bağımlı:_ + _Rehber:_ + kabul kriterleri. Taşırken kartı bütün halinde taşı.
+> Yeni kart açarken ID'yi epiğin sıradaki numarasıyla ver (ör. E1-7).
 
 ---
 
@@ -21,165 +22,232 @@ _(boş)_
 ## 🔵 To Do
 
 ### E0-1 · Repo temizliği
-- [ ] `privet_log_data.md` içindeki merge conflict işaretleri temizlendi (veya dosya gerekmiyorsa kaldırıldı ve nedeni commit mesajına yazıldı)
-- [ ] Test paketi `com.fonbulteni.bulletinservice` olarak düzeltildi, `./mvnw verify` yeşil
-- [ ] Kök `.gitignore` eklendi (`target/`, `.env`, IDE dosyaları)
+_Rehber: §2_
+- [ ] `privet_log_data.md` içindeki merge conflict işaretleri temizlendi (iki taraf da korunarak birleştirildi)
+- [ ] Test paketi `com.fonbulteni.bulletinservice` olarak taşındı, `./mvnw verify` yeşil
+- [ ] Kök `.gitignore`: `target/`, `.env`, `out/`, `.idea/`, `*.iml`, `.vscode/`, `.DS_Store`
+- [ ] `application.properties` içinde `show-sql=false`
 
 ### E0-2 · Sırları ortam değişkenine taşı
-- [ ] `spring.datasource.*` ve `jwt.secret` artık `${ENV:...}` ile okunuyor, gerçek değerler dosyadan silindi
-- [ ] `.env.example` eklendi (tüm değişkenler, sahte değerlerle)
-- [ ] README'ye gelecekte "eski JWT secret git geçmişinde var, üretimde döndürülmeli" notu düşmek için Backlog'a kart açıldı
+_Rehber: §6.5_
+- [ ] `spring.datasource.url/username/password` ve `jwt.secret` → `${DB_URL:...}`, `${DB_USER:...}`, `${DB_PASSWORD:}`, `${JWT_SECRET:}`. Gerçek değerler dosyadan silindi
+- [ ] `JWT_SECRET` boşsa uygulama açık bir hata mesajıyla başlamayı reddediyor (`dev` profili hariç, orada sabit bir geliştirme anahtarı var)
+- [ ] `.env.example`: bugüne kadarki tüm değişkenler, açıklamalı ve sahte değerli
+- [ ] E8-6 kartının (secret rotasyonu) varlığı kontrol edildi
 
 ### E0-3 · Yerel geliştirme ortamı
-- [ ] `docker-compose.yml`: postgres + bulletin-service, healthcheck'li
-- [ ] Dockerfile çok aşamalı (build + JRE), yerelde imaj oluşuyor
-- [ ] `docker compose up` sonrası `GET /api/funds` 200 dönüyor (JWT gereksinimi varsa nasıl token alınacağı yazıldı)
+_Rehber: §3, §11_
+- [ ] `docker-compose.yml`: `postgres:16` (healthcheck), `mailpit` (1025/8025), `bulletin-service` (`depends_on: condition: service_healthy`), `.env` dosyasından ortam
+- [ ] `ollama` servisi `profiles: ["llm"]` altında, volume'lü. README'ye `docker compose exec ollama ollama pull qwen2.5:7b-instruct` notu
+- [ ] Mevcut `Dockerfile` çok aşamalı hâle getirildi (maven build → `eclipse-temurin:17-jre`), root olmayan kullanıcı
+- [ ] `docker compose up` sonrası `GET http://localhost:8082/api/funds` 200 dönüyor. Docker ajan ortamında yoksa bu kriter Notlar'a yazılıp CI'daki compose smoke testine (E0-5) bırakıldı
 
 ### E0-4 · Flyway ve hata yönetimi
-- [ ] Flyway eklendi, mevcut `funds` tablosu için `V1__baseline.sql`, `ddl-auto=validate`
-- [ ] `@ControllerAdvice` + `FundNotFoundException` (404), tutarlı hata gövdesi
-- [ ] Controller için `@WebMvcTest` testleri
+_Rehber: §3, §5.1_
+- [ ] Flyway eklendi. `V1__baseline.sql` mevcut `Fund` entity'sinden birebir çıkarıldı. `ddl-auto=validate`. `baseline-on-migrate=true` (mevcut veritabanları için)
+- [ ] `common` paketinde `ApiError` record (timestamp, status, code, message, path) + `@RestControllerAdvice`
+- [ ] `FundNotFoundException` → 404, doğrulama hataları → 400 ve alan listesi
+- [ ] `FundController` için `@WebMvcTest` testleri (mutlu yol + 404 + 400)
 
 ### E0-5 · CI
-- [ ] `.github/workflows/ci.yml`: her push ve PR'da JDK 17 + `./mvnw verify`
-- [ ] README'ye CI rozeti eklendi
+- [ ] `.github/workflows/ci.yml`: push ve PR'da, JDK 17 (temurin), Maven cache, `./mvnw -B verify` (integration testleri dahil, Testcontainers)
+- [ ] JaCoCo raporu artifact olarak yükleniyor
+- [ ] İkinci job: `docker compose up -d` → `curl --retry` ile `/api/funds` smoke testi → `down`
+- [ ] Kök `README.md` iskeleti + CI rozeti (tam README E8-1'de)
 
 ---
 
 ## ⚪ Backlog
 
+### E0 · Temel (devam)
+
+#### E0-6 · JWT güvenliği
+_Bağımlı: E0-4 · Rehber: §7.7_
+- [ ] `JwtAuthFilter` + `SecurityConfig` yetki matrisi (GET funds açık, yazma ve `/api/admin/**` ADMIN, `/api/me/**` oturumlu)
+- [ ] `dev` profilinde `POST /api/dev/token?email=&role=` test token'ı üretiyor
+- [ ] `@WebMvcTest` ile 401/403/200 senaryoları
+- [ ] README'ye "API artık yazma işlemleri için token istiyor" notu
+
 ### E1 · Veri alımı
 
 #### E1-1 · Fon kimliği: TEFAS kodu
-- [ ] `Fund`'a `tefasCode` (unique, nullable, ör. "AFT") eklendi. Migration `V2`
-- [ ] `FundRequest/Response` güncellendi, mevcut uç noktalar kırılmadı
+_Bağımlı: E0-4_
+- [ ] `V2`: `funds.tefas_code VARCHAR(10) UNIQUE NULL`. Entity ve DTO'lar güncellendi
+- [ ] `GET /api/funds/by-code/{code}`. Mevcut uç noktalar ve testleri kırılmadı
+- [ ] `dev` profilinde örnek seed: 5 gerçek TEFAS fon kodu (farklı kategorilerden, kodlar TEFAS'tan doğrulandı veya doğrulanamadıysa Notlar'a yazıldı)
 
 #### E1-2 · FundPrice tablosu
-- [ ] `FundPrice(fund_id, date, price BigDecimal, totalValue, investorCount, source)`, `(fund_id, date)` unique
-- [ ] Repository'de tarih aralığı sorguları
+_Rehber: §5.1_
+- [ ] `V3`: `fund_price` tablosu, `UNIQUE(fund_id, price_date)`, `price_date` indeksli
+- [ ] `FundPriceRepository`: aralık sorgusu, "verilen tarihten önceki son fiyat", upsert (`ON CONFLICT DO UPDATE`, native query)
+- [ ] Testcontainers ile repository testleri
 
 #### E1-3 · TefasClient
-- [ ] `pytefas` / `tefas-crawler` projelerinin kullandığı TEFAS endpoint'i incelendi. İstek/yanıt biçimi `docs/decisions/001-tefas.md` dosyasına yazıldı
-- [ ] Java `RestClient` ile istemci: zaman aşımı, User-Agent, istekler arası gecikme, 3 denemeli üstel geri çekilme
-- [ ] Kaydedilmiş JSON fixture'larıyla testler (ağa çıkmadan)
+_Rehber: §7.1, §6.6_
+- [ ] Uç nokta araştırıldı. İstek/yanıt biçimi, çerez/WAF davranışı ve sınırlar `docs/decisions/001-tefas.md` dosyasında
+- [ ] `TefasClient.fetchHistory(code, from, to)`: aralığı ≤ 90 günlük parçalara böler, istekler arası ≥ 1,5 sn, User-Agent, zaman aşımları, 3 denemeli üstel geri çekilme
+- [ ] Yanıt → `TefasPriceDto` (epoch ms → `LocalDate` İstanbul saatiyle, sayı alanları `BigDecimal`)
+- [ ] `MockRestServiceServer` + `fixtures/tefas/*.json` testleri: normal yanıt, boş veri, 5xx sonrası başarılı deneme, kalıcı hata
+- [ ] `@Tag("live")` canlı test (varsayılan kapalı). Ajan ortamından canlı sonuç Notlar'a yazıldı
 
-#### E1-4 · Günlük fiyat işi
-- [ ] `@Scheduled(cron="0 30 19 * * MON-FRI", zone="Europe/Istanbul")`: `tefasCode`'u olan fonları çekip upsert ediyor
-- [ ] `POST /api/admin/ingest/tefas?from=&to=` ile geçmişe dönük doldurma (backfill), yalnızca admin
-- [ ] Çalışma sonucu loglanıyor (kaç fon, kaç fiyat, hatalar)
+#### E1-4 · Günlük fiyat işi + backfill
+_Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9_
+- [ ] ShedLock (JDBC) eklendi, `V4` shedlock tablosu
+- [ ] `DailyPriceJob` (`0 30 19 * * MON-FRI`, İstanbul): `tefas_code`'u olan her fon için son 5 iş gününü upsert ediyor. Bir fondaki hata diğerlerini durdurmuyor
+- [ ] `POST /api/admin/jobs/daily-price/run` ve `POST /api/admin/ingest/tefas?code=&from=&to=` (backfill)
+- [ ] Özet log: fon sayısı, yazılan satır, atlanan, hatalar. `ingest_run` kaydı (`V5`)
 
 #### E1-5 · EvdsClient (TCMB)
-- [ ] EVDS API anahtarı ortam değişkeninden okunuyor (`EVDS_API_KEY`). Anahtar yoksa istemci devre dışı ve uygulama çalışmaya devam ediyor
-- [ ] Seriler: TÜFE (aylık), USD/TRY, gram altın, mevduat faizi. Seri kodları `docs/decisions/002-evds.md` dosyasında
-- [ ] `MacroSeries(code, date, value)` tablosu, haftalık güncelleme işi, fixture testleri
+_Rehber: §7.2_
+- [ ] Seri kodları EVDS'de doğrulandı: TÜFE endeksi, USD/TRY, gram altın, TL mevduat faizi. `docs/decisions/002-evds.md` + `evds.series.*`
+- [ ] Anahtar header'da (`EVDS_API_KEY`). Anahtar yoksa `EvdsClient` bean'i "disabled" moduna geçiyor ve uyarı logluyor
+- [ ] `V6`: `macro_point` tablosu. `WeeklyMacroJob` (`0 0 7 * * MON`) + admin tetikleyicisi
+- [ ] Fixture testleri (EVDS'nin gerçek yanıt biçimiyle: tarih `dd-MM-yyyy` veya `yyyy-M`, ondalık ayırıcı)
+- [ ] Anahtar yoksa kart **Done** olabilir, ama canlı doğrulama için `Blocked`'a ayrı bir "E1-5b · EVDS canlı doğrulama" kartı açılır (kullanıcıdan anahtar)
 
 #### E1-6 · BIST100 kıyas verisi
-- [ ] Ücretsiz ve izinli bir kaynak araştırıldı ve karar belgelendi. Uygun kaynak yoksa kart `Blocked`'a taşındı ve kıyas tablosundan çıkarıldı
+- [ ] Ücretsiz ve kullanım koşullarına uygun bir kaynak araştırıldı (EVDS'de endeks serisi var mı önce oraya bak). Karar `docs/decisions/003-bist.md` dosyasında
+- [ ] Uygun kaynak yoksa kıyaslardan çıkarıldı ve README "Bilinen sınırlar"a yazıldı
 
 ### E2 · Deterministik analitik
 
 #### E2-1 · FundStatsService
-- [ ] Bir fon ve tarih aralığı için haftalık/aylık/yılbaşından bu yana getiri, yıllıklandırılmış oynaklık, maksimum düşüş
-- [ ] `BigDecimal` ve açık yuvarlama kuralları, elle hesaplanmış örneklerle testler
+_Bağımlı: E1-2 · Rehber: §7.3_
+- [ ] 1h / ay başından / yılbaşından / 1y getiri, 63 günlük yıllıklandırılmış oynaklık, maksimum düşüş
+- [ ] "Dönem başından önceki son işlem günü" kuralı ve tatil/eksik gün davranışı testli
+- [ ] Elle hesaplanmış beklenen değerlerle ≥ 10 birim testi. Eksik veride `null`, 0 değil
 
-#### E2-2 · Reel getiri ve kıyaslama
-- [ ] TÜFE'ye göre reel getiri (aylık TÜFE'nin döneme orantılanma yöntemi belgelendi)
-- [ ] Aynı dönem için USD/TRY, altın, mevduat (ve varsa BIST100) getirisi
+#### E2-2 · Reel getiri ve kıyaslar
+_Bağımlı: E1-5, E2-1 · Rehber: §7.3_
+- [ ] `BenchmarkService`: USD/TRY, altın, mevduat (ve varsa BIST100) dönem getirisi
+- [ ] Reel getiri, TÜFE orantılama yöntemi `docs/decisions/004-real-return.md` dosyasında
+- [ ] Kullanılan TÜFE ayı sonuçla birlikte dönüyor ("Ekim 2026 TÜFE'si kullanıldı")
 
-#### E2-3 · BulletinFacts
-- [ ] Değişmez (immutable) `BulletinFacts` nesnesi: her sayı `{değer, birim, kaynak, tarih aralığı, hesaplama adı}` içeriyor
-- [ ] Haftanın en çok yükselen/düşen fonları, kategori özetleri
-- [ ] `GET /api/bulletins/facts/preview?userId=` ile JSON önizleme
+#### E2-3 · BulletinFacts + FactFormatter
+_Bağımlı: E2-1 · Rehber: §7.4_
+- [ ] `Fact` ve `BulletinFacts` record'ları, anahtar şeması `docs/facts-keys.md` dosyasında
+- [ ] `FactsAssembler`: kullanıcı + hafta → facts (fonlar, portföy, kıyaslar, en çok yükselen/düşen, kaynak listesi)
+- [ ] `FactFormatter` Türkçe biçim testleri (`%3,2`, `%-0,9`, `1.250,50 TL`, `null` → "veri yok")
+- [ ] `GET /api/admin/bulletins/facts/preview?email=&week=` JSON önizleme
 
-### E3 · Bülten üretimi (LLM)
+### E3 · Bülten üretimi (LLM, ücretsiz)
 
 #### E3-1 · LlmClient soyutlaması
-- [ ] `LlmClient` arayüzü, `AnthropicLlmClient` (model `llm.model` property'sinden, anahtar `ANTHROPIC_API_KEY`'den), `TemplateLlmClient` (yedek)
-- [ ] Token ve maliyet ölçümü yanıt nesnesinde
+_Rehber: §4.1_
+- [ ] `LlmClient`, `LlmRequest`, `LlmResponse` (token, süre, model)
+- [ ] `TemplateLlmClient`: facts'teki yön ve sıralama bilgisiyle yer tutuculu, akıcı Türkçe metin üretiyor (en az 3 farklı cümle kalıbı, tekdüze görünmesin)
+- [ ] `OpenAiCompatibleLlmClient`: `llm.base-url`, `llm.model`, `llm.api-key` (boş olabilir), `llm.timeout`, JSON modu. Ollama, Gemini ve Groq için örnek ayarlar `.env.example`'da
+- [ ] `llm.provider=template|ollama|openai-compatible` ile bean seçimi. Varsayılan `template`
+- [ ] `MockRestServiceServer` ile OpenAI formatı testleri (başarı, 429, zaman aşımı)
 
-#### E3-2 · Writer adımı
-- [ ] Prompt dosyası `src/main/resources/prompts/writer.md`, sürümlü. Girdi yalnızca `BulletinFacts` JSON'u
-- [ ] Prompt'ta açıkça: yeni sayı yok, tavsiye yok, Türkçe ve sade bir dil
-- [ ] Çıktı yapısı: başlık, haftanın özeti, fon fon kısa notlar, kıyas tablosu açıklaması
+#### E3-2 · Writer adımı ve yer tutucu renderer'ı
+_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6_
+- [ ] `prompts/writer.v1.md`: rol, kurallar, anahtar listesi + açıklamalar + yönler (değer yok), JSON çıktı şeması
+- [ ] `WriterStep`: facts → prompt → `LlmClient` → JSON parse → `WriterOutput`
+- [ ] `PlaceholderRenderer`: `{{key}}` → `FactFormatter` çıktısı
+- [ ] Ollama ile en az bir gerçek çalıştırma yapılabildiyse çıktı örneği `docs/samples/` altına kondu, yapılamadıysa Notlar'a yazıldı
 
 #### E3-3 · Bulletin ve çalışma kaydı
-- [ ] `Bulletin(id, userId, weekStart, status, content, promptVersion, createdAt)`
-- [ ] `BulletinRun(bulletinId, step, durationMs, inputTokens, outputTokens, costUsd, retries, result)`
+_Rehber: §5.1_
+- [ ] `V7`: `app_user_ref`, `bulletin`, `bulletin_run` tabloları. `bulletin(user_id, week_start)` unique
+- [ ] `BulletinRunRecorder`: her adım için süre, token, deneme ve sonuç
 
 ### E4 · Doğrulama ve uyum
 
 #### E4-1 · NumberGuard
-- [ ] Metinden sayı çıkarma (Türkçe biçimler: `%3,2`, `3,2%`, `1.250,50 TL`, `-0,8`)
-- [ ] Toleranslı eşleştirme (yuvarlamadan kaynaklı ±0,05 puan). Eşleşmeyen sayılar listeleniyor
-- [ ] Başarısızlıkta en fazla 2 yeniden üretme, sonra `FAILED_VALIDATION`
-- [ ] Kasıtlı olarak yanlış sayı içeren metinlerle testler
+_Bağımlı: E3-2 · Rehber: §4.3, §7.5_
+- [ ] Kural 1: render öncesi metinde rakam yok. Kural 2: bilinmeyen anahtar yok. Kural 3: yön tutarlılığı
+- [ ] `Violation` listesi. İhlaller bir sonraki denemede prompt'a geri bildirim olarak ekleniyor
+- [ ] ≥ 12 test: rakam sızıntısı (`3,2`, `üç virgül iki` hariç tutulur), uydurma anahtar, "düştü" + pozitif değer, temiz metin
 
 #### E4-2 · ComplianceGuard
-- [ ] Kural filtresi: yasaklı ifade listesi `compliance/forbidden-phrases.txt`, Türkçe ek varyasyonları regex ile yakalanıyor
-- [ ] LLM eleştirmen adımı (`prompts/critic.md`): tavsiye gibi duran ya da abartılı cümleleri yeniden yazıyor, sayılara dokunmuyor. Ardından NumberGuard yeniden çalışıyor
-- [ ] Sabit yasal uyarı metni her bültenin sonunda
+_Rehber: §6.3, §7.5_
+- [ ] `compliance/forbidden.txt` + ek varyasyonlu regex. Yer tutucu içi ve fon kodları taranmıyor
+- [ ] İhlalli cümle önce eleştirmene (`compliance.critic.enabled=true` ise, `prompts/critic.v1.md`), hâlâ ihlalliyse siliniyor
+- [ ] Sabit yasal uyarı ekleniyor
+- [ ] ≥ 15 test: "almanızı öneririz", "kaçırmayın", "yükselecek", "kesinlikle", yanlış pozitif örnekleri ("altın", "Sat. günü" gibi)
 
 #### E4-3 · BulletinPipeline
-- [ ] facts → writer → numberGuard → compliance → numberGuard zinciri tek bir serviste
-- [ ] `POST /api/bulletins/generate?userId=` (admin) ve uçtan uca entegrasyon testi (mock LLM)
+_Bağımlı: E3-3, E4-1, E4-2_
+- [ ] facts → writer (≤ 3 deneme) → NumberGuard → Compliance → NumberGuard → render. Başarısızlıkta şablon yedeği (`fallback=true`)
+- [ ] Şablon yedeği de guard'lardan geçemezse `FAILED_VALIDATION` (bu bir bug'dır, alarm logu)
+- [ ] `POST /api/admin/bulletins/generate?email=&week=`
+- [ ] §8'deki 4 uçtan uca senaryo testi (sahte LlmClient)
 
 ### E5 · Teslimat
 
 #### E5-1 · PdfRenderer
-- [ ] iText7 ile bülten PDF'i: başlık, özet, fon tablosu, kıyas tablosu, kaynaklar, yasal uyarı. Türkçe karakterler doğru görünüyor (font gömülü)
-- [ ] `PdfRenderer` arayüzü: harici `pdf-service`'e geçiş ileride tek bir sınıfla yapılabilsin
-- [ ] Örnek çıktı `docs/sample-bulletin.pdf` olarak commit'lendi (sahte/demo veriyle)
+_Bağımlı: E4-3 · Rehber: §7.8_
+- [ ] `PdfRenderer` arayüzü + `ITextPdfRenderer`, gömülü TTF (lisans dosyasıyla birlikte)
+- [ ] Bölümler: başlık, özet, fon tablosu (sayılar facts'ten), dikkat çekenler, kıyas, kaynaklar, uyarı
+- [ ] Test: PDF'ten metin geri okunuyor, Türkçe karakterler ve uyarı metni var
+- [ ] `docs/sample-bulletin.pdf` (demo verisiyle) + README için PNG ön izleme
 
 #### E5-2 · E-posta gönderimi
-- [ ] Spring Mail, SMTP ayarları ortam değişkenlerinden. Yapılandırılmamışsa PDF diske yazılıyor ve loglanıyor
-- [ ] HTML gövde (kısa özet) + PDF eki
+_Rehber: §7.8_
+- [ ] Spring Mail, `SMTP_HOST/PORT/USER/PASSWORD/FROM`. Ayarlı değilse PDF `out/bulletins/` altına yazılıyor
+- [ ] HTML gövde (Thymeleaf veya basit şablon): özet + "PDF ekte". Uyarı metni gövdede de var
+- [ ] GreenMail ile test. Yerelde Mailpit'te görüldü (mümkünse)
 
 #### E5-3 · Pazartesi işi
-- [ ] `@Scheduled(cron="0 0 8 * * MON", zone="Europe/Istanbul")`: tüm aktif kullanıcılar için bülten üretip gönderiyor
-- [ ] Aynı hafta için ikinci kez gönderimi engelleyen idempotentlik
+_Bağımlı: E5-1, E5-2_
+- [ ] `MondayBulletinJob` (`0 0 8 * * MON`, ShedLock): `bulletin_enabled` kullanıcılar için üret ve gönder
+- [ ] İdempotent: aynı hafta için `SENT` varsa atla. `FAILED_DELIVERY` varsa bir kez yeniden dene
+- [ ] Admin tetikleyicisi + test
 
 ### E6 · Kişiselleştirme
 
 #### E6-1 · İzleme listesi ve portföy
-- [ ] `UserHolding(userId, fundId, units, addedAt)`. `userId` JWT'den okunuyor (auth-service ile aynı secret/claim)
-- [ ] `GET/POST/DELETE /api/me/holdings`
-- [ ] Bültende "portföyün bu hafta ±X TL / %Y değişti" bölümü (sayılar BulletinFacts'ten)
+_Bağımlı: E0-6, E2-3_
+- [ ] `V8`: `user_holding`. `app_user_ref` JWT'den ilk istekte oluşturuluyor
+- [ ] `GET/POST/DELETE /api/me/holdings` (`units` boş = sadece izleme), doğrulama + testler
+- [ ] Facts'e portföy değeri, haftalık TL ve yüzde değişim. Adetsizse eşit ağırlık notu
+- [ ] `PATCH /api/me/settings` (bülten aç/kapa)
 
 ### E7 · Zenginleştirme
 
-#### E7-1 · KAP fon bildirimleri
-- [ ] Fon portföy dağılım raporlarının erişim yolu araştırıldı ve belgelendi
-- [ ] Dağılım değişimi ("hisse oranı %15 → %30") deterministik olarak hesaplanıp facts'e eklendi, kaynak bağlantısıyla
+#### E7-1 · Fon portföy dağılımı
+- [ ] TEFAS `BindHistoryAllocation` veya KAP aylık raporları araştırıldı. Karar `docs/decisions/005-allocation.md` dosyasında
+- [ ] `V9`: `fund_allocation`. Aylık değişim (ör. hisse %15 → %30) deterministik hesaplanıp facts'e kaynak bağlantısıyla ekleniyor
+- [ ] Bültende "Dikkat çekenler" altında, eşik üstü değişimler (≥ 5 puan)
 
 #### E7-2 · Haber bağlamı (isteğe bağlı)
-- [ ] Yalnızca kaydedilmiş gerçek kaynaklar (KAP/TCMB duyuru/RSS), her biri bağlantılı
-- [ ] "Haber yorumcusu" rolü ancak bu kaynaklar varsa çalışıyor. Yoksa bölüm bültende yer almıyor
+- [ ] Yalnızca kaydedilmiş gerçek kaynaklar (KAP bildirimi / TCMB duyurusu / RSS). Her öğe başlık + tarih + bağlantı
+- [ ] LLM yalnızca verilen başlıkları özetleyebilir, yeni olgu ekleyemez. Kaynak yoksa bölüm yok
+- [ ] Testler: kaynak yokken bölümün hiç çıkmaması
 
 #### E7-3 · Çok rollü yapı değerlendirmesi
-- [ ] Tek writer ile writer+yorumcu+eleştirmen ayrımı 5 örnek haftada karşılaştırıldı (doğrulama başarısı, maliyet, okunabilirlik)
-- [ ] Sonuç `docs/decisions/00X-multi-agent.md` dosyasına yazıldı. Mimari yalnızca kazanç varsa bölündü
+_Bağımlı: E8-3_
+- [ ] Tek writer ile writer + yorumcu + eleştirmen ayrımı eval setinde karşılaştırıldı (guard başarısı, süre, okunabilirlik notu)
+- [ ] `docs/decisions/006-multi-agent.md`. Mimari yalnızca ölçülebilir kazanç varsa bölündü
 
 ### E8 · Dokümantasyon, gözlemlenebilirlik, deploy
 
 #### E8-1 · README
-- [ ] Ürün tek cümleyle, mimari diyagram (Mermaid), servis haritası (auth → bulletin → pdf), kurulum, ortam değişkenleri tablosu
-- [ ] "Tasarım kararları" bölümü: neden LLM sayı üretmiyor, NumberGuard, SPK dili, TEFAS nezaket kuralları
-- [ ] Örnek bülten PDF'ine bağlantı
+- [ ] Tek cümlelik ürün tanımı, örnek PDF ön izlemesi, Mermaid mimari çizimi, servis haritası (auth → bulletin → pdf)
+- [ ] Hızlı başlangıç (anahtarsız), LLM seçenekleri tablosu (template / ollama / ücretsiz uzak sağlayıcı), ortam değişkenleri tablosu
+- [ ] "Tasarım kararları": yer tutucu yaklaşımı, guard'lar, neden ücretli LLM yok, SPK dili, TEFAS nezaket kuralları. "Bilinen sınırlar" ve "Güvenlik"
 
 #### E8-2 · Gözlemlenebilirlik
-- [ ] Actuator health/metrics. Bülten başına süre, token ve maliyet metrikleri
-- [ ] `GET /api/admin/bulletin-runs` ile son çalışmaların listesi
+- [ ] Actuator `health`, `info`, `metrics`. Micrometer sayaç ve zamanlayıcıları: `bulletin.generated`, `bulletin.fallback`, `guard.violations`, `llm.duration`, `ingest.rows`
+- [ ] `GET /api/admin/bulletin-runs?limit=` ve `GET /api/admin/ingest-runs`
 
 #### E8-3 · Değerlendirme seti
-- [ ] `src/test/resources/eval/` içinde 5 sabit haftalık facts örneği
-- [ ] Her biri için pipeline çalıştırılıyor. Doğrulama başarı oranı ve ortalama maliyet raporlanıyor (mock veya gerçek LLM, bayrağa göre)
+_Bağımlı: E4-3_
+- [ ] `src/test/resources/eval/` altında 5 sabit hafta (yükselen, düşen, karışık, eksik veri, tek fon)
+- [ ] `-Peval` profili seçilen sağlayıcıyla çalışıp `docs/eval-report.md` dosyasını üretiyor (guard başarı oranı, deneme sayısı, süre, token)
+- [ ] Şablon ve Ollama sonuçları rapora işlendi (Ollama erişilemediyse not düşüldü)
 
 #### E8-4 · Deploy
-- [ ] Render (veya Fly/Railway) için yapılandırma. Postgres bağlantı sorunu teşhis edildi (SSL modu, internal URL, `DATABASE_URL` → JDBC dönüşümü)
-- [ ] Canlı URL README'de. Panel erişimi gerekiyorsa kart `Blocked`'a taşınıp gerekenler yazıldı
+- [ ] Hedef seçildi (Render / Fly / Railway ücretsiz katman). `DATABASE_URL` → JDBC dönüşümü, `sslmode=require`, internal host teşhisi `docs/decisions/007-deploy.md` dosyasında
+- [ ] Deploy'da `llm.provider=template` veya ücretsiz uzak sağlayıcı (Ollama bu katmanlarda çalışmaz)
+- [ ] Canlı URL README'de. Panel erişimi gerekiyorsa `Blocked` + adım adım ne yapılacağı
 
-#### E8-5 · Secret rotasyonu notu
-- [ ] Git geçmişindeki eski `jwt.secret`'ın üretimde kullanılmaması gerektiği README "Güvenlik" bölümüne yazıldı
+#### E8-5 · Sürüm etiketi
+- [ ] `v0.1.0` etiketi + GitHub Release notu (özellikler, demo PDF, bilinen sınırlar). Etiketleme yalnızca DoD (AGENT_PROMPT §11) sağlanınca
+
+#### E8-6 · Secret rotasyonu
+- [ ] README "Güvenlik": git geçmişindeki eski `jwt.secret` ve DB şifresi üretimde kullanılmamalı ve döndürülmeli. Kullanıcıya bırakılan adım `Blocked`'a yazıldı
 
 ---
 
@@ -190,8 +258,8 @@ _(boş)_
 ---
 
 ## Notlar
-_(Ajan, kodda AGENT_PROMPT.md'deki "Mevcut durum" bölümünden farklı bir şey bulursa buraya yazar.)_
+_(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulanamayan entegrasyonları veya kendi verdiği önemli kararları buraya tarihle yazar.)_
 
 ## Oturum Günlüğü
-| Tarih | Biten kartlar | Açık engeller |
-|---|---|---|
+| Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
+|---|---|---|---|
