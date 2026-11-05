@@ -15,17 +15,20 @@ _(boş)_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E0-5 · CI
+_Başladı: 2026-11-05_
+- [ ] `.github/workflows/ci.yml`: push ve PR'da, JDK 17 (temurin), Maven cache, `./mvnw -B verify` (integration testleri dahil, Testcontainers)
+- [ ] JaCoCo raporu artifact olarak yükleniyor
+- [ ] İkinci job: `docker compose up -d` → `curl --retry` ile `/api/funds` smoke testi → `down`
+- [x] Kök `README.md` iskeleti + CI rozeti (tam README E8-1'de)
+
+_Yerelde: `./mvnw -B verify` yeşil, atlanan test yok, JaCoCo raporu üretildi; compose duman adımları yerelde geçti. İlk GitHub Actions koşusu bekleniyor._
 
 ---
 
 ## 🔵 To Do
 
-### E0-5 · CI
-- [ ] `.github/workflows/ci.yml`: push ve PR'da, JDK 17 (temurin), Maven cache, `./mvnw -B verify` (integration testleri dahil, Testcontainers)
-- [ ] JaCoCo raporu artifact olarak yükleniyor
-- [ ] İkinci job: `docker compose up -d` → `curl --retry` ile `/api/funds` smoke testi → `down`
-- [ ] Kök `README.md` iskeleti + CI rozeti (tam README E8-1'de)
+_(boş: §9 gereği bir sonraki kart seçilirken Backlog'dan sıradaki 3 kart taşınır)_
 
 ---
 
@@ -231,7 +234,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E0-4 · Flyway ve hata yönetimi
-_Rehber: §3, §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 235f512, (kapanış commit'i)_
+_Rehber: §3, §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 235f512, c1b9dbb_
 - [x] Flyway eklendi. `V1__baseline.sql` mevcut `Fund` entity'sinden birebir çıkarıldı. `ddl-auto=validate`. `baseline-on-migrate=true` (mevcut veritabanları için)
 - [x] `common` paketinde `ApiError` record (timestamp, status, code, message, path) + `@RestControllerAdvice`. Ek alan: `fieldErrors` (yalnızca doğrulama hatalarında). Spring MVC'nin kendi hataları (405, 415, bozuk JSON, eksik parametre, bilinmeyen adres) da aynı biçimde dönüyor; beklenmeyen hata 500 ve iç ayrıntı sızdırmıyor
 - [x] `FundNotFoundException` → 404, doğrulama hataları → 400 ve alan listesi. `FundRequest.name` için `@NotBlank` + `@Size(max = 255)`: yalnızca veritabanının zaten zorladığı kurallar, geçerli istekler kırılmadı
@@ -239,7 +242,7 @@ _Rehber: §3, §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 235f512, (k
 
 Alt görevler:
 1. [x] Flyway + `V1__baseline.sql` (Hibernate 6.6'nın Postgres DDL çıktısından) + boş ve eski veritabanı için Testcontainers testleri · 235f512
-2. [x] `ApiError` + `@RestControllerAdvice` + doğrulama + `@WebMvcTest` · (kapanış commit'i)
+2. [x] `ApiError` + `@RestControllerAdvice` + doğrulama + `@WebMvcTest` · c1b9dbb
 
 ### E0-3 · Yerel geliştirme ortamı
 _Rehber: §3, §11 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 534ab26_

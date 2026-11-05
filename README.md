@@ -1,8 +1,18 @@
 # Fon Bülteni
 
+[![CI](https://github.com/EmirYoneyler/bulletin-service/actions/workflows/ci.yml/badge.svg)](https://github.com/EmirYoneyler/bulletin-service/actions/workflows/ci.yml)
+
 Takip ettiğin yatırım fonlarını her pazartesi TEFAS fiyatlarıyla özetleyen, içindeki her sayı kaynağına kadar izlenebilen kişisel bülten servisi.
 
-> Proje geliştirme aşamasında. Plan ve ilerleme: [`KANBAN.md`](KANBAN.md).
+> Proje geliştirme aşamasında. Plan ve ilerleme: [`KANBAN.md`](KANBAN.md). Bu README'nin tam hâli E8-1 kartında yazılacak.
+
+## Ne yapar?
+
+_(E8-1: örnek bülten ve PDF ön izlemesi)_
+
+## Mimari
+
+_(E8-1: Mermaid mimari çizimi ve servis haritası)_
 
 ## Yerel geliştirme
 
@@ -29,3 +39,24 @@ docker compose exec ollama ollama pull qwen2.5:7b-instruct
 ```
 
 Model bir kez indirilir ve `ollama-models` volume'ünde kalır.
+
+### Testler
+
+```bash
+cd bulletin-service
+./mvnw verify
+```
+
+Veritabanı testleri Testcontainers ile çalışır ve Docker gerektirir. Docker yoksa atlanırlar; CI'da hiçbir test atlanamaz ([ADR 008](docs/decisions/008-testcontainers-without-docker.md)). Kapsam raporu: `bulletin-service/target/site/jacoco/index.html`.
+
+## Ortam değişkenleri
+
+Tam liste ve açıklamalar: [`.env.example`](.env.example). Sırlar yalnızca ortam değişkeninden okunur, koda girmez.
+
+## Tasarım kararları
+
+Karar kayıtları: [`docs/decisions/`](docs/decisions/README.md).
+
+## Bilinen sınırlar
+
+_(E8-1)_

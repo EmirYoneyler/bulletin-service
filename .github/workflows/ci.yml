@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Derleme ve testler
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bulletin-service
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: bulletin-service/pom.xml
+
+      # Unit + integration tests; Testcontainers uses the runner's Docker.
+      - name: mvnw verify
+        run: ./mvnw -B verify
+
+      # Integration tests skip themselves without Docker (ADR 008). In CI that must never happen.
+      - name: Atlanan test olmadığını doğrula
+        run: |
+          if grep -lE 'skipped="[1-9]' target/surefire-reports/TEST-*.xml; then
+            echo "::error::CI'da atlanan test var (Docker erişilemedi ya da bir varsayım tutmadı)."
+            exit 1
+          fi
+
+      - name: JaCoCo raporunu yükle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-report
+          path: bulletin-service/target/site/jacoco/
+          if-no-files-found: warn
+
+  compose-smoke:
+    name: Docker Compose duman testi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: .env oluştur
+        run: cp .env.example .env
+
+      - name: Servisleri başlat
+        run: docker compose up -d --build --wait --wait-timeout 300
+
+      - name: GET /api/funds
+        run: curl --fail --silent --show-error --retry 30 --retry-delay 2 --retry-all-errors http://localhost:8082/api/funds
+
+      - name: Servis logları
+        if: failure()
+        run: docker compose logs
+
+      - name: Servisleri durdur
+        if: always()
+        run: docker compose down -v
