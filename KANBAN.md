@@ -21,12 +21,6 @@ _(boş)_
 
 ## 🔵 To Do
 
-### E1-2 · FundPrice tablosu
-_Rehber: §5.1_
-- [ ] `V3`: `fund_price` tablosu, `UNIQUE(fund_id, price_date)`, `price_date` indeksli
-- [ ] `FundPriceRepository`: aralık sorgusu, "verilen tarihten önceki son fiyat", upsert (`ON CONFLICT DO UPDATE`, native query)
-- [ ] Testcontainers ile repository testleri
-
 ### E1-3 · TefasClient
 _Rehber: §7.1, §6.6 · Önce Notlar'daki 2026-11-05 TEFAS gözlemini oku: §7.1'deki uç nokta artık 404_
 - [ ] Uç nokta araştırıldı. İstek/yanıt biçimi, çerez/WAF davranışı ve sınırlar `docs/decisions/001-tefas.md` dosyasında
@@ -203,6 +197,14 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E1-2 · FundPrice tablosu
+_Rehber: §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i)_
+- [x] `V3`: `fund_price` tablosu, `UNIQUE(fund_id, price_date)`, `price_date` indeksli. Ek: `price > 0` ve `investor_count >= 0` kontrolleri, fon silinince fiyatları da siliniyor (`on delete cascade`)
+- [x] `FundPriceRepository`: aralık sorgusu (iki uç dahil, eskiden yeniye), "verilen tarihten önceki son fiyat" (kesin önce; hafta sonu/tatil satırı olmadığı için kendiliğinden atlanıyor), upsert (`ON CONFLICT DO UPDATE`, native query). Upsert değer değişmediyse satıra dokunmuyor ve 0 dönüyor; böylece ingest işleri gerçekten yazılan satırı sayabilir
+- [x] Testcontainers ile repository testleri (`FundPriceRepositoryTest`, 13 test)
+
+_Elle (compose): mevcut volume'de V3 uygulandı (`1:BASELINE, 2:SQL, 3:SQL`), `ddl-auto=validate` ile uygulama açıldı, `GET /api/funds` → 200._
 
 ### E1-1 · Fon kimliği: TEFAS kodu
 _Bağımlı: E0-4 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 4cb12bc, 771520a_
