@@ -21,34 +21,32 @@ _(boş)_
 
 ## 🔵 To Do
 
-_(boş: sıradaki kart seçilirken Backlog'dan 3 kart taşınır)_
-
----
-
-## ⚪ Backlog
-
-### E1 · Veri alımı
-
-#### E1-2 · FundPrice tablosu
+### E1-2 · FundPrice tablosu
 _Rehber: §5.1_
 - [ ] `V3`: `fund_price` tablosu, `UNIQUE(fund_id, price_date)`, `price_date` indeksli
 - [ ] `FundPriceRepository`: aralık sorgusu, "verilen tarihten önceki son fiyat", upsert (`ON CONFLICT DO UPDATE`, native query)
 - [ ] Testcontainers ile repository testleri
 
-#### E1-3 · TefasClient
-_Rehber: §7.1, §6.6_
+### E1-3 · TefasClient
+_Rehber: §7.1, §6.6 · Önce Notlar'daki 2026-11-05 TEFAS gözlemini oku: §7.1'deki uç nokta artık 404_
 - [ ] Uç nokta araştırıldı. İstek/yanıt biçimi, çerez/WAF davranışı ve sınırlar `docs/decisions/001-tefas.md` dosyasında
 - [ ] `TefasClient.fetchHistory(code, from, to)`: aralığı ≤ 90 günlük parçalara böler, istekler arası ≥ 1,5 sn, User-Agent, zaman aşımları, 3 denemeli üstel geri çekilme
 - [ ] Yanıt → `TefasPriceDto` (epoch ms → `LocalDate` İstanbul saatiyle, sayı alanları `BigDecimal`)
 - [ ] `MockRestServiceServer` + `fixtures/tefas/*.json` testleri: normal yanıt, boş veri, 5xx sonrası başarılı deneme, kalıcı hata
 - [ ] `@Tag("live")` canlı test (varsayılan kapalı). Ajan ortamından canlı sonuç Notlar'a yazıldı
 
-#### E1-4 · Günlük fiyat işi + backfill
+### E1-4 · Günlük fiyat işi + backfill
 _Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9_
 - [ ] ShedLock (JDBC) eklendi, `V4` shedlock tablosu
 - [ ] `DailyPriceJob` (`0 30 19 * * MON-FRI`, İstanbul): `tefas_code`'u olan her fon için son 5 iş gününü upsert ediyor. Bir fondaki hata diğerlerini durdurmuyor
 - [ ] `POST /api/admin/jobs/daily-price/run` ve `POST /api/admin/ingest/tefas?code=&from=&to=` (backfill)
 - [ ] Özet log: fon sayısı, yazılan satır, atlanan, hatalar. `ingest_run` kaydı (`V5`)
+
+---
+
+## ⚪ Backlog
+
+### E1 · Veri alımı
 
 #### E1-5 · EvdsClient (TCMB)
 _Rehber: §7.2_
@@ -207,14 +205,14 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E1-1 · Fon kimliği: TEFAS kodu
-_Bağımlı: E0-4 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 4cb12bc, (kapanış commit'i)_
+_Bağımlı: E0-4 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 4cb12bc, 771520a_
 - [x] `V2`: `funds.tefas_code VARCHAR(10) UNIQUE NULL`. Entity ve DTO'lar güncellendi. Kod büyük harfe çevrilip saklanıyor; aynı kod ikinci kez → 409 `TEFAS_CODE_TAKEN`
 - [x] `GET /api/funds/by-code/{code}`. Mevcut uç noktalar ve testleri kırılmadı
 - [x] `dev` profilinde örnek seed: 5 gerçek TEFAS fon kodu (farklı kategorilerden, kodlar TEFAS'tan doğrulandı). AAV (hisse), AHU (borçlanma araçları), AAL (para piyasası), IJB (karma), AAJ (emeklilik/OKS); kaynak ve tarih `DevFundSeeder` içinde
 
 Alt görevler:
 1. [x] `V2` + entity/DTO + `by-code` uç noktası + 409 + testler · 4cb12bc
-2. [x] `dev` seed (doğrulanmış 5 kod) + Notlar · (kapanış commit'i)
+2. [x] `dev` seed (doğrulanmış 5 kod) + Notlar · 771520a
 
 _Elle (compose, dev): beş kodun hepsi `by-code` ile 200, log "Dev seed: 5 fund(s) inserted"._
 
@@ -314,3 +312,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
 |---|---|---|---|
+| 2026-11-05 | E0-1, E0-2, E0-3, E0-4, E0-5, E0-6, E0-7 (yeni), E1-1 · 85+ test yeşil, CI yeşil | Yok. Uyarı: TEFAS'ın eski `BindHistoryInfo` uç noktası 404 (Notlar); E1-5'te EVDS anahtarı gerekecek | E1-2 · FundPrice tablosu (To Do'da E1-2, E1-3, E1-4) |
