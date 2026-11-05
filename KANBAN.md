@@ -15,46 +15,35 @@ _(boş)_
 
 ## 🟡 In Progress
 
-### E0-5 · CI
-_Başladı: 2026-11-05_
-- [ ] `.github/workflows/ci.yml`: push ve PR'da, JDK 17 (temurin), Maven cache, `./mvnw -B verify` (integration testleri dahil, Testcontainers)
-- [ ] JaCoCo raporu artifact olarak yükleniyor
-- [ ] İkinci job: `docker compose up -d` → `curl --retry` ile `/api/funds` smoke testi → `down`
-- [x] Kök `README.md` iskeleti + CI rozeti (tam README E8-1'de)
-
-_Yerelde: `./mvnw -B verify` yeşil, atlanan test yok, JaCoCo raporu üretildi; compose duman adımları yerelde geçti. İlk GitHub Actions koşusu bekleniyor._
+_(boş)_
 
 ---
 
 ## 🔵 To Do
 
-_(boş: §9 gereği bir sonraki kart seçilirken Backlog'dan sıradaki 3 kart taşınır)_
-
----
-
-## ⚪ Backlog
-
-### E0 · Temel (devam)
-
-#### E0-6 · JWT güvenliği
+### E0-6 · JWT güvenliği
 _Bağımlı: E0-4 · Rehber: §7.7_
 - [ ] `JwtAuthFilter` + `SecurityConfig` yetki matrisi (GET funds açık, yazma ve `/api/admin/**` ADMIN, `/api/me/**` oturumlu)
 - [ ] `dev` profilinde `POST /api/dev/token?email=&role=` test token'ı üretiyor
 - [ ] `@WebMvcTest` ile 401/403/200 senaryoları
 - [ ] README'ye "API artık yazma işlemleri için token istiyor" notu
 
-#### E0-7 · `createdAt` saat dilimi
+### E0-7 · `createdAt` saat dilimi
 _Rehber: §3 (Tarih / saat) · Kaynak: E0-4 elle doğrulaması_
 - [ ] `Fund.prePersist` `LocalDateTime.now()` ile JVM'in varsayılan saat dilimini kullanıyor; container'da bu UTC (E0-4'te `createdAt` İstanbul saatinden 3 saat geri yazıldı). `Europe/Istanbul` ile tutarlı hâle getirildi (ör. `TimeConfig` saati veya container `TZ`)
 - [ ] Mevcut kayıtlar ve `/api/funds` yanıt biçimi kırılmadı. Karar ADR'de
 
-### E1 · Veri alımı
-
-#### E1-1 · Fon kimliği: TEFAS kodu
+### E1-1 · Fon kimliği: TEFAS kodu
 _Bağımlı: E0-4_
 - [ ] `V2`: `funds.tefas_code VARCHAR(10) UNIQUE NULL`. Entity ve DTO'lar güncellendi
 - [ ] `GET /api/funds/by-code/{code}`. Mevcut uç noktalar ve testleri kırılmadı
 - [ ] `dev` profilinde örnek seed: 5 gerçek TEFAS fon kodu (farklı kategorilerden, kodlar TEFAS'tan doğrulandı veya doğrulanamadıysa Notlar'a yazıldı)
+
+---
+
+## ⚪ Backlog
+
+### E1 · Veri alımı
 
 #### E1-2 · FundPrice tablosu
 _Rehber: §5.1_
@@ -232,6 +221,15 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E0-5 · CI
+_Başladı: 2026-11-05 · Bitti: 2026-11-05 · 887502b, (kapanış commit'i)_
+- [x] `.github/workflows/ci.yml`: push ve PR'da, JDK 17 (temurin), Maven cache, `./mvnw -B verify` (integration testleri dahil, Testcontainers). Ek adım: CI'da atlanan test varsa job kırmızıya düşüyor (ADR 008)
+- [x] JaCoCo raporu artifact olarak yükleniyor (`jacoco-report`, ilk koşuda ~265 KB)
+- [x] İkinci job: `docker compose up -d` → `curl --retry` ile `/api/funds` smoke testi → `down`
+- [x] Kök `README.md` iskeleti + CI rozeti (tam README E8-1'de)
+
+_İlk koşu (run 42047332006) iki job'da da yeşil: derleme ve testler 1 dk 10 sn, compose duman testi 2 dk 20 sn. Yerelde kapsam yaklaşık %81 (komut bazında)._
 
 ### E0-4 · Flyway ve hata yönetimi
 _Rehber: §3, §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 235f512, c1b9dbb_
