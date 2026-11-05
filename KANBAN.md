@@ -15,18 +15,20 @@ _(boş)_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E0-4 · Flyway ve hata yönetimi
+_Rehber: §3, §5.1 · Başladı: 2026-11-05_
+- [x] Flyway eklendi. `V1__baseline.sql` mevcut `Fund` entity'sinden birebir çıkarıldı. `ddl-auto=validate`. `baseline-on-migrate=true` (mevcut veritabanları için)
+- [ ] `common` paketinde `ApiError` record (timestamp, status, code, message, path) + `@RestControllerAdvice`
+- [ ] `FundNotFoundException` → 404, doğrulama hataları → 400 ve alan listesi
+- [ ] `FundController` için `@WebMvcTest` testleri (mutlu yol + 404 + 400)
+
+Alt görevler:
+1. [x] Flyway + `V1__baseline.sql` (Hibernate 6.6'nın Postgres DDL çıktısından) + boş ve eski veritabanı için Testcontainers testleri
+2. [ ] `ApiError` + `@RestControllerAdvice` + doğrulama + `@WebMvcTest`
 
 ---
 
 ## 🔵 To Do
-
-### E0-4 · Flyway ve hata yönetimi
-_Rehber: §3, §5.1_
-- [ ] Flyway eklendi. `V1__baseline.sql` mevcut `Fund` entity'sinden birebir çıkarıldı. `ddl-auto=validate`. `baseline-on-migrate=true` (mevcut veritabanları için)
-- [ ] `common` paketinde `ApiError` record (timestamp, status, code, message, path) + `@RestControllerAdvice`
-- [ ] `FundNotFoundException` → 404, doğrulama hataları → 400 ve alan listesi
-- [ ] `FundController` için `@WebMvcTest` testleri (mutlu yol + 404 + 400)
 
 ### E0-5 · CI
 - [ ] `.github/workflows/ci.yml`: push ve PR'da, JDK 17 (temurin), Maven cache, `./mvnw -B verify` (integration testleri dahil, Testcontainers)
@@ -233,7 +235,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E0-3 · Yerel geliştirme ortamı
-_Rehber: §3, §11 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i)_
+_Rehber: §3, §11 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 534ab26_
 - [x] `docker-compose.yml`: `postgres:16` (healthcheck), `mailpit` (1025/8025), `bulletin-service` (`depends_on: condition: service_healthy`), `.env` dosyasından ortam. Postgres host'ta 5433'te (yerel kurulu PostgreSQL ile çakışmasın diye, `POSTGRES_HOST_PORT`)
 - [x] `ollama` servisi `profiles: ["llm"]` altında, volume'lü. README'ye `docker compose exec ollama ollama pull qwen2.5:7b-instruct` notu. Yalnızca `--profile llm config` ile doğrulandı, imaj indirilmedi
 - [x] Mevcut `Dockerfile` çok aşamalı hâle getirildi (maven build → `eclipse-temurin:17-jre`), root olmayan kullanıcı. Zaten iki aşamalıydı; `17-jdk-noble` + mvnw → `17-jre-noble`, `app` kullanıcısı (uid 999), `EXPOSE 8082`, `.dockerignore`
