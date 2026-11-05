@@ -15,18 +15,16 @@ _(boş)_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E0-1 · Repo temizliği
+_Rehber: §2 · Başladı: 2026-11-05_
+- [ ] `privet_log_data.md` içindeki merge conflict işaretleri temizlendi (iki taraf da korunarak birleştirildi)
+- [x] Test paketi `com.fonbulteni.bulletinservice` olarak taşındı, `./mvnw verify` yeşil
+- [ ] Kök `.gitignore`: `target/`, `.env`, `out/`, `.idea/`, `*.iml`, `.vscode/`, `.DS_Store`
+- [ ] `application.properties` içinde `show-sql=false`
 
 ---
 
 ## 🔵 To Do
-
-### E0-1 · Repo temizliği
-_Rehber: §2_
-- [ ] `privet_log_data.md` içindeki merge conflict işaretleri temizlendi (iki taraf da korunarak birleştirildi)
-- [ ] Test paketi `com.fonbulteni.bulletinservice` olarak taşındı, `./mvnw verify` yeşil
-- [ ] Kök `.gitignore`: `target/`, `.env`, `out/`, `.idea/`, `*.iml`, `.vscode/`, `.DS_Store`
-- [ ] `application.properties` içinde `show-sql=false`
 
 ### E0-2 · Sırları ortam değişkenine taşı
 _Rehber: §6.5_
@@ -259,6 +257,17 @@ _(boş)_
 
 ## Notlar
 _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulanamayan entegrasyonları veya kendi verdiği önemli kararları buraya tarihle yazar.)_
+
+**2026-11-05 · §2 ile karşılaştırma**
+- `./mvnw verify` başlangıçta kırmızıydı: test sınıfı `com.fonbulteni.bulletin_service` paketinde olduğu için `@SpringBootConfiguration` bulunamıyordu. Ayrı `fix` commit'iyle düzeltildi (E0-1).
+- Bağlam testi artık Testcontainers (`postgres:16-alpine`) ile çalışıyor, `@Tag("integration")` ve `disabledWithoutDocker = true`. Docker yoksa atlanır; E0-5'te CI'da atlanmadığı kontrol edilmeli. Yerel ortamda Docker Desktop (Engine 29) + Testcontainers 1.21.4 sorunsuz çalıştı.
+- `Dockerfile` zaten çok aşamalı (`17-jdk-alpine` → `17-jre-alpine`), ama root kullanıcıyla çalışıyor ve `EXPOSE 8080` diyor (uygulama 8082'de). E0-3'te ele alınacak.
+- `FundService.getFundById` bulunamayan fonda düz `RuntimeException` atıyor, yani bugün 500 dönüyor. E0-4'te 404'e çevrilecek.
+- `FundController` üzerinde `@CrossOrigin(origins = "http://localhost:3000")` var (§2'de geçmiyor). Dokunulmadı.
+- `JwtService`'te `role` claim'ini okuyan bir metot yok, yalnızca `extractEmail` ve `isTokenValid` var. E0-6'da eklenecek.
+- `FundRequest` üzerinde doğrulama anotasyonu yok, `spring-boot-starter-validation` bağımlılığı da yok. E0-4'ün "doğrulama hataları → 400" kriteri bunu gerektiriyor.
+- `privet_log_data.md` repo dışındaki bir betikle `boot: <zaman>` commit'leri alarak güncelleniyor. Uygulama kodu bu dosyaya dokunmuyor.
+- Kökte git'in izlemediği boş bir `New folder/` dizini var. Dokunulmadı.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
