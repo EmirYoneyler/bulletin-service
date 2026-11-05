@@ -1,5 +1,6 @@
 package com.fonbulteni.bulletinservice.service;
 
+import com.fonbulteni.bulletinservice.common.FundNotFoundException;
 import com.fonbulteni.bulletinservice.dto.FundRequest;
 import com.fonbulteni.bulletinservice.dto.FundResponse;
 import com.fonbulteni.bulletinservice.entity.Fund;
@@ -40,7 +41,7 @@ public class FundService {
 
     public FundResponse getFundById(Long id) {
         Fund fund = fundRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Fon bulunamadı: " + id));
+                .orElseThrow(() -> new FundNotFoundException(id));
         return toResponse(fund);
     }
 

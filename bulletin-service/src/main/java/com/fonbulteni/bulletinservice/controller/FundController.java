@@ -4,6 +4,7 @@ import com.fonbulteni.bulletinservice.dto.FundRequest;
 import com.fonbulteni.bulletinservice.dto.FundResponse;
 import com.fonbulteni.bulletinservice.entity.Fund;
 import com.fonbulteni.bulletinservice.service.FundService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class FundController {
     private final FundService fundService;
 
     @PostMapping
-    public ResponseEntity<FundResponse> createFund(@RequestBody FundRequest request) {
+    public ResponseEntity<FundResponse> createFund(@Valid @RequestBody FundRequest request) {
         return ResponseEntity.ok(fundService.createFund(request));
     }
 

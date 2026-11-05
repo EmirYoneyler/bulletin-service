@@ -2,14 +2,12 @@ package com.fonbulteni.bulletinservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages = "com.fonbulteni.bulletinservice")
+// Entities and repositories live under this package, so Boot's defaults find them.
+// Explicit @EnableJpaRepositories/@EntityScan here would break @WebMvcTest slices.
+@SpringBootApplication
 @ConfigurationPropertiesScan
-@EnableJpaRepositories(basePackages = "com.fonbulteni.bulletinservice.repository")
-@EntityScan(basePackages = "com.fonbulteni.bulletinservice.entity")
 public class BulletinServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(BulletinServiceApplication.class, args);

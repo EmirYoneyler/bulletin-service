@@ -15,16 +15,7 @@ _(boş)_
 
 ## 🟡 In Progress
 
-### E0-4 · Flyway ve hata yönetimi
-_Rehber: §3, §5.1 · Başladı: 2026-11-05_
-- [x] Flyway eklendi. `V1__baseline.sql` mevcut `Fund` entity'sinden birebir çıkarıldı. `ddl-auto=validate`. `baseline-on-migrate=true` (mevcut veritabanları için)
-- [ ] `common` paketinde `ApiError` record (timestamp, status, code, message, path) + `@RestControllerAdvice`
-- [ ] `FundNotFoundException` → 404, doğrulama hataları → 400 ve alan listesi
-- [ ] `FundController` için `@WebMvcTest` testleri (mutlu yol + 404 + 400)
-
-Alt görevler:
-1. [x] Flyway + `V1__baseline.sql` (Hibernate 6.6'nın Postgres DDL çıktısından) + boş ve eski veritabanı için Testcontainers testleri
-2. [ ] `ApiError` + `@RestControllerAdvice` + doğrulama + `@WebMvcTest`
+_(boş)_
 
 ---
 
@@ -48,6 +39,11 @@ _Bağımlı: E0-4 · Rehber: §7.7_
 - [ ] `dev` profilinde `POST /api/dev/token?email=&role=` test token'ı üretiyor
 - [ ] `@WebMvcTest` ile 401/403/200 senaryoları
 - [ ] README'ye "API artık yazma işlemleri için token istiyor" notu
+
+#### E0-7 · `createdAt` saat dilimi
+_Rehber: §3 (Tarih / saat) · Kaynak: E0-4 elle doğrulaması_
+- [ ] `Fund.prePersist` `LocalDateTime.now()` ile JVM'in varsayılan saat dilimini kullanıyor; container'da bu UTC (E0-4'te `createdAt` İstanbul saatinden 3 saat geri yazıldı). `Europe/Istanbul` ile tutarlı hâle getirildi (ör. `TimeConfig` saati veya container `TZ`)
+- [ ] Mevcut kayıtlar ve `/api/funds` yanıt biçimi kırılmadı. Karar ADR'de
 
 ### E1 · Veri alımı
 
@@ -234,6 +230,17 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
+### E0-4 · Flyway ve hata yönetimi
+_Rehber: §3, §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 235f512, (kapanış commit'i)_
+- [x] Flyway eklendi. `V1__baseline.sql` mevcut `Fund` entity'sinden birebir çıkarıldı. `ddl-auto=validate`. `baseline-on-migrate=true` (mevcut veritabanları için)
+- [x] `common` paketinde `ApiError` record (timestamp, status, code, message, path) + `@RestControllerAdvice`. Ek alan: `fieldErrors` (yalnızca doğrulama hatalarında). Spring MVC'nin kendi hataları (405, 415, bozuk JSON, eksik parametre, bilinmeyen adres) da aynı biçimde dönüyor; beklenmeyen hata 500 ve iç ayrıntı sızdırmıyor
+- [x] `FundNotFoundException` → 404, doğrulama hataları → 400 ve alan listesi. `FundRequest.name` için `@NotBlank` + `@Size(max = 255)`: yalnızca veritabanının zaten zorladığı kurallar, geçerli istekler kırılmadı
+- [x] `FundController` için `@WebMvcTest` testleri (mutlu yol + 404 + 400): 15 test, gerçek `SecurityConfig` ile
+
+Alt görevler:
+1. [x] Flyway + `V1__baseline.sql` (Hibernate 6.6'nın Postgres DDL çıktısından) + boş ve eski veritabanı için Testcontainers testleri · 235f512
+2. [x] `ApiError` + `@RestControllerAdvice` + doğrulama + `@WebMvcTest` · (kapanış commit'i)
+
 ### E0-3 · Yerel geliştirme ortamı
 _Rehber: §3, §11 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 534ab26_
 - [x] `docker-compose.yml`: `postgres:16` (healthcheck), `mailpit` (1025/8025), `bulletin-service` (`depends_on: condition: service_healthy`), `.env` dosyasından ortam. Postgres host'ta 5433'te (yerel kurulu PostgreSQL ile çakışmasın diye, `POSTGRES_HOST_PORT`)
@@ -275,6 +282,8 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 - Bir kartın kapanış commit'inin hash'i o commit'in içine yazılamadığı için Done kartında "(kapanış commit'i)" yazar; gerçek hash bir sonraki commit'te doldurulur.
 - `docs/decisions/` altında 001–007 numaraları kartlar için ayrıldığından ajanın kendi kararları 008'den başlar. Dizin: `docs/decisions/README.md`.
 - E0-2 elle doğrulama: `JWT_SECRET` olmadan jar "APPLICATION FAILED TO START" ile çıkıyor; `dev` profiliyle geçici bir Postgres'e karşı açıldı, `GET /api/funds` → 200 `[]`.
+- E0-4: Ana sınıftaki `@EnableJpaRepositories`, `@EntityScan` ve `scanBasePackages` kaldırıldı. Hepsi zaten Boot'un varsayılanıydı (paketler ana paketin altında), ama açıkça yazılmaları `@WebMvcTest` dilimlerinin JPA olmadan açılmasını engelliyordu.
+- E0-4: `common.TimeConfig` İstanbul saat dilimli bir `Clock` bean'i sağlıyor. Zamana bağlı yeni kod `LocalDateTime.now()` yerine bunu kullanmalı (bkz. E0-7).
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
