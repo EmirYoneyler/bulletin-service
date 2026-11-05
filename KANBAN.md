@@ -15,15 +15,7 @@ _(boş)_
 
 ## 🟡 In Progress
 
-### E1-1 · Fon kimliği: TEFAS kodu
-_Bağımlı: E0-4 · Başladı: 2026-11-05_
-- [x] `V2`: `funds.tefas_code VARCHAR(10) UNIQUE NULL`. Entity ve DTO'lar güncellendi. Kod büyük harfe çevrilip saklanıyor; aynı kod ikinci kez → 409 `TEFAS_CODE_TAKEN`
-- [x] `GET /api/funds/by-code/{code}`. Mevcut uç noktalar ve testleri kırılmadı
-- [ ] `dev` profilinde örnek seed: 5 gerçek TEFAS fon kodu (farklı kategorilerden, kodlar TEFAS'tan doğrulandı veya doğrulanamadıysa Notlar'a yazıldı)
-
-Alt görevler:
-1. [x] `V2` + entity/DTO + `by-code` uç noktası + 409 + testler
-2. [ ] `dev` seed (doğrulanmış 5 kod) + Notlar
+_(boş)_
 
 ---
 
@@ -214,8 +206,20 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
+### E1-1 · Fon kimliği: TEFAS kodu
+_Bağımlı: E0-4 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 4cb12bc, (kapanış commit'i)_
+- [x] `V2`: `funds.tefas_code VARCHAR(10) UNIQUE NULL`. Entity ve DTO'lar güncellendi. Kod büyük harfe çevrilip saklanıyor; aynı kod ikinci kez → 409 `TEFAS_CODE_TAKEN`
+- [x] `GET /api/funds/by-code/{code}`. Mevcut uç noktalar ve testleri kırılmadı
+- [x] `dev` profilinde örnek seed: 5 gerçek TEFAS fon kodu (farklı kategorilerden, kodlar TEFAS'tan doğrulandı). AAV (hisse), AHU (borçlanma araçları), AAL (para piyasası), IJB (karma), AAJ (emeklilik/OKS); kaynak ve tarih `DevFundSeeder` içinde
+
+Alt görevler:
+1. [x] `V2` + entity/DTO + `by-code` uç noktası + 409 + testler · 4cb12bc
+2. [x] `dev` seed (doğrulanmış 5 kod) + Notlar · (kapanış commit'i)
+
+_Elle (compose, dev): beş kodun hepsi `by-code` ile 200, log "Dev seed: 5 fund(s) inserted"._
+
 ### E0-7 · `createdAt` saat dilimi
-_Rehber: §3 (Tarih / saat) · Kaynak: E0-4 elle doğrulaması · Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i)_
+_Rehber: §3 (Tarih / saat) · Kaynak: E0-4 elle doğrulaması · Başladı: 2026-11-05 · Bitti: 2026-11-05 · e20cdf3_
 - [x] `Fund.prePersist` `LocalDateTime.now()` ile JVM'in varsayılan saat dilimini kullanıyor; container'da bu UTC (E0-4'te `createdAt` İstanbul saatinden 3 saat geri yazıldı). `Europe/Istanbul` ile tutarlı hâle getirildi: `LocalDateTime.now(TimeConfig.ISTANBUL)`
 - [x] Mevcut kayıtlar ve `/api/funds` yanıt biçimi kırılmadı. Karar ADR'de ([010](docs/decisions/010-created-at-timezone.md)). Eski kayıtlar bilinmeyen saat dilimiyle yazıldığı için toplu düzeltilmedi
 
@@ -299,6 +303,13 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 - E0-4: `common.TimeConfig` İstanbul saat dilimli bir `Clock` bean'i sağlıyor. Zamana bağlı yeni kod `LocalDateTime.now()` yerine bunu kullanmalı (bkz. E0-7).
 - E0-6: auth-service bu repoda olmadığı için token'daki `role` claim'inin tam biçimi doğrulanamadı. Filtre `ADMIN`, `admin` ve `ROLE_ADMIN` biçimlerinin hepsini `ROLE_ADMIN`'e çeviriyor. Geçersiz ya da süresi dolmuş token isteği anonim bırakıyor; herkese açık GET'ler çalışmaya devam ediyor, korumalı yollar 401 dönüyor.
 - E0-6: `@CrossOrigin(origins = "http://localhost:3000")` korunuyor ve Security'nin CORS desteği bunu okuyor, yani tarayıcı preflight'ı token istemiyor.
+
+**2026-11-05 · TEFAS canlı gözlem (E1-1 sırasında, E1-3 için önemli)**
+- Ajan ortamından (kullanıcının makinesi, Türkiye) TEFAS'a erişim **var**. Toplam 5 istek atıldı, aralarında ≥ 2 sn, User-Agent `fonbulteni-bot/1.0 (+github.com/EmirYoneyler/bulletin-service)`.
+- **Site yenilenmiş:** `https://www.tefas.gov.tr/` → 307 → `/tr`, Next.js uygulaması.
+- **AGENT_PROMPT §7.1'deki uç nokta artık çalışmıyor:** `POST /api/DB/BindHistoryInfo` (form `fontip=YAT&bastarih=03.11.2026&bittarih=04.11.2026&fonkod=`) → HTTP 404, JSON `{"fault":{"faultCode":"ERR-006","faultString":"Method not found or disabled!"}}`. E1-3'te yeni veri kaynağı araştırılmalı; eski biçim yalnızca referans.
+- `/tr/fon-getirileri?fundType=YAT|EMK` sayfası sunucu tarafında `initialFundListingData` dizisini gömülü JSON olarak veriyor: `fonKodu`, `fonUnvan`, `fonTurAciklama`, `tefasDurum`, `getiri1a/3a/6a/1y/yb/3y/5y`, `riskDegeri`. 2026-11-05'te YAT 2135, EMK 402 fon. Getiriler yüzde ve güncel; **günlük fiyat geçmişi değil.** E1-3 için fiyat geçmişini veren yeni uç nokta (büyük olasılıkla sayfanın JS'inin çağırdığı bir API) bulunmalı.
+- E1-1 seed'i bu listeden alındı; `DevFundSeeder` yalnızca doğrulanan alanları (kod, unvan, kategori, risk) dolduruyor. Seed, Flyway yerine `@Profile("dev")` bir `ApplicationRunner`: yalnızca dev'de çalışan bir Flyway konumu, aynı veritabanı dev olmadan açıldığında "missing migration" doğrulama hatası verirdi.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
