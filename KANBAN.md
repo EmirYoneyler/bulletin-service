@@ -15,17 +15,7 @@ _(boş)_
 
 ## 🟡 In Progress
 
-### E1-4 · Günlük fiyat işi + backfill
-_Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9 · Başladı: 2026-11-05_
-- [x] ShedLock (JDBC) eklendi, `V4` shedlock tablosu. Sürüm 6.10.0 (7.x Spring 7 istiyor); kilit zamanı veritabanı saatinden (`usingDbTime`)
-- [ ] `DailyPriceJob` (`0 30 19 * * MON-FRI`, İstanbul): `tefas_code`'u olan her fon için son 5 iş gününü upsert ediyor. Bir fondaki hata diğerlerini durdurmuyor
-- [ ] `POST /api/admin/jobs/daily-price/run` ve `POST /api/admin/ingest/tefas?code=&from=&to=` (backfill)
-- [ ] Özet log: fon sayısı, yazılan satır, atlanan, hatalar. `ingest_run` kaydı (`V5`)
-
-Alt görevler:
-1. [x] ShedLock 6.10 (7.x Spring 7 istiyor) + `V4` + kilit/zamanlama ayarı
-2. [x] `V5` `ingest_run` + `TefasPriceIngestService` (fon başına hata yalıtımı, sayaçlar) + testler
-3. [ ] `DailyPriceJob` + admin uç noktaları (aynı kilitle, meşgulse 409) + testler + elle deneme
+_(boş)_
 
 ---
 
@@ -194,6 +184,20 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E1-4 · Günlük fiyat işi + backfill
+_Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 8790233, 6841be7, (kapanış commit'i)_
+- [x] ShedLock (JDBC) eklendi, `V4` shedlock tablosu. Sürüm 6.10.0 (7.x Spring 7 istiyor); kilit zamanı veritabanı saatinden (`usingDbTime`)
+- [x] `DailyPriceJob` (`0 30 19 * * MON-FRI`, İstanbul): `tefas_code`'u olan her fon için son 5 iş gününü upsert ediyor. Bir fondaki hata diğerlerini durdurmuyor. Emeklilik fonları `EMK` tipiyle çekiliyor
+- [x] `POST /api/admin/jobs/daily-price/run` ve `POST /api/admin/ingest/tefas?code=&from=&to=` (backfill). Üç yol da aynı `tefas-ingest` kilidini kullanıyor; kilit doluysa 409 `JOB_ALREADY_RUNNING`. Backfill en fazla 731 gün, bugünden ileri tarih yok
+- [x] Özet log: fon sayısı, yazılan satır, atlanan, hatalar. `ingest_run` kaydı (`V5`). "Atlanan" iki sayaçla tutuluyor: değeri değişmediği için yazılmayan satır (`rows_unchanged`) ve o gün atlanan fon (`funds_failed` + `errors`)
+
+Alt görevler:
+1. [x] ShedLock 6.10 (7.x Spring 7 istiyor) + `V4` + kilit/zamanlama ayarı · 8790233
+2. [x] `V5` `ingest_run` + `TefasPriceIngestService` (fon başına hata yalıtımı, sayaçlar) + testler · 6841be7
+3. [x] `DailyPriceJob` + admin uç noktaları (aynı kilitle, meşgulse 409) + testler + elle deneme · (kapanış commit'i)
+
+_Elle (compose, dev, canlı TEFAS): günlük iş 6 fon (5 gerçek + eski test kaydı ZZ9, boş döndü, hata sayılmadı), 25 satır yazdı, ~7,6 sn sürdü. Çalışırken gönderilen backfill 409 aldı. AAV Ekim backfill'i 21 işlem günü buldu (29 Ekim tatil): 20 yazıldı, 1 değişmedi (30 Ekim günlük işten zaten vardı). Kaydedilen fiyatlar E1-3 fixture'larıyla aynı._
 
 ### E1-3 · TefasClient
 _Rehber: §7.1, §6.6 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · e3fd9ec, 454a9b8, 68c715f_

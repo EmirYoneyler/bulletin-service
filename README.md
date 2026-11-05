@@ -65,6 +65,20 @@ curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
 
 `dev` profili herkese `ADMIN` token'ı verir: **üretimde asla açılmamalıdır**.
 
+### Fiyat verisi (TEFAS)
+
+TEFAS kodu olan her fonun son 5 iş gününün fiyatları her hafta içi 19:30'da (İstanbul) çekilir ve kaydedilir. Kaçan günler sonraki çalışmalarda kendiliğinden dolar. Kaynak ve nezaket kuralları: [ADR 001](docs/decisions/001-tefas.md).
+
+Elle tetiklemek veya bir fonun geçmişini doldurmak için (`ADMIN` token gerekir):
+
+```bash
+curl -X POST -H "Authorization: Bearer $TOKEN" http://localhost:8082/api/admin/jobs/daily-price/run
+curl -X POST -H "Authorization: Bearer $TOKEN" \
+     "http://localhost:8082/api/admin/ingest/tefas?code=AAV&from=2026-01-01&to=2026-11-04"
+```
+
+Yanıt, çalışmanın özetidir (yazılan ve değişmeyen satır, hatalı fonlar). Aynı anda tek bir TEFAS aktarımı çalışır; diğeri `409` alır. Geçmiş doldurma tek seferde en fazla 731 gündür.
+
 ### Testler
 
 ```bash
