@@ -21,13 +21,6 @@ _(boş)_
 
 ## 🔵 To Do
 
-### E0-2 · Sırları ortam değişkenine taşı
-_Rehber: §6.5_
-- [ ] `spring.datasource.url/username/password` ve `jwt.secret` → `${DB_URL:...}`, `${DB_USER:...}`, `${DB_PASSWORD:}`, `${JWT_SECRET:}`. Gerçek değerler dosyadan silindi
-- [ ] `JWT_SECRET` boşsa uygulama açık bir hata mesajıyla başlamayı reddediyor (`dev` profili hariç, orada sabit bir geliştirme anahtarı var)
-- [ ] `.env.example`: bugüne kadarki tüm değişkenler, açıklamalı ve sahte değerli
-- [ ] E8-6 kartının (secret rotasyonu) varlığı kontrol edildi
-
 ### E0-3 · Yerel geliştirme ortamı
 _Rehber: §3, §11_
 - [ ] `docker-compose.yml`: `postgres:16` (healthcheck), `mailpit` (1025/8025), `bulletin-service` (`depends_on: condition: service_healthy`), `.env` dosyasından ortam
@@ -246,8 +239,15 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
+### E0-2 · Sırları ortam değişkenine taşı
+_Rehber: §6.5 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i, hash bir sonraki commit'te yazılır)_
+- [x] `spring.datasource.url/username/password` ve `jwt.secret` → `${DB_URL:...}`, `${DB_USER:...}`, `${DB_PASSWORD:}`, `${JWT_SECRET:}`. Gerçek değerler dosyadan silindi
+- [x] `JWT_SECRET` boşsa uygulama açık bir hata mesajıyla başlamayı reddediyor (`dev` profili hariç, orada sabit bir geliştirme anahtarı var). Anahtar 32 bayttan kısaysa da reddediliyor. ADR 009
+- [x] `.env.example`: bugüne kadarki tüm değişkenler, açıklamalı ve sahte değerli
+- [x] E8-6 kartının (secret rotasyonu) varlığı kontrol edildi: Backlog'da duruyor
+
 ### E0-1 · Repo temizliği
-_Rehber: §2 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 32a0216, (kapanış commit'i)_
+_Rehber: §2 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 32a0216, 11e6eb6_
 - [x] `privet_log_data.md` içindeki merge conflict işaretleri temizlendi (iki taraf da korunarak birleştirildi; karşı tarafta yalnızca boş satır vardı, HEAD'in iki satırı korundu)
 - [x] Test paketi `com.fonbulteni.bulletinservice` olarak taşındı, `./mvnw verify` yeşil
 - [x] Kök `.gitignore`: `target/`, `.env`, `out/`, `.idea/`, `*.iml`, `.vscode/`, `.DS_Store`
@@ -268,6 +268,11 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 - `FundRequest` üzerinde doğrulama anotasyonu yok, `spring-boot-starter-validation` bağımlılığı da yok. E0-4'ün "doğrulama hataları → 400" kriteri bunu gerektiriyor.
 - `privet_log_data.md` repo dışındaki bir betikle `boot: <zaman>` commit'leri alarak güncelleniyor. Uygulama kodu bu dosyaya dokunmuyor.
 - Kökte git'in izlemediği boş bir `New folder/` dizini var. Dokunulmadı.
+
+**2026-11-05 · Çalışma düzeni**
+- Bir kartın kapanış commit'inin hash'i o commit'in içine yazılamadığı için Done kartında "(kapanış commit'i)" yazar; gerçek hash bir sonraki commit'te doldurulur.
+- `docs/decisions/` altında 001–007 numaraları kartlar için ayrıldığından ajanın kendi kararları 008'den başlar. Dizin: `docs/decisions/README.md`.
+- E0-2 elle doğrulama: `JWT_SECRET` olmadan jar "APPLICATION FAILED TO START" ile çıkıyor; `dev` profiliyle geçici bir Postgres'e karşı açıldı, `GET /api/funds` → 200 `[]`.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
