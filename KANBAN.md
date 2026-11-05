@@ -172,14 +172,14 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E2-2 · Reel getiri ve kıyaslar
-_Bağımlı: E1-5, E2-1 · Rehber: §7.3 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · eb7c300, (kapanış commit'i)_
+_Bağımlı: E1-5, E2-1 · Rehber: §7.3 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · eb7c300, cc53e7c_
 - [x] `BenchmarkService`: USD/TRY, altın, mevduat (ve varsa BIST100) dönem getirisi. USD ve BIST fonlarla aynı kurallarla (ADR 011); altın EVDS'de aylık olduğu için son tamamlanmış ayın aylık ve yılbaşından değişimi; mevduat son haftalık faizin `(1+i)^(gün/365) − 1` ile döneme çevrilmesi (31 günden eski faiz kullanılmıyor)
 - [x] Reel getiri, TÜFE orantılama yöntemi `docs/decisions/004-real-return.md` dosyasında. Hafta ve ay başından orantılama; yılbaşından ve 1 yıl gerçek endeks oranı (ocak başında orantılama); hangi ayın yayımlanmış sayılacağı ayın 3'ü kuralıyla
 - [x] Kullanılan TÜFE ayı sonuçla birlikte dönüyor ("Ekim 2026 TÜFE'si kullanıldı"): `Inflation.cpiMonth()` ve `note()`
 
 Alt görevler:
 1. [x] `BenchmarkService`: USD/TRY ve BIST 100 dönem getirileri, aylık altın değişimi, mevduat faizinin döneme çevrilmesi + testler (12 test) · eb7c300
-2. [x] TÜFE orantılama, reel getiri, kullanılan TÜFE ayı + ADR 004 + testler (InflationTest 9, entegrasyon testine TÜFE eklendi) · (kapanış commit'i)
+2. [x] TÜFE orantılama, reel getiri, kullanılan TÜFE ayı + ADR 004 + testler (InflationTest 9, entegrasyon testine TÜFE eklendi) · cc53e7c
 
 _Not: EVDS anahtarı olmadığı için (E1-5b) bu kart elle girilmiş `macro_point` verisiyle test ediliyor; canlı EVDS verisiyle doğrulama E1-5b'de._
 
@@ -380,3 +380,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 | 2026-11-05 (4) | E1-5 · 174 test yeşil (+3 `live`); EVDS anahtarsız devre dışı modda uçtan uca denendi | **E1-5b (Blocked):** EVDS API anahtarı gerekiyor → `.env` `EVDS_API_KEY` | E1-6 · BIST100 kıyas verisi (To Do'da E1-6, E2-1) |
 | 2026-11-05 (5) | E1-6 · 174 test yeşil; BIST 100 getiri endeksi EVDS üzerinden | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-1 · FundStatsService |
 | 2026-11-05 (6) | E2-1 · 201 test yeşil; getiri/oynaklık/düşüş hesapları elle hesaplanmış testlerle | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-2 · Reel getiri ve kıyaslar (To Do'da E2-2, E2-3, E3-1) |
+| 2026-11-05 (7) | E2-2 · 222 test yeşil; kıyaslar, TÜFE orantılama ve reel getiri (sentetik EVDS verisiyle) | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-3 · BulletinFacts + FactFormatter (To Do'da E2-3, E3-1) |
