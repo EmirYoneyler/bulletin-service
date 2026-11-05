@@ -22,4 +22,9 @@ public record FundStats(
         BigDecimal return1y,
         BigDecimal volatility63d,
         BigDecimal maxDrawdown1y) {
+
+    /** The four period returns, e.g. for {@link Inflation#realOf(PeriodValues)}. */
+    public PeriodValues returns() {
+        return new PeriodValues(return1w, returnMtd, returnYtd, return1y);
+    }
 }

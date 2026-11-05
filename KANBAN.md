@@ -24,17 +24,7 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-### E2-2 · Reel getiri ve kıyaslar
-_Bağımlı: E1-5, E2-1 · Rehber: §7.3 · Başladı: 2026-11-05_
-- [x] `BenchmarkService`: USD/TRY, altın, mevduat (ve varsa BIST100) dönem getirisi. USD ve BIST fonlarla aynı kurallarla (ADR 011); altın EVDS'de aylık olduğu için son tamamlanmış ayın aylık ve yılbaşından değişimi; mevduat son haftalık faizin `(1+i)^(gün/365) − 1` ile döneme çevrilmesi (31 günden eski faiz kullanılmıyor)
-- [ ] Reel getiri, TÜFE orantılama yöntemi `docs/decisions/004-real-return.md` dosyasında
-- [ ] Kullanılan TÜFE ayı sonuçla birlikte dönüyor ("Ekim 2026 TÜFE'si kullanıldı")
-
-Alt görevler:
-1. [x] `BenchmarkService`: USD/TRY ve BIST 100 dönem getirileri, aylık altın değişimi, mevduat faizinin döneme çevrilmesi + testler (12 test)
-2. [ ] TÜFE orantılama, reel getiri, kullanılan TÜFE ayı + ADR 004 + testler
-
-_Not: EVDS anahtarı olmadığı için (E1-5b) bu kart elle girilmiş `macro_point` verisiyle test ediliyor; canlı EVDS verisiyle doğrulama E1-5b'de._
+_(boş)_
 
 ---
 
@@ -180,6 +170,20 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E2-2 · Reel getiri ve kıyaslar
+_Bağımlı: E1-5, E2-1 · Rehber: §7.3 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · eb7c300, (kapanış commit'i)_
+- [x] `BenchmarkService`: USD/TRY, altın, mevduat (ve varsa BIST100) dönem getirisi. USD ve BIST fonlarla aynı kurallarla (ADR 011); altın EVDS'de aylık olduğu için son tamamlanmış ayın aylık ve yılbaşından değişimi; mevduat son haftalık faizin `(1+i)^(gün/365) − 1` ile döneme çevrilmesi (31 günden eski faiz kullanılmıyor)
+- [x] Reel getiri, TÜFE orantılama yöntemi `docs/decisions/004-real-return.md` dosyasında. Hafta ve ay başından orantılama; yılbaşından ve 1 yıl gerçek endeks oranı (ocak başında orantılama); hangi ayın yayımlanmış sayılacağı ayın 3'ü kuralıyla
+- [x] Kullanılan TÜFE ayı sonuçla birlikte dönüyor ("Ekim 2026 TÜFE'si kullanıldı"): `Inflation.cpiMonth()` ve `note()`
+
+Alt görevler:
+1. [x] `BenchmarkService`: USD/TRY ve BIST 100 dönem getirileri, aylık altın değişimi, mevduat faizinin döneme çevrilmesi + testler (12 test) · eb7c300
+2. [x] TÜFE orantılama, reel getiri, kullanılan TÜFE ayı + ADR 004 + testler (InflationTest 9, entegrasyon testine TÜFE eklendi) · (kapanış commit'i)
+
+_Not: EVDS anahtarı olmadığı için (E1-5b) bu kart elle girilmiş `macro_point` verisiyle test ediliyor; canlı EVDS verisiyle doğrulama E1-5b'de._
+
+_HTTP davranışı değişmedi (önizleme E2-3'te). Canlı EVDS verisi yok; doğrulama Testcontainers'ta sentetik `macro_point` verisiyle, gerçek veriyle kontrol E1-5b'de._
 
 ### E2-1 · FundStatsService
 _Bağımlı: E1-2 · Rehber: §7.3 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 56dbb3b, a32a3b8_

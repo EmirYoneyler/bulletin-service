@@ -61,6 +61,9 @@ class BenchmarkServiceTest {
         point("TP.TRY.MT06", "2026-10-30", "45.00");          // percent, weekly (Friday)
         point("TP.MK.KUL.YTL", "2026-09-01", "1000");          // monthly gold
         point("TP.MK.KUL.YTL", "2026-10-01", "1100");
+        point("TP.TUKFIY2025.GENEL", "2025-12-01", "170");     // monthly CPI index
+        point("TP.TUKFIY2025.GENEL", "2026-09-01", "200");
+        point("TP.TUKFIY2025.GENEL", "2026-10-01", "204");
 
         Benchmarks b = service.benchmarks(FRI);
 
@@ -74,6 +77,11 @@ class BenchmarkServiceTest {
         assertThat(b.deposit().oneYear()).isEqualByComparingTo("0.45");        // full year at 45 %
         assertThat(b.gold().month()).isEqualTo(YearMonth.of(2026, 10));
         assertThat(b.gold().monthOverMonth()).isEqualByComparingTo("0.1");     // 1100/1000 − 1
+        assertThat(b.inflation().note()).isEqualTo("Ekim 2026 TÜFE'si kullanıldı.");
+        assertThat(b.inflation().monthlyRate()).isEqualByComparingTo("0.02"); // 204/200 − 1
+        assertThat(b.inflation().periodInflation().yearToDate()).isEqualByComparingTo("0.2"); // 204/170 − 1
+        // USD year to date in real terms: 1.3125 / 1.2 − 1 = 0.09375
+        assertThat(b.inflation().realOf(b.usdTry()).yearToDate()).isEqualByComparingTo("0.09375");
     }
 
     @Test
@@ -94,5 +102,6 @@ class BenchmarkServiceTest {
         assertThat(b.bist100()).isEqualTo(PeriodValues.EMPTY);
         assertThat(b.deposit()).isEqualTo(PeriodValues.EMPTY);
         assertThat(b.gold()).isEqualTo(MonthlyChange.EMPTY);
+        assertThat(b.inflation()).isEqualTo(Inflation.EMPTY);
     }
 }

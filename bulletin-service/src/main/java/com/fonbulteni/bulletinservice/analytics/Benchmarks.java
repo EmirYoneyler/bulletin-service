@@ -13,6 +13,7 @@ import java.time.LocalDate;
  * @param depositRate      that annual rate as a fraction ({@code 0.45} = %45)
  * @param depositRateDate  observation date of the rate
  * @param gold             gold is monthly in EVDS: month-over-month and year-to-date change
+ * @param inflation        CPI-based inflation per period and the CPI month used (ADR 004)
  */
 public record Benchmarks(
         LocalDate asOf,
@@ -21,5 +22,6 @@ public record Benchmarks(
         PeriodValues deposit,
         BigDecimal depositRate,
         LocalDate depositRateDate,
-        MonthlyChange gold) {
+        MonthlyChange gold,
+        Inflation inflation) {
 }

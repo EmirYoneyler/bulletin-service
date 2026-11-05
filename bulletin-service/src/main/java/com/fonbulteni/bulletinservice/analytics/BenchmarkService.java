@@ -16,7 +16,7 @@ import java.util.TreeMap;
 
 import static com.fonbulteni.bulletinservice.analytics.ReturnMath.MC;
 
-/** Benchmark returns from stored EVDS series ({@code macro_point}), ADR 004. */
+/** Benchmark returns and inflation from stored EVDS series ({@code macro_point}), ADR 004. */
 @Service
 public class BenchmarkService {
 
@@ -49,7 +49,8 @@ public class BenchmarkService {
                 depositReturns(depositRate, asOf),
                 depositRate,
                 depositDate,
-                monthlyChange(monthlySeries(series.gold(), asOf), asOf));
+                monthlyChange(monthlySeries(series.gold(), asOf), asOf),
+                Inflation.from(monthlySeries(series.cpi(), asOf), asOf));
     }
 
     static PeriodValues periodReturns(List<PricePoint> daily, LocalDate asOf) {
