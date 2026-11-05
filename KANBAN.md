@@ -191,7 +191,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E1-3 · TefasClient
-_Rehber: §7.1, §6.6 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · e3fd9ec, 454a9b8, (kapanış commit'i)_
+_Rehber: §7.1, §6.6 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · e3fd9ec, 454a9b8, 68c715f_
 - [x] Uç nokta araştırıldı. İstek/yanıt biçimi, çerez/WAF davranışı ve sınırlar `docs/decisions/001-tefas.md` dosyasında. Yeni uç nokta: `POST /api/funds/fonGnlBlgSiraliGetir` (JSON); eski `BindHistoryInfo` kapalı
 - [x] `TefasClient.fetchHistory(code, from, to)`: aralığı ~~≤ 90 günlük~~ **≤ 1 aylık** parçalara böler (servis 1 aydan uzun aralığı reddediyor, ADR 001), istekler arası ≥ 1,5 sn (ayrı çağrılar arasında da), User-Agent, zaman aşımları, 3 denemeli üstel geri çekilme (yalnızca 5xx, 429, zaman aşımı). Emeklilik fonları için `TefasFundType.EMK`
 - [x] Yanıt → `TefasPriceDto` (~~epoch ms~~ yeni serviste `tarih` zaten `yyyy-MM-dd` metni → `LocalDate`, sayı alanları `BigDecimal`)
@@ -201,7 +201,7 @@ _Rehber: §7.1, §6.6 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · e3fd9ec, 
 Alt görevler:
 1. [x] Araştırma, ADR 001, canlı kaydedilmiş fixture'lar · e3fd9ec
 2. [x] `TefasClient` + ayarlar + `MockRestServiceServer` testleri (17 test) · 454a9b8
-3. [x] `@Tag("live")` test, varsayılan dışlama, canlı sonuç Notlar'a · (kapanış commit'i)
+3. [x] `@Tag("live")` test, varsayılan dışlama, canlı sonuç Notlar'a · 68c715f
 
 ### E1-2 · FundPrice tablosu
 _Rehber: §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · c922aa6_
@@ -325,3 +325,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
 |---|---|---|---|
 | 2026-11-05 | E0-1, E0-2, E0-3, E0-4, E0-5, E0-6, E0-7 (yeni), E1-1 · 85+ test yeşil, CI yeşil | Yok. Uyarı: TEFAS'ın eski `BindHistoryInfo` uç noktası 404 (Notlar); E1-5'te EVDS anahtarı gerekecek | E1-2 · FundPrice tablosu (To Do'da E1-2, E1-3, E1-4) |
+| 2026-11-05 (2) | E1-2, E1-3 · 119 test yeşil (+2 `live`, ayrı çalışır) | Yok. TEFAS yeni servisi canlı doğrulandı (ADR 001); E1-5'te EVDS anahtarı gerekecek | E1-4 · Günlük fiyat işi + backfill |
