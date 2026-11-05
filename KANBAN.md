@@ -24,17 +24,21 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E2-2 · Reel getiri ve kıyaslar
+_Bağımlı: E1-5, E2-1 · Rehber: §7.3 · Başladı: 2026-11-05_
+- [x] `BenchmarkService`: USD/TRY, altın, mevduat (ve varsa BIST100) dönem getirisi. USD ve BIST fonlarla aynı kurallarla (ADR 011); altın EVDS'de aylık olduğu için son tamamlanmış ayın aylık ve yılbaşından değişimi; mevduat son haftalık faizin `(1+i)^(gün/365) − 1` ile döneme çevrilmesi (31 günden eski faiz kullanılmıyor)
+- [ ] Reel getiri, TÜFE orantılama yöntemi `docs/decisions/004-real-return.md` dosyasında
+- [ ] Kullanılan TÜFE ayı sonuçla birlikte dönüyor ("Ekim 2026 TÜFE'si kullanıldı")
+
+Alt görevler:
+1. [x] `BenchmarkService`: USD/TRY ve BIST 100 dönem getirileri, aylık altın değişimi, mevduat faizinin döneme çevrilmesi + testler (12 test)
+2. [ ] TÜFE orantılama, reel getiri, kullanılan TÜFE ayı + ADR 004 + testler
+
+_Not: EVDS anahtarı olmadığı için (E1-5b) bu kart elle girilmiş `macro_point` verisiyle test ediliyor; canlı EVDS verisiyle doğrulama E1-5b'de._
 
 ---
 
 ## 🔵 To Do
-
-### E2-2 · Reel getiri ve kıyaslar
-_Bağımlı: E1-5, E2-1 · Rehber: §7.3_
-- [ ] `BenchmarkService`: USD/TRY, altın, mevduat (ve varsa BIST100) dönem getirisi
-- [ ] Reel getiri, TÜFE orantılama yöntemi `docs/decisions/004-real-return.md` dosyasında
-- [ ] Kullanılan TÜFE ayı sonuçla birlikte dönüyor ("Ekim 2026 TÜFE'si kullanıldı")
 
 ### E2-3 · BulletinFacts + FactFormatter
 _Bağımlı: E2-1 · Rehber: §7.4_
