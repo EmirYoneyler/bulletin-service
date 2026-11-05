@@ -21,15 +21,7 @@ _(boş)_
 
 ## 🔵 To Do
 
-_(boş: sıradaki kart seçilirken Backlog'dan 3 kart taşınır)_
-
----
-
-## ⚪ Backlog
-
-### E1 · Veri alımı
-
-#### E1-5 · EvdsClient (TCMB)
+### E1-5 · EvdsClient (TCMB)
 _Rehber: §7.2_
 - [ ] Seri kodları EVDS'de doğrulandı: TÜFE endeksi, USD/TRY, gram altın, TL mevduat faizi. `docs/decisions/002-evds.md` + `evds.series.*`
 - [ ] Anahtar header'da (`EVDS_API_KEY`). Anahtar yoksa `EvdsClient` bean'i "disabled" moduna geçiyor ve uyarı logluyor
@@ -37,17 +29,21 @@ _Rehber: §7.2_
 - [ ] Fixture testleri (EVDS'nin gerçek yanıt biçimiyle: tarih `dd-MM-yyyy` veya `yyyy-M`, ondalık ayırıcı)
 - [ ] Anahtar yoksa kart **Done** olabilir, ama canlı doğrulama için `Blocked`'a ayrı bir "E1-5b · EVDS canlı doğrulama" kartı açılır (kullanıcıdan anahtar)
 
-#### E1-6 · BIST100 kıyas verisi
+### E1-6 · BIST100 kıyas verisi
 - [ ] Ücretsiz ve kullanım koşullarına uygun bir kaynak araştırıldı (EVDS'de endeks serisi var mı önce oraya bak). Karar `docs/decisions/003-bist.md` dosyasında
 - [ ] Uygun kaynak yoksa kıyaslardan çıkarıldı ve README "Bilinen sınırlar"a yazıldı
 
-### E2 · Deterministik analitik
-
-#### E2-1 · FundStatsService
+### E2-1 · FundStatsService
 _Bağımlı: E1-2 · Rehber: §7.3_
 - [ ] 1h / ay başından / yılbaşından / 1y getiri, 63 günlük yıllıklandırılmış oynaklık, maksimum düşüş
 - [ ] "Dönem başından önceki son işlem günü" kuralı ve tatil/eksik gün davranışı testli
 - [ ] Elle hesaplanmış beklenen değerlerle ≥ 10 birim testi. Eksik veride `null`, 0 değil
+
+---
+
+## ⚪ Backlog
+
+### E2 · Deterministik analitik
 
 #### E2-2 · Reel getiri ve kıyaslar
 _Bağımlı: E1-5, E2-1 · Rehber: §7.3_
@@ -186,7 +182,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E1-4 · Günlük fiyat işi + backfill
-_Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 8790233, 6841be7, (kapanış commit'i)_
+_Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 8790233, 6841be7, 1d41878_
 - [x] ShedLock (JDBC) eklendi, `V4` shedlock tablosu. Sürüm 6.10.0 (7.x Spring 7 istiyor); kilit zamanı veritabanı saatinden (`usingDbTime`)
 - [x] `DailyPriceJob` (`0 30 19 * * MON-FRI`, İstanbul): `tefas_code`'u olan her fon için son 5 iş gününü upsert ediyor. Bir fondaki hata diğerlerini durdurmuyor. Emeklilik fonları `EMK` tipiyle çekiliyor
 - [x] `POST /api/admin/jobs/daily-price/run` ve `POST /api/admin/ingest/tefas?code=&from=&to=` (backfill). Üç yol da aynı `tefas-ingest` kilidini kullanıyor; kilit doluysa 409 `JOB_ALREADY_RUNNING`. Backfill en fazla 731 gün, bugünden ileri tarih yok
@@ -195,7 +191,7 @@ _Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9 · Başladı: 2026-11-05 · Bitti
 Alt görevler:
 1. [x] ShedLock 6.10 (7.x Spring 7 istiyor) + `V4` + kilit/zamanlama ayarı · 8790233
 2. [x] `V5` `ingest_run` + `TefasPriceIngestService` (fon başına hata yalıtımı, sayaçlar) + testler · 6841be7
-3. [x] `DailyPriceJob` + admin uç noktaları (aynı kilitle, meşgulse 409) + testler + elle deneme · (kapanış commit'i)
+3. [x] `DailyPriceJob` + admin uç noktaları (aynı kilitle, meşgulse 409) + testler + elle deneme · 1d41878
 
 _Elle (compose, dev, canlı TEFAS): günlük iş 6 fon (5 gerçek + eski test kaydı ZZ9, boş döndü, hata sayılmadı), 25 satır yazdı, ~7,6 sn sürdü. Çalışırken gönderilen backfill 409 aldı. AAV Ekim backfill'i 21 işlem günü buldu (29 Ekim tatil): 20 yazıldı, 1 değişmedi (30 Ekim günlük işten zaten vardı). Kaydedilen fiyatlar E1-3 fixture'larıyla aynı._
 
@@ -335,3 +331,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 |---|---|---|---|
 | 2026-11-05 | E0-1, E0-2, E0-3, E0-4, E0-5, E0-6, E0-7 (yeni), E1-1 · 85+ test yeşil, CI yeşil | Yok. Uyarı: TEFAS'ın eski `BindHistoryInfo` uç noktası 404 (Notlar); E1-5'te EVDS anahtarı gerekecek | E1-2 · FundPrice tablosu (To Do'da E1-2, E1-3, E1-4) |
 | 2026-11-05 (2) | E1-2, E1-3 · 119 test yeşil (+2 `live`, ayrı çalışır) | Yok. TEFAS yeni servisi canlı doğrulandı (ADR 001); E1-5'te EVDS anahtarı gerekecek | E1-4 · Günlük fiyat işi + backfill |
+| 2026-11-05 (3) | E1-4 · 149 test yeşil (+2 `live`); günlük iş canlı TEFAS'la denendi | Yok. E1-5 EVDS anahtarı olmadan fixture'la yapılacak, canlı doğrulama için E1-5b `Blocked`'a açılacak | E1-5 · EvdsClient (To Do'da E1-5, E1-6, E2-1) |
