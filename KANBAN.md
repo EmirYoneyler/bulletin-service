@@ -178,14 +178,14 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E2-1 · FundStatsService
-_Bağımlı: E1-2 · Rehber: §7.3 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 56dbb3b, (kapanış commit'i)_
+_Bağımlı: E1-2 · Rehber: §7.3 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 56dbb3b, a32a3b8_
 - [x] 1h / ay başından / yılbaşından / 1y getiri, 63 günlük yıllıklandırılmış oynaklık, maksimum düşüş (1 yıllık pencere). `analytics.ReturnMath` saf hesaplar, `FundStatsService` `fund_price` üzerinden `FundStats`
 - [x] "Dönem başından önceki son işlem günü" kuralı ve tatil/eksik gün davranışı testli (29 Ekim tatili, hafta sonu `asOf`, 31 Aralık eksik). Ek kural: başlangıç fiyatı dönem başından 14 günden eskiyse eksik sayılır (ADR 011)
 - [x] Elle hesaplanmış beklenen değerlerle ≥ 10 birim testi. Eksik veride `null`, 0 değil (`ReturnMathTest` 24 + `FundStatsServiceTest` 3)
 
 Alt görevler:
 1. [x] Saf hesaplar (`analytics.ReturnMath`, `Periods`) + elle hesaplanmış birim testleri (24 test) · 56dbb3b
-2. [x] `FundStatsService` (`fund_price` üzerinden) + entegrasyon testi + ADR 011 (hesap kuralları) · (kapanış commit'i)
+2. [x] `FundStatsService` (`fund_price` üzerinden) + entegrasyon testi + ADR 011 (hesap kuralları) · a32a3b8
 
 _HTTP davranışı değişmedi (önizleme uç noktası E2-3'te); doğrulama Testcontainers üzerinden gerçek `fund_price` tablosuyla yapıldı._
 
@@ -371,3 +371,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 | 2026-11-05 (3) | E1-4 · 149 test yeşil (+2 `live`); günlük iş canlı TEFAS'la denendi | Yok. E1-5 EVDS anahtarı olmadan fixture'la yapılacak, canlı doğrulama için E1-5b `Blocked`'a açılacak | E1-5 · EvdsClient (To Do'da E1-5, E1-6, E2-1) |
 | 2026-11-05 (4) | E1-5 · 174 test yeşil (+3 `live`); EVDS anahtarsız devre dışı modda uçtan uca denendi | **E1-5b (Blocked):** EVDS API anahtarı gerekiyor → `.env` `EVDS_API_KEY` | E1-6 · BIST100 kıyas verisi (To Do'da E1-6, E2-1) |
 | 2026-11-05 (5) | E1-6 · 174 test yeşil; BIST 100 getiri endeksi EVDS üzerinden | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-1 · FundStatsService |
+| 2026-11-05 (6) | E2-1 · 201 test yeşil; getiri/oynaklık/düşüş hesapları elle hesaplanmış testlerle | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-2 · Reel getiri ve kıyaslar (To Do'da E2-2, E2-3, E3-1) |
