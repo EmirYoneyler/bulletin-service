@@ -2,6 +2,7 @@ package com.fonbulteni.bulletinservice.ingest.tefas;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
@@ -21,7 +22,9 @@ public class TefasClientConfig {
 
         RestClient restClient = builder.clone()
                 .baseUrl(properties.baseUrl())
-                .requestFactory(requestFactory)
+                // Buffering sends a Content-Length instead of a streamed (chunked) body; TEFAS's proxy
+                // answers streamed bodies with 500 "Proxy request failed" (ADR 001).
+                .requestFactory(new BufferingClientHttpRequestFactory(requestFactory))
                 .build();
         // Thread.sleep(Duration) is Java 19+; this project targets 17.
         TefasClient.Sleeper sleeper = d -> Thread.sleep(d.toMillis(), d.toNanosPart() % 1_000_000);

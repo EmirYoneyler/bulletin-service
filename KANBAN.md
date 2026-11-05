@@ -15,18 +15,7 @@ _(boş)_
 
 ## 🟡 In Progress
 
-### E1-3 · TefasClient
-_Rehber: §7.1, §6.6 · Başladı: 2026-11-05_
-- [x] Uç nokta araştırıldı. İstek/yanıt biçimi, çerez/WAF davranışı ve sınırlar `docs/decisions/001-tefas.md` dosyasında. Yeni uç nokta: `POST /api/funds/fonGnlBlgSiraliGetir` (JSON); eski `BindHistoryInfo` kapalı
-- [ ] `TefasClient.fetchHistory(code, from, to)`: aralığı ~~≤ 90 günlük~~ **≤ 1 aylık** parçalara böler (servis 1 aydan uzun aralığı reddediyor, ADR 001), istekler arası ≥ 1,5 sn, User-Agent, zaman aşımları, 3 denemeli üstel geri çekilme
-- [ ] Yanıt → `TefasPriceDto` (~~epoch ms~~ yeni serviste `tarih` zaten `yyyy-MM-dd` metni → `LocalDate`, sayı alanları `BigDecimal`)
-- [ ] `MockRestServiceServer` + `fixtures/tefas/*.json` testleri: normal yanıt, boş veri, 5xx sonrası başarılı deneme, kalıcı hata. Fixture'lar canlı yanıtlardan kaydedildi
-- [ ] `@Tag("live")` canlı test (varsayılan kapalı). Ajan ortamından canlı sonuç Notlar'a yazıldı
-
-Alt görevler:
-1. [x] Araştırma, ADR 001, canlı kaydedilmiş fixture'lar
-2. [x] `TefasClient` + ayarlar + `MockRestServiceServer` testleri (17 test)
-3. [ ] `@Tag("live")` test, varsayılan dışlama, canlı sonuç Notlar'a
+_(boş)_
 
 ---
 
@@ -201,6 +190,19 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
+### E1-3 · TefasClient
+_Rehber: §7.1, §6.6 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · e3fd9ec, 454a9b8, (kapanış commit'i)_
+- [x] Uç nokta araştırıldı. İstek/yanıt biçimi, çerez/WAF davranışı ve sınırlar `docs/decisions/001-tefas.md` dosyasında. Yeni uç nokta: `POST /api/funds/fonGnlBlgSiraliGetir` (JSON); eski `BindHistoryInfo` kapalı
+- [x] `TefasClient.fetchHistory(code, from, to)`: aralığı ~~≤ 90 günlük~~ **≤ 1 aylık** parçalara böler (servis 1 aydan uzun aralığı reddediyor, ADR 001), istekler arası ≥ 1,5 sn (ayrı çağrılar arasında da), User-Agent, zaman aşımları, 3 denemeli üstel geri çekilme (yalnızca 5xx, 429, zaman aşımı). Emeklilik fonları için `TefasFundType.EMK`
+- [x] Yanıt → `TefasPriceDto` (~~epoch ms~~ yeni serviste `tarih` zaten `yyyy-MM-dd` metni → `LocalDate`, sayı alanları `BigDecimal`)
+- [x] `MockRestServiceServer` + `fixtures/tefas/*.json` testleri: normal yanıt, boş veri, 5xx sonrası başarılı deneme, kalıcı hata. Fixture'lar canlı yanıtlardan kaydedildi. Ek: loopback sunucuyla `Content-Length` regresyon testi
+- [x] `@Tag("live")` canlı test (varsayılan kapalı, `./mvnw test -Plive`). Ajan ortamından canlı sonuç Notlar'a yazıldı: AAV (YAT) ve AAJ (EMK) için son 14 gün geldi
+
+Alt görevler:
+1. [x] Araştırma, ADR 001, canlı kaydedilmiş fixture'lar · e3fd9ec
+2. [x] `TefasClient` + ayarlar + `MockRestServiceServer` testleri (17 test) · 454a9b8
+3. [x] `@Tag("live")` test, varsayılan dışlama, canlı sonuç Notlar'a · (kapanış commit'i)
+
 ### E1-2 · FundPrice tablosu
 _Rehber: §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · c922aa6_
 - [x] `V3`: `fund_price` tablosu, `UNIQUE(fund_id, price_date)`, `price_date` indeksli. Ek: `price > 0` ve `investor_count >= 0` kontrolleri, fon silinince fiyatları da siliniyor (`on delete cascade`)
@@ -313,6 +315,11 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 - **AGENT_PROMPT §7.1'deki uç nokta artık çalışmıyor:** `POST /api/DB/BindHistoryInfo` (form `fontip=YAT&bastarih=03.11.2026&bittarih=04.11.2026&fonkod=`) → HTTP 404, JSON `{"fault":{"faultCode":"ERR-006","faultString":"Method not found or disabled!"}}`. E1-3'te yeni veri kaynağı araştırılmalı; eski biçim yalnızca referans.
 - `/tr/fon-getirileri?fundType=YAT|EMK` sayfası sunucu tarafında `initialFundListingData` dizisini gömülü JSON olarak veriyor: `fonKodu`, `fonUnvan`, `fonTurAciklama`, `tefasDurum`, `getiri1a/3a/6a/1y/yb/3y/5y`, `riskDegeri`. 2026-11-05'te YAT 2135, EMK 402 fon. Getiriler yüzde ve güncel; **günlük fiyat geçmişi değil.** E1-3 için fiyat geçmişini veren yeni uç nokta (büyük olasılıkla sayfanın JS'inin çağırdığı bir API) bulunmalı.
 - E1-1 seed'i bu listeden alındı; `DevFundSeeder` yalnızca doğrulanan alanları (kod, unvan, kategori, risk) dolduruyor. Seed, Flyway yerine `@Profile("dev")` bir `ApplicationRunner`: yalnızca dev'de çalışan bir Flyway konumu, aynı veritabanı dev olmadan açıldığında "missing migration" doğrulama hatası verirdi.
+
+**2026-11-05 · TEFAS canlı doğrulama (E1-3)**
+- Yeni servis canlı çalışıyor: `./mvnw test -Plive` → AAV (`YAT`) ve AAJ (`EMK`) için son 14 günün fiyatları geldi, 2/2 test yeşil.
+- İlk canlı koşu **kırmızıydı**: her istek `500 {"error":"Proxy request failed"}` aldı, aynı istek curl ile 200 döndü. Neden: JDK istemcisi gövdeyi `Content-Length` olmadan akış olarak gönderiyordu. `BufferingClientHttpRequestFactory` ile düzeldi; `MockRestServiceServer` bunu yakalayamadığı için loopback sunuculu bir regresyon testi eklendi (düzeltme olmadan kırmızı olduğu görüldü). Ayrıntı ADR 001'de.
+- Bu oturumda TEFAS'a atılan istekler: 5 (E1-1), 3 JS paketi + 2 sayfa + 5 API (araştırma), 6 canlı test isteği. Hepsi tek tek, aralarında ≥ 1,5 sn.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |

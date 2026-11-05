@@ -23,6 +23,8 @@ Sitenin JavaScript paketlerinde (`/_next/static/chunks/common-*.js`) "Tarihsel v
 | Boş sonuç | Veri olmayan aralık hata değil ama öyle görünüyor: `errorMessage: "Index 0 out of bounds for length 0"`, `resultList: null`. |
 | Sayfa boyutu | `bitSira - basSira + 1 = 100` kabul edildi. Tek fon için bir ay en fazla ~23 satır, yani pratikte tek sayfa. |
 | Çerez / WAF | İstek için çerez veya ön GET gerekmedi. Hiçbir istek reddedilmedi ya da yavaşlatılmadı. |
+| `Content-Length` | **Zorunlu.** Gövde akış olarak (chunked, `Content-Length` olmadan) gönderilirse proxy `500 {"error":"Proxy request failed"}` döndürüyor. JDK istemcisinin varsayılanı bu olduğu için ilk canlı test bu hatayı verdi; aynı istek curl ile (uzunluklu gövde) 200 döndü. |
+| Emeklilik fonları | `fonTipi: "EMK"` ile çalışıyor (AAJ, canlı doğrulandı). |
 
 Kaydedilen yanıtlar: `bulletin-service/src/test/resources/fixtures/tefas/`.
 
@@ -33,6 +35,8 @@ Kaydedilen yanıtlar: `bulletin-service/src/test/resources/fixtures/tefas/`.
 - Yeniden deneme yalnızca geçici hatalarda yapılır: 5xx, 429, zaman aşımı veya bağlantı hatası. En fazla 3 deneme, üstel geri çekilme (varsayılan 2 sn, 4 sn). Sonra `TefasUnavailableException`; günlük iş o günü atlayıp loglar (§6.6).
 - Ardışık iki istek arasında en az 1,5 sn beklenir (`tefas.request-interval`). Bu kural ayrı `fetchHistory` çağrıları için de geçerli. Paralel istek atılmaz.
 - Fon tipi istekte zorunlu (`fonTipi`): yatırım fonları `YAT`, emeklilik fonları `EMK`. İstemci tipi parametre olarak alır.
+- İstek gövdesi `BufferingClientHttpRequestFactory` ile tamponlanır, böylece her istekte `Content-Length` gider. Bunu yerel bir loopback sunucuya karşı `TefasClientConfigTest` doğrular (`MockRestServiceServer` istek fabrikasını atladığı için bu hatayı yakalayamaz).
+- Canlı kontrol `@Tag("live")` testindedir ve normal derlemede ve CI'da çalışmaz: `./mvnw test -Plive`.
 
 ## Sonuçlar
 - TEFAS bu iç servisi haber vermeden değiştirebilir. Değişiklik ilk olarak `@Tag("live")` testinde ve günlük işin loglarında görünür. Bu ADR ve fixture'lar o zaman güncellenmeli.

@@ -28,6 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<!-- Tests tagged "live" call real external services; they only run with -Plive.
+		     To also skip Docker-based tests: -DexcludedGroups=integration,live -->
+		<excludedGroups>live</excludedGroups>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -189,5 +192,29 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<!-- ./mvnw test -Plive : runs only the live checks against real external services. -->
+		<profile>
+			<id>live</id>
+			<properties>
+				<groups>live</groups>
+				<excludedGroups>none</excludedGroups>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<systemPropertyVariables>
+								<live>true</live>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

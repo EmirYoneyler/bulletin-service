@@ -74,6 +74,15 @@ cd bulletin-service
 
 Veritabanı testleri Testcontainers ile çalışır ve Docker gerektirir. Docker yoksa atlanırlar; CI'da hiçbir test atlanamaz ([ADR 008](docs/decisions/008-testcontainers-without-docker.md)). Kapsam raporu: `bulletin-service/target/site/jacoco/index.html`.
 
+Testler ağa çıkmaz. TEFAS'a gerçekten bağlanan kontroller `live` etiketlidir ve yalnızca açıkça istenince çalışır:
+
+```bash
+cd bulletin-service
+./mvnw test -Plive
+```
+
+Docker'sız bir makinede veritabanı testlerini de atlamak için: `./mvnw verify -DexcludedGroups=integration,live`.
+
 ## Ortam değişkenleri
 
 Tam liste ve açıklamalar: [`.env.example`](.env.example). Sırlar yalnızca ortam değişkeninden okunur, koda girmez.
