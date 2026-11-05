@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /** Empty database: Flyway runs V1 and Hibernate's ddl-auto=validate accepts the result. */
 @Tag("integration")
@@ -42,6 +44,25 @@ class FlywayFreshDatabaseTest {
 
         assertThat(v1.get("type")).isEqualTo("SQL");
         assertThat(v1.get("success")).isEqualTo(true);
+    }
+
+    @Test
+    void appliesTefasCodeMigration() {
+        Map<String, Object> v2 = jdbc.queryForMap(
+                "select type, success from flyway_schema_history where version = '2'");
+
+        assertThat(v2.get("success")).isEqualTo(true);
+    }
+
+    @Test
+    void tefasCodeIsUniqueButOptional() {
+        fundRepository.saveAndFlush(Fund.builder().name("Kodsuz 1").build());
+        fundRepository.saveAndFlush(Fund.builder().name("Kodsuz 2").build());
+        fundRepository.saveAndFlush(Fund.builder().name("Kodlu").tefasCode("ZZ1").build());
+
+        assertThat(fundRepository.findByTefasCode("ZZ1")).isPresent();
+        assertThatThrownBy(() -> fundRepository.saveAndFlush(Fund.builder().name("Kopya").tefasCode("ZZ1").build()))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test

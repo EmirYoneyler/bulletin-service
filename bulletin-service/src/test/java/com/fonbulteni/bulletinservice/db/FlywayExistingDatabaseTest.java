@@ -75,6 +75,15 @@ class FlywayExistingDatabaseTest {
     }
 
     @Test
+    void appliesLaterMigrationsOnTopOfBaseline() {
+        Map<String, Object> v2 = jdbc.queryForMap(
+                "select type, success from flyway_schema_history where version = '2'");
+
+        assertThat(v2.get("type")).isEqualTo("SQL");
+        assertThat(v2.get("success")).isEqualTo(true);
+    }
+
+    @Test
     void keepsExistingData() {
         assertThat(fundRepository.findAll())
                 .singleElement()

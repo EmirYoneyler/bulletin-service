@@ -15,17 +15,21 @@ _(boş)_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E1-1 · Fon kimliği: TEFAS kodu
+_Bağımlı: E0-4 · Başladı: 2026-11-05_
+- [x] `V2`: `funds.tefas_code VARCHAR(10) UNIQUE NULL`. Entity ve DTO'lar güncellendi. Kod büyük harfe çevrilip saklanıyor; aynı kod ikinci kez → 409 `TEFAS_CODE_TAKEN`
+- [x] `GET /api/funds/by-code/{code}`. Mevcut uç noktalar ve testleri kırılmadı
+- [ ] `dev` profilinde örnek seed: 5 gerçek TEFAS fon kodu (farklı kategorilerden, kodlar TEFAS'tan doğrulandı veya doğrulanamadıysa Notlar'a yazıldı)
+
+Alt görevler:
+1. [x] `V2` + entity/DTO + `by-code` uç noktası + 409 + testler
+2. [ ] `dev` seed (doğrulanmış 5 kod) + Notlar
 
 ---
 
 ## 🔵 To Do
 
-### E1-1 · Fon kimliği: TEFAS kodu
-_Bağımlı: E0-4_
-- [ ] `V2`: `funds.tefas_code VARCHAR(10) UNIQUE NULL`. Entity ve DTO'lar güncellendi
-- [ ] `GET /api/funds/by-code/{code}`. Mevcut uç noktalar ve testleri kırılmadı
-- [ ] `dev` profilinde örnek seed: 5 gerçek TEFAS fon kodu (farklı kategorilerden, kodlar TEFAS'tan doğrulandı veya doğrulanamadıysa Notlar'a yazıldı)
+_(boş: sıradaki kart seçilirken Backlog'dan 3 kart taşınır)_
 
 ---
 

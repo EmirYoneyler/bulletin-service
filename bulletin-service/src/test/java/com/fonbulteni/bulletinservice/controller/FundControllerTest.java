@@ -1,5 +1,6 @@
 package com.fonbulteni.bulletinservice.controller;
 
+import com.fonbulteni.bulletinservice.common.DuplicateTefasCodeException;
 import com.fonbulteni.bulletinservice.common.FundNotFoundException;
 import com.fonbulteni.bulletinservice.config.SecurityConfig;
 import com.fonbulteni.bulletinservice.dto.FundRequest;
@@ -229,5 +230,53 @@ class FundControllerTest {
                 .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"))
                 .andExpect(jsonPath("$.message").value("Beklenmeyen bir hata oluştu."))
                 .andExpect(content().string(not(containsString("db-host"))));
+    }
+
+    // --- TEFAS code (E1-1) ---
+
+    @Test
+    void returnsFundByTefasCode() throws Exception {
+        given(fundService.getFundByTefasCode("aav")).willReturn(FundResponse.builder()
+                .id(7L).name("ATA PORTFÖY İKİNCİ HİSSE SENEDİ (TL) FONU").tefasCode("AAV").build());
+
+        mvc.perform(get("/api/funds/by-code/aav"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tefasCode").value("AAV"));
+    }
+
+    @Test
+    void unknownTefasCodeIs404() throws Exception {
+        given(fundService.getFundByTefasCode("XYZ")).willThrow(FundNotFoundException.byTefasCode("XYZ"));
+
+        mvc.perform(get("/api/funds/by-code/XYZ"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("FUND_NOT_FOUND"))
+                .andExpect(jsonPath("$.message").value("Bu TEFAS koduyla fon bulunamadı: XYZ"));
+    }
+
+    @Test
+    void invalidTefasCodeIs400() throws Exception {
+        mvc.perform(post("/api/funds").with(ADMIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name": "Fon", "tefasCode": "A-1"}"""))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors[0].field").value("tefasCode"))
+                .andExpect(jsonPath("$.fieldErrors[0].message").value("TEFAS kodu 3-10 harf veya rakamdan oluşmalı."));
+
+        verify(fundService, never()).createFund(any());
+    }
+
+    @Test
+    void duplicateTefasCodeIs409() throws Exception {
+        given(fundService.createFund(any(FundRequest.class))).willThrow(new DuplicateTefasCodeException("AAV"));
+
+        mvc.perform(post("/api/funds").with(ADMIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name": "Fon", "tefasCode": "AAV"}"""))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("TEFAS_CODE_TAKEN"))
+                .andExpect(jsonPath("$.message").value("Bu TEFAS koduyla kayıtlı bir fon zaten var: AAV"));
     }
 }

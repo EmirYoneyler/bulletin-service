@@ -1,5 +1,6 @@
 package com.fonbulteni.bulletinservice.service;
 
+import com.fonbulteni.bulletinservice.common.DuplicateTefasCodeException;
 import com.fonbulteni.bulletinservice.common.FundNotFoundException;
 import com.fonbulteni.bulletinservice.dto.FundRequest;
 import com.fonbulteni.bulletinservice.dto.FundResponse;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,8 +20,13 @@ public class FundService {
     private final FundRepository fundRepository;
 
     public FundResponse createFund(FundRequest request) {
+        String tefasCode = normalizeTefasCode(request.getTefasCode());
+        if (tefasCode != null && fundRepository.existsByTefasCode(tefasCode)) {
+            throw new DuplicateTefasCodeException(tefasCode);
+        }
         Fund fund = Fund.builder()
                 .name(request.getName())
+                .tefasCode(tefasCode)
                 .category(request.getCategory())
                 .riskLevel(request.getRiskLevel())
                 .returnRate(request.getReturnRate())
@@ -45,6 +52,21 @@ public class FundService {
         return toResponse(fund);
     }
 
+    public FundResponse getFundByTefasCode(String code) {
+        String tefasCode = normalizeTefasCode(code);
+        return fundRepository.findByTefasCode(tefasCode)
+                .map(this::toResponse)
+                .orElseThrow(() -> FundNotFoundException.byTefasCode(tefasCode));
+    }
+
+    /** TEFAS codes are upper case; Locale.ROOT so "i" never becomes the Turkish dotted "İ". */
+    static String normalizeTefasCode(String code) {
+        if (code == null || code.isBlank()) {
+            return null;
+        }
+        return code.trim().toUpperCase(Locale.ROOT);
+    }
+
     public List<FundResponse> getFundsByCategory(Fund.Category category) {
         return fundRepository.findByCategory(category).stream()
                 .map(this::toResponse)
@@ -67,6 +89,7 @@ public class FundService {
         return FundResponse.builder()
                 .id(fund.getId())
                 .name(fund.getName())
+                .tefasCode(fund.getTefasCode())
                 .category(fund.getCategory())
                 .riskLevel(fund.getRiskLevel())
                 .returnRate(fund.getReturnRate())

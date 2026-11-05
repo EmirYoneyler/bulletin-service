@@ -34,6 +34,11 @@ public class FundController {
         return ResponseEntity.ok(fundService.getFundById(id));
     }
 
+    @GetMapping("/by-code/{code}")
+    public ResponseEntity<FundResponse> getFundByTefasCode(@PathVariable String code) {
+        return ResponseEntity.ok(fundService.getFundByTefasCode(code));
+    }
+
     @GetMapping("/category/{category}")
     public ResponseEntity<List<FundResponse>> getFundsByCategory(@PathVariable Fund.Category category) {
         return ResponseEntity.ok(fundService.getFundsByCategory(category));

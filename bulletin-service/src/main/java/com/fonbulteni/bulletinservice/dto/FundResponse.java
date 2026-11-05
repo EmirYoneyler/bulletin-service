@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class FundResponse {
     private Long id;
     private String name;
+    private String tefasCode;
     private Fund.Category category;
     private Fund.RiskLevel riskLevel;
     private Double returnRate;

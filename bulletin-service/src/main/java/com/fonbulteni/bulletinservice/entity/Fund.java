@@ -21,6 +21,10 @@ public class Fund {
     @Column(nullable = false)
     private String name;
 
+    /** TEFAS fund code (e.g. "AAV"), always upper case. Null for funds entered manually without one. */
+    @Column(name = "tefas_code", length = 10, unique = true)
+    private String tefasCode;
+
     @Enumerated(EnumType.STRING)
     private Category category;
 
