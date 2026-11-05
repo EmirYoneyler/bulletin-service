@@ -21,12 +21,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class IngestRun {
 
-    public enum Source { TEFAS }
+    public enum Source { TEFAS, EVDS }
 
     public enum Trigger { SCHEDULED, MANUAL, BACKFILL }
 
-    /** SUCCESS: every fund ok · PARTIAL: some funds failed · FAILED: every fund failed. */
-    public enum Status { RUNNING, SUCCESS, PARTIAL, FAILED }
+    /**
+     * SUCCESS: every target ok · PARTIAL: some failed · FAILED: all failed · SKIPPED: not attempted
+     * (e.g. no EVDS key). Targets are funds for TEFAS and series for EVDS.
+     */
+    public enum Status { RUNNING, SUCCESS, PARTIAL, FAILED, SKIPPED }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,11 +59,11 @@ public class IngestRun {
     @Column(name = "finished_at")
     private Instant finishedAt;
 
-    @Column(name = "fund_count", nullable = false)
-    private int fundCount;
+    @Column(name = "target_count", nullable = false)
+    private int targetCount;
 
-    @Column(name = "funds_failed", nullable = false)
-    private int fundsFailed;
+    @Column(name = "targets_failed", nullable = false)
+    private int targetsFailed;
 
     @Column(name = "rows_written", nullable = false)
     private int rowsWritten;
@@ -68,35 +71,42 @@ public class IngestRun {
     @Column(name = "rows_unchanged", nullable = false)
     private int rowsUnchanged;
 
-    /** One line per failed fund. */
+    /** One line per failed target, or the reason a run was skipped. */
     @Column(columnDefinition = "text")
     private String errors;
 
     public static IngestRun started(Source source, Trigger trigger, LocalDate from, LocalDate to,
-                                    int fundCount, Instant now) {
+                                    int targetCount, Instant now) {
         IngestRun run = new IngestRun();
         run.source = source;
         run.trigger = trigger;
         run.status = Status.RUNNING;
         run.rangeFrom = from;
         run.rangeTo = to;
-        run.fundCount = fundCount;
+        run.targetCount = targetCount;
         run.startedAt = now;
         return run;
     }
 
-    public void finish(int fundsFailed, int rowsWritten, int rowsUnchanged, String errors, Instant now) {
-        this.fundsFailed = fundsFailed;
+    public void finish(int targetsFailed, int rowsWritten, int rowsUnchanged, String errors, Instant now) {
+        this.targetsFailed = targetsFailed;
         this.rowsWritten = rowsWritten;
         this.rowsUnchanged = rowsUnchanged;
         this.errors = errors;
         this.finishedAt = now;
-        if (fundsFailed == 0) {
+        if (targetsFailed == 0) {
             this.status = Status.SUCCESS;
-        } else if (fundsFailed < fundCount) {
+        } else if (targetsFailed < targetCount) {
             this.status = Status.PARTIAL;
         } else {
             this.status = Status.FAILED;
         }
+    }
+
+    /** Marks a run that was deliberately not attempted, with the reason. */
+    public void skip(String reason, Instant now) {
+        this.status = Status.SKIPPED;
+        this.errors = reason;
+        this.finishedAt = now;
     }
 }

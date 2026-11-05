@@ -118,7 +118,7 @@ class TefasPriceIngestServiceTest {
         verify(tefas).fetchHistory("AAJ", TefasFundType.EMK, WINDOW_START, TODAY);
         assertThat(run.getStatus()).isEqualTo(IngestRun.Status.SUCCESS);
         assertThat(run.getTrigger()).isEqualTo(IngestRun.Trigger.SCHEDULED);
-        assertThat(run.getFundCount()).isEqualTo(2);
+        assertThat(run.getTargetCount()).isEqualTo(2);
         assertThat(run.getRowsWritten()).isEqualTo(3);
         assertThat(run.getRowsUnchanged()).isZero();
         assertThat(run.getRangeFrom()).isEqualTo(WINDOW_START);
@@ -154,7 +154,7 @@ class TefasPriceIngestServiceTest {
         IngestRun run = service.ingestRecent(IngestRun.Trigger.SCHEDULED);
 
         assertThat(run.getStatus()).isEqualTo(IngestRun.Status.PARTIAL);
-        assertThat(run.getFundsFailed()).isEqualTo(1);
+        assertThat(run.getTargetsFailed()).isEqualTo(1);
         assertThat(run.getRowsWritten()).isEqualTo(1);
         assertThat(run.getErrors()).startsWith("AAV: TEFAS'a 3 denemede ulaşılamadı");
         assertThat(runs.findById(run.getId()).orElseThrow().getStatus()).isEqualTo(IngestRun.Status.PARTIAL);
@@ -168,7 +168,7 @@ class TefasPriceIngestServiceTest {
         IngestRun run = service.ingestRecent(IngestRun.Trigger.SCHEDULED);
 
         assertThat(run.getStatus()).isEqualTo(IngestRun.Status.FAILED);
-        assertThat(run.getFundsFailed()).isEqualTo(2);
+        assertThat(run.getTargetsFailed()).isEqualTo(2);
         assertThat(run.getErrors()).contains("AAJ: red").contains("AAV: beklenmeyen hata (IllegalStateException)");
         assertThat(priceRows()).isZero();
     }
@@ -180,7 +180,7 @@ class TefasPriceIngestServiceTest {
         IngestRun run = service.ingestRecent(IngestRun.Trigger.SCHEDULED);
 
         assertThat(run.getStatus()).isEqualTo(IngestRun.Status.SUCCESS);
-        assertThat(run.getFundCount()).isZero();
+        assertThat(run.getTargetCount()).isZero();
         verifyNoInteractions(tefas);
     }
 
@@ -195,7 +195,7 @@ class TefasPriceIngestServiceTest {
         IngestRun run = service.backfill("aav", from, TODAY);
 
         assertThat(run.getTrigger()).isEqualTo(IngestRun.Trigger.BACKFILL);
-        assertThat(run.getFundCount()).isEqualTo(1);
+        assertThat(run.getTargetCount()).isEqualTo(1);
         assertThat(run.getRowsWritten()).isEqualTo(1);
         verify(tefas, never()).fetchHistory(eq("AAJ"), any(), any(), any());
     }

@@ -5,6 +5,7 @@ import com.fonbulteni.bulletinservice.common.InvalidRequestException;
 import com.fonbulteni.bulletinservice.config.SecurityConfig;
 import com.fonbulteni.bulletinservice.entity.IngestRun;
 import com.fonbulteni.bulletinservice.scheduler.DailyPriceJob;
+import com.fonbulteni.bulletinservice.scheduler.WeeklyMacroJob;
 import com.fonbulteni.bulletinservice.service.JwtService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,9 @@ class AdminIngestControllerTest {
     @MockitoBean
     DailyPriceJob job;
 
+    @MockitoBean
+    WeeklyMacroJob weeklyMacroJob;
+
     private static IngestRun partialRun(IngestRun.Trigger trigger, LocalDate from, LocalDate to) {
         IngestRun run = IngestRun.started(IngestRun.Source.TEFAS, trigger, from, to, 2, NOW);
         run.finish(1, 4, 1, "AAV: TEFAS'a 3 denemede ulaşılamadı (AAV).", NOW);
@@ -71,8 +75,8 @@ class AdminIngestControllerTest {
                 .andExpect(jsonPath("$.trigger").value("MANUAL"))
                 .andExpect(jsonPath("$.status").value("PARTIAL"))
                 .andExpect(jsonPath("$.rangeFrom").value("2026-10-29"))
-                .andExpect(jsonPath("$.fundCount").value(2))
-                .andExpect(jsonPath("$.fundsFailed").value(1))
+                .andExpect(jsonPath("$.targetCount").value(2))
+                .andExpect(jsonPath("$.targetsFailed").value(1))
                 .andExpect(jsonPath("$.rowsWritten").value(4))
                 .andExpect(jsonPath("$.rowsUnchanged").value(1))
                 .andExpect(jsonPath("$.errors[0]").value("AAV: TEFAS'a 3 denemede ulaşılamadı (AAV)."));
@@ -142,5 +146,32 @@ class AdminIngestControllerTest {
         mvc.perform(post("/api/admin/ingest/tefas").with(ADMIN)
                         .param("code", "AAV").param("from", "2026-10-01").param("to", "2026-11-04"))
                 .andExpect(status().isConflict());
+    }
+
+    // --- weekly EVDS job ---
+
+    @Test
+    void weeklyMacroRunWithoutKeyReportsSkipped() throws Exception {
+        IngestRun skipped = IngestRun.started(IngestRun.Source.EVDS, IngestRun.Trigger.MANUAL,
+                LocalDate.of(2025, 10, 1), LocalDate.of(2026, 11, 4), 4, NOW);
+        skipped.skip("EVDS_API_KEY tanımlı değil; makro veri çekilmedi.", NOW);
+        given(weeklyMacroJob.run(IngestRun.Trigger.MANUAL)).willReturn(Optional.of(skipped));
+
+        mvc.perform(post("/api/admin/jobs/weekly-macro/run").with(ADMIN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.source").value("EVDS"))
+                .andExpect(jsonPath("$.status").value("SKIPPED"))
+                .andExpect(jsonPath("$.targetCount").value(4))
+                .andExpect(jsonPath("$.errors[0]").value("EVDS_API_KEY tanımlı değil; makro veri çekilmedi."));
+    }
+
+    @Test
+    void weeklyMacroBusyIs409AndAdminOnly() throws Exception {
+        given(weeklyMacroJob.run(IngestRun.Trigger.MANUAL)).willReturn(Optional.empty());
+
+        mvc.perform(post("/api/admin/jobs/weekly-macro/run").with(ADMIN))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("JOB_ALREADY_RUNNING"));
+        mvc.perform(post("/api/admin/jobs/weekly-macro/run").with(USER)).andExpect(status().isForbidden());
     }
 }

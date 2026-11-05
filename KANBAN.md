@@ -9,24 +9,22 @@
 
 ## 🔴 Blocked
 
-_(boş)_
+### E1-5b · EVDS canlı doğrulama
+_Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
+- **Ne gerekiyor:** Kişisel, ücretsiz TCMB EVDS API anahtarı.
+- **Nereden alınır:** https://evds3.tcmb.gov.tr → üye ol (e-posta doğrulaması) → "Benim Sayfam" → kullanıcı adı → "Profilim" → sayfanın altında "API Key Kopyala".
+- **Nereye konacak:** Kök `.env` dosyasında `EVDS_API_KEY=...` (git'e girmez). Deploy'da aynı adla ortam değişkeni. Koda veya `application.properties`'e **yazılmaz**.
+- **Engel kalkınca ilk iş:**
+  - [ ] `cd bulletin-service && EVDS_API_KEY=... ./mvnw test -Plive -Dtest=EvdsClientLiveTest` yeşil (4 seri, son 120 gün)
+  - [ ] Bir seri için gerçek JSON yanıtı kaydedilip `fixtures/evds/` altına eklendi; elle üretilen fixture'larla biçim farkı varsa `EvdsResponseParser` ve ADR 002 güncellendi
+  - [ ] `docker compose up` sonrası `POST /api/admin/jobs/weekly-macro/run` → `SUCCESS`, `macro_point` dolu
+  - [ ] `TP.TUKFIY2025.GENEL` serisinin başlangıç tarihi not edildi (E2-2'de 2003=100 seriyle zincirleme gerekip gerekmediği için)
 
 ---
 
 ## 🟡 In Progress
 
-### E1-5 · EvdsClient (TCMB)
-_Rehber: §7.2 · Başladı: 2026-11-05_
-- [x] Seri kodları EVDS'de doğrulandı: TÜFE endeksi, USD/TRY, gram altın, TL mevduat faizi. `docs/decisions/002-evds.md` + `evds.series.*`. TÜFE `TP.TUKFIY2025.GENEL` (eski `TP.FG.J0` arşivde), USD `TP.DK.USD.A.YTL`, altın `TP.MK.KUL.YTL` (**aylık**, günlük yok → E1-7), mevduat `TP.TRY.MT06`. Doğrulama sitenin herkese açık arama servisiyle, anahtarsız
-- [x] Anahtar header'da (`EVDS_API_KEY`). Anahtar yoksa `EvdsClient` bean'i "disabled" moduna geçiyor ve uyarı logluyor
-- [ ] `V6`: `macro_point` tablosu. `WeeklyMacroJob` (`0 0 7 * * MON`) + admin tetikleyicisi
-- [x] Fixture testleri (EVDS'nin gerçek yanıt biçimiyle: tarih `dd-MM-yyyy` veya `yyyy-M`, ondalık ayırıcı). Anahtar olmadığı için veri fixture'ları **elle üretildi** (yalnızca 403 canlı kayıt). Testler `31-02` gibi geçersiz tarihin sessizce 28 Şubat'a çevrildiğini yakaladı; ayrıştırıcı artık STRICT
-- [ ] Anahtar yoksa kart **Done** olabilir, ama canlı doğrulama için `Blocked`'a ayrı bir "E1-5b · EVDS canlı doğrulama" kartı açılır (kullanıcıdan anahtar)
-
-Alt görevler:
-1. [x] Araştırma (EVDS3, resmî kılavuz, seri kodları), ADR 002, fixture'lar, E1-7 kartı
-2. [x] `EvdsClient` + ayarlar + devre dışı mod + yanıt ayrıştırıcı + testler (14 test)
-3. [ ] `V6` `macro_point` + `MacroIngestService` + `WeeklyMacroJob` + admin tetikleyicisi + E1-5b
+_(boş)_
 
 ---
 
@@ -191,6 +189,21 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
+### E1-5 · EvdsClient (TCMB)
+_Rehber: §7.2 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 32ea04a, ee28640, (kapanış commit'i)_
+- [x] Seri kodları EVDS'de doğrulandı: TÜFE endeksi, USD/TRY, gram altın, TL mevduat faizi. `docs/decisions/002-evds.md` + `evds.series.*`. TÜFE `TP.TUKFIY2025.GENEL` (eski `TP.FG.J0` arşivde), USD `TP.DK.USD.A.YTL`, altın `TP.MK.KUL.YTL` (**aylık**, günlük yok → E1-7), mevduat `TP.TRY.MT06`. Doğrulama sitenin herkese açık arama servisiyle, anahtarsız
+- [x] Anahtar header'da (`EVDS_API_KEY`). Anahtar yoksa `EvdsClient` bean'i "disabled" moduna geçiyor ve uyarı logluyor
+- [x] `V6`: `macro_point` tablosu. `WeeklyMacroJob` (`0 0 7 * * MON`) + admin tetikleyicisi (`POST /api/admin/jobs/weekly-macro/run`, ayrı `evds-ingest` kilidi). Anahtarsız çalışma `SKIPPED` olarak kaydediliyor
+- [x] Fixture testleri (EVDS'nin gerçek yanıt biçimiyle: tarih `dd-MM-yyyy` veya `yyyy-M`, ondalık ayırıcı). Anahtar olmadığı için veri fixture'ları **elle üretildi** (yalnızca 403 canlı kayıt). Testler `31-02` gibi geçersiz tarihin sessizce 28 Şubat'a çevrildiğini yakaladı; ayrıştırıcı artık STRICT
+- [x] Anahtar yoksa kart **Done** olabilir, ama canlı doğrulama için `Blocked`'a ayrı bir "E1-5b · EVDS canlı doğrulama" kartı açılır (kullanıcıdan anahtar). E1-5b açıldı; `EvdsClientLiveTest` hazır
+
+Alt görevler:
+1. [x] Araştırma (EVDS3, resmî kılavuz, seri kodları), ADR 002, fixture'lar, E1-7 kartı · 32ea04a
+2. [x] `EvdsClient` + ayarlar + devre dışı mod + yanıt ayrıştırıcı + testler (14 test) · ee28640
+3. [x] `V6` `macro_point` + `MacroIngestService` + `WeeklyMacroJob` + admin tetikleyicisi + E1-5b · (kapanış commit'i)
+
+_Elle (compose, anahtarsız): açılışta "EVDS_API_KEY is not set" uyarısı; `POST /api/admin/jobs/weekly-macro/run` → 200 `SKIPPED`; V6 mevcut volume'de uygulandı, E1-4'ün `ingest_run` satırları yeniden adlandırılan sütunlarla korundu. **Canlı EVDS verisi doğrulanmadı** (E1-5b)._
+
 ### E1-4 · Günlük fiyat işi + backfill
 _Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 8790233, 6841be7, 1d41878_
 - [x] ShedLock (JDBC) eklendi, `V4` shedlock tablosu. Sürüm 6.10.0 (7.x Spring 7 istiyor); kilit zamanı veritabanı saatinden (`usingDbTime`)
@@ -335,6 +348,13 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 - Yeni servis canlı çalışıyor: `./mvnw test -Plive` → AAV (`YAT`) ve AAJ (`EMK`) için son 14 günün fiyatları geldi, 2/2 test yeşil.
 - İlk canlı koşu **kırmızıydı**: her istek `500 {"error":"Proxy request failed"}` aldı, aynı istek curl ile 200 döndü. Neden: JDK istemcisi gövdeyi `Content-Length` olmadan akış olarak gönderiyordu. `BufferingClientHttpRequestFactory` ile düzeldi; `MockRestServiceServer` bunu yakalayamadığı için loopback sunuculu bir regresyon testi eklendi (düzeltme olmadan kırmızı olduğu görüldü). Ayrıntı ADR 001'de.
 - Bu oturumda TEFAS'a atılan istekler: 5 (E1-1), 3 JS paketi + 2 sayfa + 5 API (araştırma), 6 canlı test isteği. Hepsi tek tek, aralarında ≥ 1,5 sn.
+
+**2026-11-05 · EVDS (E1-5)**
+- EVDS `evds2` → `evds3` taşınmış; servis kökü `https://evds3.tcmb.gov.tr/igmevdsms-dis/`. Resmî web servis kılavuzu okundu (ADR 002). Anahtarsız istek canlı denendi: 403.
+- AGENT_PROMPT §7.2'deki `TP.FG.J0` artık arşivde (TÜFE 2003=100). Güncel seri `TP.TUKFIY2025.GENEL` (2025=100). E2-2'de baz değişimi dikkate alınmalı.
+- EVDS'de altın yalnızca aylık; haftalık altın kıyası için E1-7 açıldı.
+- `ingest_run.fund_count`/`funds_failed` V6'da `target_count`/`targets_failed` oldu (EVDS'de hedef seri). E1-4'ün admin yanıtındaki `fundCount`/`fundsFailed` alanları da `targetCount`/`targetsFailed` oldu; bu uçlar aynı gün eklendiği için dış istemci yok.
+- İki iş de kilidi ortak `scheduler.JobLock` üzerinden alıyor; TEFAS ve EVDS kilitleri ayrı, birbirini beklemiyor.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |

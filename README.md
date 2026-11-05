@@ -79,6 +79,12 @@ curl -X POST -H "Authorization: Bearer $TOKEN" \
 
 Yanıt, çalışmanın özetidir (yazılan ve değişmeyen satır, hatalı fonlar). Aynı anda tek bir TEFAS aktarımı çalışır; diğeri `409` alır. Geçmiş doldurma tek seferde en fazla 731 gündür.
 
+### Makro veri (TCMB EVDS)
+
+TÜFE, USD/TRY, altın ve TL mevduat faizi her pazartesi 07:00'de (İstanbul) TCMB EVDS'den çekilir. Bunun için ücretsiz kişisel bir anahtar gerekir: [evds3.tcmb.gov.tr](https://evds3.tcmb.gov.tr) → üye ol → Benim Sayfam → Profilim → "API Key Kopyala". Anahtarı `.env` dosyasında `EVDS_API_KEY` olarak verin. Seri kodları ve bilinen sınırlar: [ADR 002](docs/decisions/002-evds.md).
+
+Anahtar yoksa uygulama yine çalışır: açılışta uyarı loglanır, iş "atlandı" (`SKIPPED`) olarak kaydedilir, bültenin kıyas ve reel getiri bölümleri yer almaz. Elle tetiklemek için: `POST /api/admin/jobs/weekly-macro/run` (`ADMIN`).
+
 ### Testler
 
 ```bash
