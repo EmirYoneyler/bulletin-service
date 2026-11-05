@@ -533,3 +533,4 @@
 - [2026-11-04 16:20:44] let's get it
 - [2026-11-04 16:20:53] Fast api connectors.
 - [2026-11-05 15:29:57] Functional SpringBOOT files.
+- [2026-11-05 15:30:05] User registration and login.Authentication
