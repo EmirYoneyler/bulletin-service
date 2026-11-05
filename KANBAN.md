@@ -15,18 +15,20 @@ _(boş)_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E0-6 · JWT güvenliği
+_Bağımlı: E0-4 · Rehber: §7.7 · Başladı: 2026-11-05_
+- [x] `JwtAuthFilter` + `SecurityConfig` yetki matrisi (GET funds açık, yazma ve `/api/admin/**` ADMIN, `/api/me/**` oturumlu). Listede olmayan her yol varsayılan olarak oturum istiyor
+- [ ] `dev` profilinde `POST /api/dev/token?email=&role=` test token'ı üretiyor
+- [x] `@WebMvcTest` ile 401/403/200 senaryoları (`SecurityConfigTest`, 17 test)
+- [ ] README'ye "API artık yazma işlemleri için token istiyor" notu
+
+Alt görevler:
+1. [x] `JwtAuthFilter`, yetki matrisi, `ApiError` biçiminde 401/403, CORS preflight, testler
+2. [ ] `dev` token uç noktası + README notu
 
 ---
 
 ## 🔵 To Do
-
-### E0-6 · JWT güvenliği
-_Bağımlı: E0-4 · Rehber: §7.7_
-- [ ] `JwtAuthFilter` + `SecurityConfig` yetki matrisi (GET funds açık, yazma ve `/api/admin/**` ADMIN, `/api/me/**` oturumlu)
-- [ ] `dev` profilinde `POST /api/dev/token?email=&role=` test token'ı üretiyor
-- [ ] `@WebMvcTest` ile 401/403/200 senaryoları
-- [ ] README'ye "API artık yazma işlemleri için token istiyor" notu
 
 ### E0-7 · `createdAt` saat dilimi
 _Rehber: §3 (Tarih / saat) · Kaynak: E0-4 elle doğrulaması_

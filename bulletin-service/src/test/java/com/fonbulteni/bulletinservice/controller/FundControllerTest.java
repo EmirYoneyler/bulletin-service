@@ -6,6 +6,7 @@ import com.fonbulteni.bulletinservice.dto.FundRequest;
 import com.fonbulteni.bulletinservice.dto.FundResponse;
 import com.fonbulteni.bulletinservice.entity.Fund;
 import com.fonbulteni.bulletinservice.service.FundService;
+import com.fonbulteni.bulletinservice.service.JwtService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -29,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -38,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FundController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, JwtService.class})
 @ActiveProfiles("test")
 class FundControllerTest {
 
@@ -52,6 +55,9 @@ class FundControllerTest {
 
     @Autowired
     MockMvc mvc;
+
+    // Writes need ROLE_ADMIN since E0-6; the token path itself is covered in SecurityConfigTest.
+    private static final RequestPostProcessor ADMIN = user("admin@example.com").roles("ADMIN");
 
     @MockitoBean
     FundService fundService;
@@ -92,7 +98,7 @@ class FundControllerTest {
     void createsFund() throws Exception {
         given(fundService.createFund(any(FundRequest.class))).willReturn(sampleFund());
 
-        mvc.perform(post("/api/funds")
+        mvc.perform(post("/api/funds").with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"name": "Örnek Hisse Fonu", "category": "HISSE", "riskLevel": "YUKSEK"}"""))
@@ -128,7 +134,7 @@ class FundControllerTest {
 
     @Test
     void unknownPathIs404WithApiError() throws Exception {
-        mvc.perform(get("/api/nothing-here"))
+        mvc.perform(get("/api/funds/1/unknown"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("NOT_FOUND"));
     }
@@ -137,7 +143,7 @@ class FundControllerTest {
 
     @Test
     void blankNameIs400WithFieldList() throws Exception {
-        mvc.perform(post("/api/funds")
+        mvc.perform(post("/api/funds").with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"name": "  ", "category": "HISSE"}"""))
@@ -155,7 +161,7 @@ class FundControllerTest {
     void tooLongNameIs400() throws Exception {
         String longName = "a".repeat(256);
 
-        mvc.perform(post("/api/funds")
+        mvc.perform(post("/api/funds").with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"" + longName + "\"}"))
                 .andExpect(status().isBadRequest())
@@ -164,7 +170,7 @@ class FundControllerTest {
 
     @Test
     void malformedJsonIs400() throws Exception {
-        mvc.perform(post("/api/funds")
+        mvc.perform(post("/api/funds").with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": "))
                 .andExpect(status().isBadRequest())
@@ -173,7 +179,7 @@ class FundControllerTest {
 
     @Test
     void unknownEnumValueInBodyIs400() throws Exception {
-        mvc.perform(post("/api/funds")
+        mvc.perform(post("/api/funds").with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"name": "Fon", "category": "KRIPTO"}"""))
@@ -208,7 +214,7 @@ class FundControllerTest {
 
     @Test
     void unsupportedMethodIs405WithAllowHeader() throws Exception {
-        mvc.perform(delete("/api/funds"))
+        mvc.perform(delete("/api/funds").with(ADMIN))
                 .andExpect(status().isMethodNotAllowed())
                 .andExpect(header().exists("Allow"))
                 .andExpect(jsonPath("$.code").value("METHOD_NOT_ALLOWED"));
