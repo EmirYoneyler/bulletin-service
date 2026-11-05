@@ -186,7 +186,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E1-6 · BIST100 kıyas verisi
-_Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i)_
+_Başladı: 2026-11-05 · Bitti: 2026-11-05 · e71afde_
 - [x] Ücretsiz ve kullanım koşullarına uygun bir kaynak araştırıldı (EVDS'de endeks serisi var mı önce oraya bak). Karar `docs/decisions/003-bist.md` dosyasında. EVDS'de `TP.MK.G.BILESIK` (BIST 100 getiri endeksi, iş günü) seçildi; EVDS kullanım şartları kaynak gösterilerek ve ek ücret alınmadan yayımlamaya izin veriyor. Seri `evds.series.bist100` olarak haftalık EVDS işine eklendi
 - [x] ~~Uygun kaynak yoksa kıyaslardan çıkarıldı ve README "Bilinen sınırlar"a yazıldı~~ Uygun kaynak bulundu, çıkarmak gerekmedi. README "Bilinen sınırlar"a BIST'in de EVDS anahtarına bağlı olduğu yazıldı
 
@@ -366,3 +366,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 | 2026-11-05 (2) | E1-2, E1-3 · 119 test yeşil (+2 `live`, ayrı çalışır) | Yok. TEFAS yeni servisi canlı doğrulandı (ADR 001); E1-5'te EVDS anahtarı gerekecek | E1-4 · Günlük fiyat işi + backfill |
 | 2026-11-05 (3) | E1-4 · 149 test yeşil (+2 `live`); günlük iş canlı TEFAS'la denendi | Yok. E1-5 EVDS anahtarı olmadan fixture'la yapılacak, canlı doğrulama için E1-5b `Blocked`'a açılacak | E1-5 · EvdsClient (To Do'da E1-5, E1-6, E2-1) |
 | 2026-11-05 (4) | E1-5 · 174 test yeşil (+3 `live`); EVDS anahtarsız devre dışı modda uçtan uca denendi | **E1-5b (Blocked):** EVDS API anahtarı gerekiyor → `.env` `EVDS_API_KEY` | E1-6 · BIST100 kıyas verisi (To Do'da E1-6, E2-1) |
+| 2026-11-05 (5) | E1-6 · 174 test yeşil; BIST 100 getiri endeksi EVDS üzerinden | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-1 · FundStatsService |
