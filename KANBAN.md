@@ -15,18 +15,23 @@ _(boş)_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E1-4 · Günlük fiyat işi + backfill
+_Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9 · Başladı: 2026-11-05_
+- [x] ShedLock (JDBC) eklendi, `V4` shedlock tablosu. Sürüm 6.10.0 (7.x Spring 7 istiyor); kilit zamanı veritabanı saatinden (`usingDbTime`)
+- [ ] `DailyPriceJob` (`0 30 19 * * MON-FRI`, İstanbul): `tefas_code`'u olan her fon için son 5 iş gününü upsert ediyor. Bir fondaki hata diğerlerini durdurmuyor
+- [ ] `POST /api/admin/jobs/daily-price/run` ve `POST /api/admin/ingest/tefas?code=&from=&to=` (backfill)
+- [ ] Özet log: fon sayısı, yazılan satır, atlanan, hatalar. `ingest_run` kaydı (`V5`)
+
+Alt görevler:
+1. [x] ShedLock 6.10 (7.x Spring 7 istiyor) + `V4` + kilit/zamanlama ayarı
+2. [ ] `V5` `ingest_run` + `PriceIngestService` (fon başına hata yalıtımı, sayaçlar) + testler
+3. [ ] `DailyPriceJob` + admin uç noktaları (aynı kilitle, meşgulse 409) + testler + elle deneme
 
 ---
 
 ## 🔵 To Do
 
-### E1-4 · Günlük fiyat işi + backfill
-_Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9_
-- [ ] ShedLock (JDBC) eklendi, `V4` shedlock tablosu
-- [ ] `DailyPriceJob` (`0 30 19 * * MON-FRI`, İstanbul): `tefas_code`'u olan her fon için son 5 iş gününü upsert ediyor. Bir fondaki hata diğerlerini durdurmuyor
-- [ ] `POST /api/admin/jobs/daily-price/run` ve `POST /api/admin/ingest/tefas?code=&from=&to=` (backfill)
-- [ ] Özet log: fon sayısı, yazılan satır, atlanan, hatalar. `ingest_run` kaydı (`V5`)
+_(boş: sıradaki kart seçilirken Backlog'dan 3 kart taşınır)_
 
 ---
 
