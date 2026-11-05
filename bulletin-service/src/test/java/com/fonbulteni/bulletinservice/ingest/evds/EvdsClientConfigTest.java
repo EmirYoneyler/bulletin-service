@@ -46,7 +46,7 @@ class EvdsClientConfigTest {
             EvdsProperties properties = context.getBean(EvdsProperties.class);
             assertThat(properties.baseUrl()).isEqualTo("https://evds3.tcmb.gov.tr/igmevdsms-dis");
             assertThat(properties.series().all()).containsExactly(
-                    "TP.TUKFIY2025.GENEL", "TP.DK.USD.A.YTL", "TP.MK.KUL.YTL", "TP.TRY.MT06");
+                    "TP.TUKFIY2025.GENEL", "TP.DK.USD.A.YTL", "TP.MK.KUL.YTL", "TP.TRY.MT06", "TP.MK.G.BILESIK");
         });
     }
 }

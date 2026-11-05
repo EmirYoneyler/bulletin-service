@@ -81,7 +81,7 @@ Yanıt, çalışmanın özetidir (yazılan ve değişmeyen satır, hatalı fonla
 
 ### Makro veri (TCMB EVDS)
 
-TÜFE, USD/TRY, altın ve TL mevduat faizi her pazartesi 07:00'de (İstanbul) TCMB EVDS'den çekilir. Bunun için ücretsiz kişisel bir anahtar gerekir: [evds3.tcmb.gov.tr](https://evds3.tcmb.gov.tr) → üye ol → Benim Sayfam → Profilim → "API Key Kopyala". Anahtarı `.env` dosyasında `EVDS_API_KEY` olarak verin. Seri kodları ve bilinen sınırlar: [ADR 002](docs/decisions/002-evds.md).
+TÜFE, USD/TRY, altın, TL mevduat faizi ve BIST 100 (getiri endeksi, [ADR 003](docs/decisions/003-bist.md)) her pazartesi 07:00'de (İstanbul) TCMB EVDS'den çekilir. Bunun için ücretsiz kişisel bir anahtar gerekir: [evds3.tcmb.gov.tr](https://evds3.tcmb.gov.tr) → üye ol → Benim Sayfam → Profilim → "API Key Kopyala". Anahtarı `.env` dosyasında `EVDS_API_KEY` olarak verin. Seri kodları ve bilinen sınırlar: [ADR 002](docs/decisions/002-evds.md).
 
 Anahtar yoksa uygulama yine çalışır: açılışta uyarı loglanır, iş "atlandı" (`SKIPPED`) olarak kaydedilir, bültenin kıyas ve reel getiri bölümleri yer almaz. Elle tetiklemek için: `POST /api/admin/jobs/weekly-macro/run` (`ADMIN`).
 
@@ -113,4 +113,8 @@ Karar kayıtları: [`docs/decisions/`](docs/decisions/README.md).
 
 ## Bilinen sınırlar
 
-_(E8-1)_
+- Kıyaslar (dolar, altın, mevduat, BIST 100) ve reel getiri TCMB EVDS anahtarı gerektirir. Anahtar yoksa bültende bu bölümler yer almaz.
+- EVDS'de altın fiyatı yalnızca aylık; haftalık altın kıyası için günlük bir kaynak henüz yok (KANBAN E1-7).
+- TEFAS'ın fiyat servisi resmî bir API değil; site değişirse veri alımı durabilir ([ADR 001](docs/decisions/001-tefas.md)).
+
+_(Tam liste E8-1'de.)_

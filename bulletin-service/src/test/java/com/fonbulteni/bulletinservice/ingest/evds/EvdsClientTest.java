@@ -46,7 +46,7 @@ class EvdsClientTest {
 
     private EvdsClient client(String apiKey) {
         EvdsProperties properties = new EvdsProperties(BASE, apiKey, UA, Duration.ofSeconds(5), Duration.ofSeconds(30),
-                new EvdsProperties.Series("TP.TUKFIY2025.GENEL", "TP.DK.USD.A.YTL", "TP.MK.KUL.YTL", "TP.TRY.MT06"));
+                new EvdsProperties.Series("TP.TUKFIY2025.GENEL", "TP.DK.USD.A.YTL", "TP.MK.KUL.YTL", "TP.TRY.MT06", "TP.MK.G.BILESIK"));
         return new EvdsClient(builder.build(), properties, new ObjectMapper());
     }
 

@@ -54,6 +54,7 @@ class MacroIngestServiceTest {
     static final String USD = "TP.DK.USD.A.YTL";
     static final String GOLD = "TP.MK.KUL.YTL";
     static final String DEPOSIT = "TP.TRY.MT06";
+    static final String BIST = "TP.MK.G.BILESIK";
 
     @TestConfiguration
     static class FixedClock {
@@ -82,7 +83,7 @@ class MacroIngestServiceTest {
     @BeforeEach
     void reset() {
         jdbc.execute("truncate macro_point, ingest_run restart identity");
-        given(evds.series()).willReturn(new EvdsProperties.Series(CPI, USD, GOLD, DEPOSIT));
+        given(evds.series()).willReturn(new EvdsProperties.Series(CPI, USD, GOLD, DEPOSIT, BIST));
     }
 
     private static EvdsObservation obs(String code, LocalDate date, String value) {
@@ -96,6 +97,7 @@ class MacroIngestServiceTest {
         given(evds.fetchSeries(USD, FROM, TODAY)).willReturn(List.of(obs(USD, LocalDate.of(2026, 10, 30), "10.25")));
         given(evds.fetchSeries(GOLD, FROM, TODAY)).willReturn(List.of(obs(GOLD, LocalDate.of(2026, 10, 1), "1000")));
         given(evds.fetchSeries(DEPOSIT, FROM, TODAY)).willReturn(List.of(obs(DEPOSIT, LocalDate.of(2026, 10, 30), "12.75")));
+        given(evds.fetchSeries(BIST, FROM, TODAY)).willReturn(List.of(obs(BIST, LocalDate.of(2026, 10, 30), "50000.00")));
     }
 
     @Test
@@ -106,7 +108,7 @@ class MacroIngestServiceTest {
 
         assertThat(run.getStatus()).isEqualTo(IngestRun.Status.SKIPPED);
         assertThat(run.getSource()).isEqualTo(IngestRun.Source.EVDS);
-        assertThat(run.getTargetCount()).isEqualTo(4);
+        assertThat(run.getTargetCount()).isEqualTo(5);
         assertThat(run.getErrors()).contains("EVDS_API_KEY");
         assertThat(runs.findById(run.getId())).isPresent();
         verify(evds, never()).fetchSeries(any(), any(), any());
@@ -122,8 +124,9 @@ class MacroIngestServiceTest {
         assertThat(run.getStatus()).isEqualTo(IngestRun.Status.SUCCESS);
         assertThat(run.getRangeFrom()).isEqualTo(FROM);
         assertThat(run.getRangeTo()).isEqualTo(TODAY);
-        assertThat(run.getRowsWritten()).isEqualTo(5);
-        assertThat(points.count()).isEqualTo(5);
+        assertThat(run.getRowsWritten()).isEqualTo(6);
+        assertThat(points.count()).isEqualTo(6);
+        assertThat(points.findFirstBySeriesCodeAndObsDateLessThanEqualOrderByObsDateDesc(BIST, TODAY)).isPresent();
         assertThat(points.findBySeriesCodeAndObsDateBetweenOrderByObsDateAsc(CPI, FROM, TODAY))
                 .extracting(MacroPoint::getValue)
                 .usingElementComparator(BigDecimal::compareTo)
@@ -138,7 +141,7 @@ class MacroIngestServiceTest {
         IngestRun again = service.ingestRecent(IngestRun.Trigger.MANUAL);
 
         assertThat(again.getRowsWritten()).isZero();
-        assertThat(again.getRowsUnchanged()).isEqualTo(5);
+        assertThat(again.getRowsUnchanged()).isEqualTo(6);
     }
 
     @Test
@@ -177,7 +180,7 @@ class MacroIngestServiceTest {
 
         assertThat(run.getStatus()).isEqualTo(IngestRun.Status.PARTIAL);
         assertThat(run.getTargetsFailed()).isEqualTo(1);
-        assertThat(run.getRowsWritten()).isEqualTo(4);
+        assertThat(run.getRowsWritten()).isEqualTo(5);
         assertThat(run.getErrors()).startsWith(GOLD + ": EVDS'ye ulaşılamadı");
     }
 }

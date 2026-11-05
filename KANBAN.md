@@ -15,7 +15,7 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 - **Nereden alınır:** https://evds3.tcmb.gov.tr → üye ol (e-posta doğrulaması) → "Benim Sayfam" → kullanıcı adı → "Profilim" → sayfanın altında "API Key Kopyala".
 - **Nereye konacak:** Kök `.env` dosyasında `EVDS_API_KEY=...` (git'e girmez). Deploy'da aynı adla ortam değişkeni. Koda veya `application.properties`'e **yazılmaz**.
 - **Engel kalkınca ilk iş:**
-  - [ ] `cd bulletin-service && EVDS_API_KEY=... ./mvnw test -Plive -Dtest=EvdsClientLiveTest` yeşil (4 seri, son 120 gün)
+  - [ ] `cd bulletin-service && EVDS_API_KEY=... ./mvnw test -Plive -Dtest=EvdsClientLiveTest` yeşil (5 seri: TÜFE, USD, altın, mevduat, BIST 100; son 120 gün)
   - [ ] Bir seri için gerçek JSON yanıtı kaydedilip `fixtures/evds/` altına eklendi; elle üretilen fixture'larla biçim farkı varsa `EvdsResponseParser` ve ADR 002 güncellendi
   - [ ] `docker compose up` sonrası `POST /api/admin/jobs/weekly-macro/run` → `SUCCESS`, `macro_point` dolu
   - [ ] `TP.TUKFIY2025.GENEL` serisinin başlangıç tarihi not edildi (E2-2'de 2003=100 seriyle zincirleme gerekip gerekmediği için)
@@ -29,10 +29,6 @@ _(boş)_
 ---
 
 ## 🔵 To Do
-
-### E1-6 · BIST100 kıyas verisi
-- [ ] Ücretsiz ve kullanım koşullarına uygun bir kaynak araştırıldı (EVDS'de endeks serisi var mı önce oraya bak). Karar `docs/decisions/003-bist.md` dosyasında
-- [ ] Uygun kaynak yoksa kıyaslardan çıkarıldı ve README "Bilinen sınırlar"a yazıldı
 
 ### E2-1 · FundStatsService
 _Bağımlı: E1-2 · Rehber: §7.3_
@@ -188,6 +184,13 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E1-6 · BIST100 kıyas verisi
+_Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i)_
+- [x] Ücretsiz ve kullanım koşullarına uygun bir kaynak araştırıldı (EVDS'de endeks serisi var mı önce oraya bak). Karar `docs/decisions/003-bist.md` dosyasında. EVDS'de `TP.MK.G.BILESIK` (BIST 100 getiri endeksi, iş günü) seçildi; EVDS kullanım şartları kaynak gösterilerek ve ek ücret alınmadan yayımlamaya izin veriyor. Seri `evds.series.bist100` olarak haftalık EVDS işine eklendi
+- [x] ~~Uygun kaynak yoksa kıyaslardan çıkarıldı ve README "Bilinen sınırlar"a yazıldı~~ Uygun kaynak bulundu, çıkarmak gerekmedi. README "Bilinen sınırlar"a BIST'in de EVDS anahtarına bağlı olduğu yazıldı
+
+_Elle (compose, anahtarsız): `POST /api/admin/jobs/weekly-macro/run` → `SKIPPED`, `targetCount: 5`. Canlı veri E1-5b'de doğrulanacak._
 
 ### E1-5 · EvdsClient (TCMB)
 _Rehber: §7.2 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 32ea04a, ee28640, 10a2e32_

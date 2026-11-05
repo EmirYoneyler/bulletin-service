@@ -19,15 +19,17 @@ public record EvdsProperties(
         @DefaultValue("30s") Duration readTimeout,
         @DefaultValue Series series) {
 
-    /** EVDS series codes, verified on 2026-11-05 (ADR 002). */
+    /** EVDS series codes, verified on 2026-11-05 (ADR 002, ADR 003). */
     public record Series(
             @DefaultValue("TP.TUKFIY2025.GENEL") String cpi,
             @DefaultValue("TP.DK.USD.A.YTL") String usdtry,
             @DefaultValue("TP.MK.KUL.YTL") String gold,
-            @DefaultValue("TP.TRY.MT06") String deposit) {
+            @DefaultValue("TP.TRY.MT06") String deposit,
+            // BIST 100 total-return index (dividends included, like fund prices), ADR 003.
+            @DefaultValue("TP.MK.G.BILESIK") String bist100) {
 
         public List<String> all() {
-            return List.of(cpi, usdtry, gold, deposit);
+            return List.of(cpi, usdtry, gold, deposit, bist100);
         }
     }
 
