@@ -24,18 +24,23 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-_(boş)_
-
----
-
-## 🔵 To Do
-
 ### E2-3 · BulletinFacts + FactFormatter
-_Bağımlı: E2-1 · Rehber: §7.4_
+_Bağımlı: E2-1 · Rehber: §7.4 · Başladı: 2026-11-05_
 - [ ] `Fact` ve `BulletinFacts` record'ları, anahtar şeması `docs/facts-keys.md` dosyasında
 - [ ] `FactsAssembler`: kullanıcı + hafta → facts (fonlar, portföy, kıyaslar, en çok yükselen/düşen, kaynak listesi)
 - [ ] `FactFormatter` Türkçe biçim testleri (`%3,2`, `%-0,9`, `1.250,50 TL`, `null` → "veri yok")
 - [ ] `GET /api/admin/bulletins/facts/preview?email=&week=` JSON önizleme
+
+Alt görevler:
+1. [x] `Fact`, `BulletinFacts`, `FactFormatter`, `FactKey` (anahtar şeması ve Türkçe açıklamalar) + `docs/facts-keys.md` + testler (29 test)
+2. [ ] `HoldingsProvider` (E6-1'e kadar: TEFAS kodlu tüm fonlar, adetsiz) + `FactsAssembler` + testler
+3. [ ] `GET /api/admin/bulletins/facts/preview` + testler + compose'da gerçek TEFAS verisiyle deneme
+
+_Not: Kullanıcı portföyü (`user_holding`) E6-1'de geliyor. O zamana kadar izleme listesi TEFAS kodu olan tüm fonlar ve portföy eşit ağırlıklı; `HoldingsProvider` arayüzü E6-1'de değiştirilecek._
+
+---
+
+## 🔵 To Do
 
 ### E3-1 · LlmClient soyutlaması
 _Rehber: §4.1_
@@ -370,6 +375,9 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 - EVDS'de altın yalnızca aylık; haftalık altın kıyası için E1-7 açıldı.
 - `ingest_run.fund_count`/`funds_failed` V6'da `target_count`/`targets_failed` oldu (EVDS'de hedef seri). E1-4'ün admin yanıtındaki `fundCount`/`fundsFailed` alanları da `targetCount`/`targetsFailed` oldu; bu uçlar aynı gün eklendiği için dış istemci yok.
 - İki iş de kilidi ortak `scheduler.JobLock` üzerinden alıyor; TEFAS ve EVDS kilitleri ayrı, birbirini beklemiyor.
+
+**2026-11-05 · Biçim (E2-3)**
+- AGENT_PROMPT §3 "gösterimde 2 hane" der, ama kart örnekleri (`%3,2`, `%-0,9`) ve §1'deki örnek bülten yüzdeleri 1 haneyle yazıyor. §3 para birimi için okundu: **yüzde 1 hane, TL ve endeks 2 hane**, hepsi `HALF_UP`. Ayrıntı `docs/facts-keys.md`.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
