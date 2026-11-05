@@ -1,0 +1,10 @@
+{
+  "_kayit": "ELLE ÜRETİLDİ, gerçek yanıt değil (EVDS anahtarı yoktu, 2026-11-05). Biçim: EVDS web servis kılavuzu + EVDS’nin önceki sürümünden bilinen JSON biçimi. Değerler bilinçli olarak gerçek dışı. İstek: series=TP.DK.USD.A.YTL&startDate=02-11-2026&endDate=05-11-2026&type=json",
+  "totalCount": 4,
+  "items": [
+    { "Tarih": "02-11-2026", "TP_DK_USD_A_YTL": "10.0000", "UNIXTIME": { "$numberLong": "1793566800" } },
+    { "Tarih": "03-11-2026", "TP_DK_USD_A_YTL": "10.2500", "UNIXTIME": { "$numberLong": "1793653200" } },
+    { "Tarih": "04-11-2026", "TP_DK_USD_A_YTL": null, "UNIXTIME": { "$numberLong": "1793739600" } },
+    { "Tarih": "05-11-2026", "TP_DK_USD_A_YTL": "10.5000", "UNIXTIME": { "$numberLong": "1793826000" } }
+  ]
+}

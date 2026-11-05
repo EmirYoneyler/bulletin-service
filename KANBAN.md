@@ -15,19 +15,22 @@ _(boş)_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E1-5 · EvdsClient (TCMB)
+_Rehber: §7.2 · Başladı: 2026-11-05_
+- [x] Seri kodları EVDS'de doğrulandı: TÜFE endeksi, USD/TRY, gram altın, TL mevduat faizi. `docs/decisions/002-evds.md` + `evds.series.*`. TÜFE `TP.TUKFIY2025.GENEL` (eski `TP.FG.J0` arşivde), USD `TP.DK.USD.A.YTL`, altın `TP.MK.KUL.YTL` (**aylık**, günlük yok → E1-7), mevduat `TP.TRY.MT06`. Doğrulama sitenin herkese açık arama servisiyle, anahtarsız
+- [ ] Anahtar header'da (`EVDS_API_KEY`). Anahtar yoksa `EvdsClient` bean'i "disabled" moduna geçiyor ve uyarı logluyor
+- [ ] `V6`: `macro_point` tablosu. `WeeklyMacroJob` (`0 0 7 * * MON`) + admin tetikleyicisi
+- [ ] Fixture testleri (EVDS'nin gerçek yanıt biçimiyle: tarih `dd-MM-yyyy` veya `yyyy-M`, ondalık ayırıcı). Anahtar olmadığı için veri fixture'ları **elle üretildi** (yalnızca 403 canlı kayıt)
+- [ ] Anahtar yoksa kart **Done** olabilir, ama canlı doğrulama için `Blocked`'a ayrı bir "E1-5b · EVDS canlı doğrulama" kartı açılır (kullanıcıdan anahtar)
+
+Alt görevler:
+1. [x] Araştırma (EVDS3, resmî kılavuz, seri kodları), ADR 002, fixture'lar, E1-7 kartı
+2. [ ] `EvdsClient` + ayarlar + devre dışı mod + yanıt ayrıştırıcı + testler
+3. [ ] `V6` `macro_point` + `MacroIngestService` + `WeeklyMacroJob` + admin tetikleyicisi + E1-5b
 
 ---
 
 ## 🔵 To Do
-
-### E1-5 · EvdsClient (TCMB)
-_Rehber: §7.2_
-- [ ] Seri kodları EVDS'de doğrulandı: TÜFE endeksi, USD/TRY, gram altın, TL mevduat faizi. `docs/decisions/002-evds.md` + `evds.series.*`
-- [ ] Anahtar header'da (`EVDS_API_KEY`). Anahtar yoksa `EvdsClient` bean'i "disabled" moduna geçiyor ve uyarı logluyor
-- [ ] `V6`: `macro_point` tablosu. `WeeklyMacroJob` (`0 0 7 * * MON`) + admin tetikleyicisi
-- [ ] Fixture testleri (EVDS'nin gerçek yanıt biçimiyle: tarih `dd-MM-yyyy` veya `yyyy-M`, ondalık ayırıcı)
-- [ ] Anahtar yoksa kart **Done** olabilir, ama canlı doğrulama için `Blocked`'a ayrı bir "E1-5b · EVDS canlı doğrulama" kartı açılır (kullanıcıdan anahtar)
 
 ### E1-6 · BIST100 kıyas verisi
 - [ ] Ücretsiz ve kullanım koşullarına uygun bir kaynak araştırıldı (EVDS'de endeks serisi var mı önce oraya bak). Karar `docs/decisions/003-bist.md` dosyasında
@@ -42,6 +45,13 @@ _Bağımlı: E1-2 · Rehber: §7.3_
 ---
 
 ## ⚪ Backlog
+
+### E1 · Veri alımı (devam)
+
+#### E1-7 · Günlük altın fiyatı kaynağı
+_Kaynak: E1-5 araştırması · Rehber: §6.6, §7.2_
+- [ ] EVDS'de altın yalnızca aylık (`TP.MK.KUL.YTL`). Haftalık "altın" kıyası için ücretsiz ve kullanım koşullarına uygun günlük gram altın (TL) kaynağı araştırıldı. Karar ADR'de
+- [ ] Uygun kaynak yoksa bültende altın yalnızca ay başından / yılbaşından kıyasında gösteriliyor ve README "Bilinen sınırlar"a yazıldı
 
 ### E2 · Deterministik analitik
 

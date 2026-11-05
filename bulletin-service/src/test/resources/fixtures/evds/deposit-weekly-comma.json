@@ -1,0 +1,8 @@
+{
+  "_kayit": "ELLE ÜRETİLDİ, gerçek yanıt değil (EVDS anahtarı yoktu, 2026-11-05). Biçim: EVDS web servis kılavuzu + EVDS’nin önceki sürümünden bilinen JSON biçimi. Değerler bilinçli olarak gerçek dışı. Ondalık virgül durumunu sınamak için (decimalSeperator=, ile istenmiş gibi). İstek: series=TP.TRY.MT06&startDate=23-10-2026&endDate=30-10-2026&type=json",
+  "totalCount": 2,
+  "items": [
+    { "Tarih": "23-10-2026", "TP_TRY_MT06": "12,50" },
+    { "Tarih": "30-10-2026", "TP_TRY_MT06": "12,75" }
+  ]
+}
