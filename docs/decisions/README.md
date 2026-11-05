@@ -5,7 +5,7 @@ Her dosya tek bir kararı kısaca anlatır: bağlam, karar, sonuçlar. Numaralar
 
 | No | Konu | Durum |
 |---|---|---|
-| 001 | TEFAS uç noktası ve nezaket kuralları (E1-3) | yazılacak |
+| [001](001-tefas.md) | TEFAS fiyat geçmişi kaynağı ve nezaket kuralları (E1-3) | kabul edildi |
 | 002 | EVDS seri kodları (E1-5) | yazılacak |
 | 003 | BIST100 kıyas kaynağı (E1-6) | yazılacak |
 | 004 | Reel getiri ve TÜFE orantılama (E2-2) | yazılacak |

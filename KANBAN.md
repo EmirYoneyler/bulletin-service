@@ -15,19 +15,22 @@ _(boş)_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E1-3 · TefasClient
+_Rehber: §7.1, §6.6 · Başladı: 2026-11-05_
+- [x] Uç nokta araştırıldı. İstek/yanıt biçimi, çerez/WAF davranışı ve sınırlar `docs/decisions/001-tefas.md` dosyasında. Yeni uç nokta: `POST /api/funds/fonGnlBlgSiraliGetir` (JSON); eski `BindHistoryInfo` kapalı
+- [ ] `TefasClient.fetchHistory(code, from, to)`: aralığı ~~≤ 90 günlük~~ **≤ 1 aylık** parçalara böler (servis 1 aydan uzun aralığı reddediyor, ADR 001), istekler arası ≥ 1,5 sn, User-Agent, zaman aşımları, 3 denemeli üstel geri çekilme
+- [ ] Yanıt → `TefasPriceDto` (~~epoch ms~~ yeni serviste `tarih` zaten `yyyy-MM-dd` metni → `LocalDate`, sayı alanları `BigDecimal`)
+- [ ] `MockRestServiceServer` + `fixtures/tefas/*.json` testleri: normal yanıt, boş veri, 5xx sonrası başarılı deneme, kalıcı hata. Fixture'lar canlı yanıtlardan kaydedildi
+- [ ] `@Tag("live")` canlı test (varsayılan kapalı). Ajan ortamından canlı sonuç Notlar'a yazıldı
+
+Alt görevler:
+1. [x] Araştırma, ADR 001, canlı kaydedilmiş fixture'lar
+2. [ ] `TefasClient` + ayarlar + `MockRestServiceServer` testleri
+3. [ ] `@Tag("live")` test, varsayılan dışlama, canlı sonuç Notlar'a
 
 ---
 
 ## 🔵 To Do
-
-### E1-3 · TefasClient
-_Rehber: §7.1, §6.6 · Önce Notlar'daki 2026-11-05 TEFAS gözlemini oku: §7.1'deki uç nokta artık 404_
-- [ ] Uç nokta araştırıldı. İstek/yanıt biçimi, çerez/WAF davranışı ve sınırlar `docs/decisions/001-tefas.md` dosyasında
-- [ ] `TefasClient.fetchHistory(code, from, to)`: aralığı ≤ 90 günlük parçalara böler, istekler arası ≥ 1,5 sn, User-Agent, zaman aşımları, 3 denemeli üstel geri çekilme
-- [ ] Yanıt → `TefasPriceDto` (epoch ms → `LocalDate` İstanbul saatiyle, sayı alanları `BigDecimal`)
-- [ ] `MockRestServiceServer` + `fixtures/tefas/*.json` testleri: normal yanıt, boş veri, 5xx sonrası başarılı deneme, kalıcı hata
-- [ ] `@Tag("live")` canlı test (varsayılan kapalı). Ajan ortamından canlı sonuç Notlar'a yazıldı
 
 ### E1-4 · Günlük fiyat işi + backfill
 _Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9_

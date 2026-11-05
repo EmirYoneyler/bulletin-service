@@ -1,0 +1,75 @@
+{
+  "_kayit": "2026-11-05 tarihinde canlı yanıttan kaydedildi. POST https://www.tefas.gov.tr/api/funds/fonGnlBlgSiraliGetir · fonTipi=YAT, fonKodu=AAV, basTarih=20261027, bitTarih=20261104, basSira=1, bitSira=25. Bu alan dışında yanıt değiştirilmedi.",
+  "errorCode": null,
+  "errorMessage": null,
+  "resultList": [
+    {
+      "fonKodu": "AAV",
+      "fonUnvan": "ATA PORTFÖY İKİNCİ HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)",
+      "tarih": "2026-11-04",
+      "fiyat": 55.444077,
+      "tedPaySayisi": 3772183,
+      "kisiSayisi": 1706,
+      "portfoyBuyukluk": 209145203.7,
+      "borsaBultenFiyat": null,
+      "rn": 1
+    },
+    {
+      "fonKodu": "AAV",
+      "fonUnvan": "ATA PORTFÖY İKİNCİ HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)",
+      "tarih": "2026-11-03",
+      "fiyat": 55.176134,
+      "tedPaySayisi": 3775300,
+      "kisiSayisi": 1712,
+      "portfoyBuyukluk": 208306459.71,
+      "borsaBultenFiyat": null,
+      "rn": 2
+    },
+    {
+      "fonKodu": "AAV",
+      "fonUnvan": "ATA PORTFÖY İKİNCİ HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)",
+      "tarih": "2026-11-02",
+      "fiyat": 54.086555,
+      "tedPaySayisi": 3771830,
+      "kisiSayisi": 1711,
+      "portfoyBuyukluk": 204005290.87,
+      "borsaBultenFiyat": null,
+      "rn": 3
+    },
+    {
+      "fonKodu": "AAV",
+      "fonUnvan": "ATA PORTFÖY İKİNCİ HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)",
+      "tarih": "2026-10-30",
+      "fiyat": 56.021703,
+      "tedPaySayisi": 3775057,
+      "kisiSayisi": 1720,
+      "portfoyBuyukluk": 211485120.9,
+      "borsaBultenFiyat": null,
+      "rn": 4
+    },
+    {
+      "fonKodu": "AAV",
+      "fonUnvan": "ATA PORTFÖY İKİNCİ HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)",
+      "tarih": "2026-10-28",
+      "fiyat": 55.902108,
+      "tedPaySayisi": 3775057,
+      "kisiSayisi": 1720,
+      "portfoyBuyukluk": 211033645.16,
+      "borsaBultenFiyat": null,
+      "rn": 5
+    },
+    {
+      "fonKodu": "AAV",
+      "fonUnvan": "ATA PORTFÖY İKİNCİ HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)",
+      "tarih": "2026-10-27",
+      "fiyat": 56.119693,
+      "tedPaySayisi": 3775015,
+      "kisiSayisi": 1725,
+      "portfoyBuyukluk": 211852682.28,
+      "borsaBultenFiyat": null,
+      "rn": 6
+    }
+  ],
+  "toplamSayi": 6,
+  "toplamSayfa": 1
+}

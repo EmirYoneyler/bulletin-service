@@ -1,0 +1,8 @@
+{
+  "_kayit": "2026-11-05 tarihinde canlı yanıttan kaydedildi. POST https://www.tefas.gov.tr/api/funds/fonGnlBlgSiraliGetir · fonTipi=YAT, fonKodu=AAV, basTarih=20260807, bitTarih=20261104 (90 gün), basSira=1, bitSira=100. Bu alan dışında yanıt değiştirilmedi.",
+  "errorCode": null,
+  "errorMessage": "Geçersiz veri: Tarih aralığı 1 ayı aşamaz",
+  "resultList": null,
+  "toplamSayi": null,
+  "toplamSayfa": null
+}
