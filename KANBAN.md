@@ -24,19 +24,23 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E3-1 · LlmClient soyutlaması
+_Rehber: §4.1 · Başladı: 2026-11-05_
+- [x] `LlmClient`, `LlmRequest`, `LlmResponse` (token, süre, model). Hatalar tek tip `LlmException` (tür: erişilemedi, hız sınırı, zaman aşımı, bozuk yanıt)
+- [x] `TemplateLlmClient`: facts'teki yön ve sıralama bilgisiyle yer tutuculu, akıcı Türkçe metin üretiyor (en az 3 farklı cümle kalıbı, tekdüze görünmesin). Her cümle türü için 3 kalıp, hafta ve fona göre seçiliyor; çıktı yazarın JSON şemasında
+- [ ] `OpenAiCompatibleLlmClient`: `llm.base-url`, `llm.model`, `llm.api-key` (boş olabilir), `llm.timeout`, JSON modu. Ollama, Gemini ve Groq için örnek ayarlar `.env.example`'da
+- [ ] `llm.provider=template|ollama|openai-compatible` ile bean seçimi. Varsayılan `template`
+- [ ] `MockRestServiceServer` ile OpenAI formatı testleri (başarı, 429, zaman aşımı)
+
+Alt görevler:
+1. [x] `LlmClient`/`LlmRequest`/`LlmResponse`, `WriterContext` (değer içermeyen yazar bağlamı), `TemplateLlmClient` + testler (10 test)
+2. [ ] `OpenAiCompatibleLlmClient`, `LlmProperties`, sağlayıcı seçimi, `.env.example` örnekleri + `MockRestServiceServer` testleri
 
 ---
 
 ## 🔵 To Do
 
-### E3-1 · LlmClient soyutlaması
-_Rehber: §4.1_
-- [ ] `LlmClient`, `LlmRequest`, `LlmResponse` (token, süre, model)
-- [ ] `TemplateLlmClient`: facts'teki yön ve sıralama bilgisiyle yer tutuculu, akıcı Türkçe metin üretiyor (en az 3 farklı cümle kalıbı, tekdüze görünmesin)
-- [ ] `OpenAiCompatibleLlmClient`: `llm.base-url`, `llm.model`, `llm.api-key` (boş olabilir), `llm.timeout`, JSON modu. Ollama, Gemini ve Groq için örnek ayarlar `.env.example`'da
-- [ ] `llm.provider=template|ollama|openai-compatible` ile bean seçimi. Varsayılan `template`
-- [ ] `MockRestServiceServer` ile OpenAI formatı testleri (başarı, 429, zaman aşımı)
+_(boş: sıradaki kart seçilirken Backlog'dan 3 kart taşınır)_
 
 ---
 
@@ -382,6 +386,11 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 
 **2026-11-05 · Biçim (E2-3)**
 - AGENT_PROMPT §3 "gösterimde 2 hane" der, ama kart örnekleri (`%3,2`, `%-0,9`) ve §1'deki örnek bülten yüzdeleri 1 haneyle yazıyor. §3 para birimi için okundu: **yüzde 1 hane, TL ve endeks 2 hane**, hepsi `HALF_UP`. Ayrıntı `docs/facts-keys.md`.
+
+**2026-11-05 · Yazar (E3-1, E3-2 ve E4-1 için)**
+- `WriterContext` E3-1'de tanımlandı: yazara giden, **değer içermeyen** bağlam (mevcut anahtarlar, Türkçe açıklama, yön, sıralama). İstemde `<<<FACTS … FACTS>>>` arasında JSON olarak durur; şablon yazar da gerçek model de aynı bloğu okur. E3-2'deki `writer.v1.md` bu bloğu kullanmalı.
+- Rakam içeren özel adlar var: fon kodları (`AU1`, `ZZ9`) ve `BIST 100`. "Metinde rakam yok" kuralı bunları yanlışlıkla ihlal sayar. `bulletin.llm.TextRules.withoutAllowedDigitTokens` yer tutucuları, bültenin fon kodlarını ve `BIST 100`'ü çıkarıp kalan metni kontrole bırakır. **E4-1 NumberGuard bunu kullanmalı.**
+- Şablonlar yön kelimesini sayının hemen yanına koymaz ("ekside kapattı; haftalık değişim %-0,8"), çünkü "%-0,8 geriledi" çift olumsuz okunur. E4-1'in yön tutarlılığı kuralı model çıktısı için yine geçerli.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |
