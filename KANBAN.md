@@ -155,7 +155,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E3-1 · LlmClient soyutlaması
-_Rehber: §4.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · f060120, (kapanış commit'i)_
+_Rehber: §4.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · f060120, 5b14852_
 - [x] `LlmClient`, `LlmRequest`, `LlmResponse` (token, süre, model). Hatalar tek tip `LlmException` (tür: erişilemedi, hız sınırı, zaman aşımı, bozuk yanıt)
 - [x] `TemplateLlmClient`: facts'teki yön ve sıralama bilgisiyle yer tutuculu, akıcı Türkçe metin üretiyor (en az 3 farklı cümle kalıbı, tekdüze görünmesin). Her cümle türü için 3 kalıp, hafta ve fona göre seçiliyor; çıktı yazarın JSON şemasında
 - [x] `OpenAiCompatibleLlmClient`: `llm.base-url`, `llm.model`, `llm.api-key` (boş olabilir), `llm.timeout`, JSON modu. Ollama, Gemini ve Groq için örnek ayarlar `.env.example`'da. Anahtar yoksa `Authorization` gönderilmiyor (Ollama); anahtar loglanmıyor; gövde `Content-Length` ile
@@ -164,7 +164,7 @@ _Rehber: §4.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · f060120, (kapan�
 
 Alt görevler:
 1. [x] `LlmClient`/`LlmRequest`/`LlmResponse`, `WriterContext` (değer içermeyen yazar bağlamı), `TemplateLlmClient` + testler (10 test) · f060120
-2. [x] `OpenAiCompatibleLlmClient`, `LlmProperties`, sağlayıcı seçimi, `.env.example` örnekleri + `MockRestServiceServer` testleri · (kapanış commit'i)
+2. [x] `OpenAiCompatibleLlmClient`, `LlmProperties`, sağlayıcı seçimi, `.env.example` örnekleri + `MockRestServiceServer` testleri · 5b14852
 
 _Elle: compose'da açılış logu "LLM provider: template (no model, no key)", `GET /api/funds` → 200; `LLM_PROVIDER=openai-compatible` adressiz çalıştırıldığında uygulama açık mesajla başlamadı. Gerçek bir Ollama/Gemini/Groq çağrısı yapılmadı (model indirilmedi, ücretsiz anahtar yok); E3-2'de Ollama denemesi kart kriteri._
 
@@ -403,3 +403,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 | 2026-11-05 (6) | E2-1 · 201 test yeşil; getiri/oynaklık/düşüş hesapları elle hesaplanmış testlerle | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-2 · Reel getiri ve kıyaslar (To Do'da E2-2, E2-3, E3-1) |
 | 2026-11-05 (7) | E2-2 · 222 test yeşil; kıyaslar, TÜFE orantılama ve reel getiri (sentetik EVDS verisiyle) | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-3 · BulletinFacts + FactFormatter (To Do'da E2-3, E3-1) |
 | 2026-11-05 (8) | E2-3 · 265 test yeşil; BulletinFacts, Türkçe biçim ve önizleme uç noktası gerçek TEFAS verisiyle denendi | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E3-1 · LlmClient soyutlaması (To Do'da yalnız E3-1; sıradaki seçimde Backlog'dan kart taşınacak) |
+| 2026-11-05 (9) | E3-1 · 288 test yeşil; şablon yazar ve OpenAI uyumlu istemci (Ollama/Gemini/Groq), varsayılan anahtarsız | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E3-2 · Writer adımı ve yer tutucu renderer'ı (To Do'da E3-2, E3-3, E4-1) |
