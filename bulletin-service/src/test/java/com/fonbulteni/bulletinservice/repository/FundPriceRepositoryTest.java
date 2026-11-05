@@ -18,6 +18,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -36,11 +37,17 @@ class FundPriceRepositoryTest {
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
 
-    // Thu 30 Oct, Fri 31 Oct, (weekend), Mon 3 Nov, Tue 4 Nov 2026
-    private static final LocalDate THU = LocalDate.of(2026, 10, 30);
-    private static final LocalDate FRI = LocalDate.of(2026, 10, 31);
-    private static final LocalDate MON = LocalDate.of(2026, 11, 3);
-    private static final LocalDate TUE = LocalDate.of(2026, 11, 4);
+    // Thu 29 Oct, Fri 30 Oct, (weekend 31 Oct – 1 Nov), Mon 2 Nov, Tue 3 Nov 2026
+    private static final LocalDate THU = LocalDate.of(2026, 10, 29);
+    private static final LocalDate FRI = LocalDate.of(2026, 10, 30);
+    private static final LocalDate MON = LocalDate.of(2026, 11, 2);
+    private static final LocalDate TUE = LocalDate.of(2026, 11, 3);
+
+    @Test
+    void weekdayConstantsAreRight() {
+        assertThat(List.of(THU, FRI, MON, TUE)).extracting(LocalDate::getDayOfWeek).containsExactly(
+                DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.MONDAY, DayOfWeek.TUESDAY);
+    }
     private static final Instant FETCHED = Instant.parse("2026-11-04T16:30:00Z");
 
     @Autowired

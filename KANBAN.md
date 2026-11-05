@@ -199,10 +199,10 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E1-2 · FundPrice tablosu
-_Rehber: §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i)_
+_Rehber: §5.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · c922aa6_
 - [x] `V3`: `fund_price` tablosu, `UNIQUE(fund_id, price_date)`, `price_date` indeksli. Ek: `price > 0` ve `investor_count >= 0` kontrolleri, fon silinince fiyatları da siliniyor (`on delete cascade`)
 - [x] `FundPriceRepository`: aralık sorgusu (iki uç dahil, eskiden yeniye), "verilen tarihten önceki son fiyat" (kesin önce; hafta sonu/tatil satırı olmadığı için kendiliğinden atlanıyor), upsert (`ON CONFLICT DO UPDATE`, native query). Upsert değer değişmediyse satıra dokunmuyor ve 0 dönüyor; böylece ingest işleri gerçekten yazılan satırı sayabilir
-- [x] Testcontainers ile repository testleri (`FundPriceRepositoryTest`, 13 test)
+- [x] Testcontainers ile repository testleri (`FundPriceRepositoryTest`, 14 test)
 
 _Elle (compose): mevcut volume'de V3 uygulandı (`1:BASELINE, 2:SQL, 3:SQL`), `ddl-auto=validate` ile uygulama açıldı, `GET /api/funds` → 200._
 
