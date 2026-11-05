@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface FundRepository extends JpaRepository<Fund, Long> {
     Optional<Fund> findByTefasCode(String tefasCode);
     boolean existsByTefasCode(String tefasCode);
+    List<Fund> findByTefasCodeIsNotNullOrderByTefasCodeAsc();
     List<Fund> findByCategory(Fund.Category category);
     List<Fund> findByRiskLevel(Fund.RiskLevel riskLevel);
     List<Fund> findByCategoryAndRiskLevel(Fund.Category category, Fund.RiskLevel riskLevel);

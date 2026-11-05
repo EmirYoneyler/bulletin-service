@@ -24,7 +24,7 @@ _Bağımlı: E1-1, E1-2, E1-3 · Rehber: §7.9 · Başladı: 2026-11-05_
 
 Alt görevler:
 1. [x] ShedLock 6.10 (7.x Spring 7 istiyor) + `V4` + kilit/zamanlama ayarı
-2. [ ] `V5` `ingest_run` + `PriceIngestService` (fon başına hata yalıtımı, sayaçlar) + testler
+2. [x] `V5` `ingest_run` + `TefasPriceIngestService` (fon başına hata yalıtımı, sayaçlar) + testler
 3. [ ] `DailyPriceJob` + admin uç noktaları (aynı kilitle, meşgulse 409) + testler + elle deneme
 
 ---
