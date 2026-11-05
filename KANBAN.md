@@ -33,7 +33,7 @@ _Bağımlı: E2-1 · Rehber: §7.4 · Başladı: 2026-11-05_
 
 Alt görevler:
 1. [x] `Fact`, `BulletinFacts`, `FactFormatter`, `FactKey` (anahtar şeması ve Türkçe açıklamalar) + `docs/facts-keys.md` + testler (29 test)
-2. [ ] `HoldingsProvider` (E6-1'e kadar: TEFAS kodlu tüm fonlar, adetsiz) + `FactsAssembler` + testler
+2. [x] `HoldingsProvider` (E6-1'e kadar: TEFAS kodlu tüm fonlar, adetsiz) + `FactsAssembler` + testler (9 test)
 3. [ ] `GET /api/admin/bulletins/facts/preview` + testler + compose'da gerçek TEFAS verisiyle deneme
 
 _Not: Kullanıcı portföyü (`user_holding`) E6-1'de geliyor. O zamana kadar izleme listesi TEFAS kodu olan tüm fonlar ve portföy eşit ağırlıklı; `HoldingsProvider` arayüzü E6-1'de değiştirilecek._
