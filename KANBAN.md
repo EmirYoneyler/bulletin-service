@@ -24,17 +24,21 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-_(boş)_
+### E2-1 · FundStatsService
+_Bağımlı: E1-2 · Rehber: §7.3 · Başladı: 2026-11-05_
+- [ ] 1h / ay başından / yılbaşından / 1y getiri, 63 günlük yıllıklandırılmış oynaklık, maksimum düşüş
+- [ ] "Dönem başından önceki son işlem günü" kuralı ve tatil/eksik gün davranışı testli
+- [ ] Elle hesaplanmış beklenen değerlerle ≥ 10 birim testi. Eksik veride `null`, 0 değil
+
+Alt görevler:
+1. [x] Saf hesaplar (`analytics.ReturnMath`, `Periods`) + elle hesaplanmış birim testleri (24 test)
+2. [ ] `FundStatsService` (`fund_price` üzerinden) + entegrasyon testi + ADR 011 (hesap kuralları)
 
 ---
 
 ## 🔵 To Do
 
-### E2-1 · FundStatsService
-_Bağımlı: E1-2 · Rehber: §7.3_
-- [ ] 1h / ay başından / yılbaşından / 1y getiri, 63 günlük yıllıklandırılmış oynaklık, maksimum düşüş
-- [ ] "Dönem başından önceki son işlem günü" kuralı ve tatil/eksik gün davranışı testli
-- [ ] Elle hesaplanmış beklenen değerlerle ≥ 10 birim testi. Eksik veride `null`, 0 değil
+_(boş: sıradaki kart seçilirken Backlog'dan 3 kart taşınır)_
 
 ---
 
