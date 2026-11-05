@@ -24,23 +24,29 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-### E3-1 · LlmClient soyutlaması
-_Rehber: §4.1 · Başladı: 2026-11-05_
-- [x] `LlmClient`, `LlmRequest`, `LlmResponse` (token, süre, model). Hatalar tek tip `LlmException` (tür: erişilemedi, hız sınırı, zaman aşımı, bozuk yanıt)
-- [x] `TemplateLlmClient`: facts'teki yön ve sıralama bilgisiyle yer tutuculu, akıcı Türkçe metin üretiyor (en az 3 farklı cümle kalıbı, tekdüze görünmesin). Her cümle türü için 3 kalıp, hafta ve fona göre seçiliyor; çıktı yazarın JSON şemasında
-- [ ] `OpenAiCompatibleLlmClient`: `llm.base-url`, `llm.model`, `llm.api-key` (boş olabilir), `llm.timeout`, JSON modu. Ollama, Gemini ve Groq için örnek ayarlar `.env.example`'da
-- [ ] `llm.provider=template|ollama|openai-compatible` ile bean seçimi. Varsayılan `template`
-- [ ] `MockRestServiceServer` ile OpenAI formatı testleri (başarı, 429, zaman aşımı)
-
-Alt görevler:
-1. [x] `LlmClient`/`LlmRequest`/`LlmResponse`, `WriterContext` (değer içermeyen yazar bağlamı), `TemplateLlmClient` + testler (10 test)
-2. [ ] `OpenAiCompatibleLlmClient`, `LlmProperties`, sağlayıcı seçimi, `.env.example` örnekleri + `MockRestServiceServer` testleri
+_(boş)_
 
 ---
 
 ## 🔵 To Do
 
-_(boş: sıradaki kart seçilirken Backlog'dan 3 kart taşınır)_
+### E3-2 · Writer adımı ve yer tutucu renderer'ı
+_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6_
+- [ ] `prompts/writer.v1.md`: rol, kurallar, anahtar listesi + açıklamalar + yönler (değer yok), JSON çıktı şeması
+- [ ] `WriterStep`: facts → prompt → `LlmClient` → JSON parse → `WriterOutput`
+- [ ] `PlaceholderRenderer`: `{{key}}` → `FactFormatter` çıktısı
+- [ ] Ollama ile en az bir gerçek çalıştırma yapılabildiyse çıktı örneği `docs/samples/` altına kondu, yapılamadıysa Notlar'a yazıldı
+
+### E3-3 · Bulletin ve çalışma kaydı
+_Rehber: §5.1_
+- [ ] `V7`: `app_user_ref`, `bulletin`, `bulletin_run` tabloları. `bulletin(user_id, week_start)` unique
+- [ ] `BulletinRunRecorder`: her adım için süre, token, deneme ve sonuç
+
+### E4-1 · NumberGuard
+_Bağımlı: E3-2 · Rehber: §4.3, §7.5_
+- [ ] Kural 1: render öncesi metinde rakam yok. Kural 2: bilinmeyen anahtar yok. Kural 3: yön tutarlılığı
+- [ ] `Violation` listesi. İhlaller bir sonraki denemede prompt'a geri bildirim olarak ekleniyor
+- [ ] ≥ 12 test: rakam sızıntısı (`3,2`, `üç virgül iki` hariç tutulur), uydurma anahtar, "düştü" + pozitif değer, temiz metin
 
 ---
 
@@ -53,27 +59,7 @@ _Kaynak: E1-5 araştırması · Rehber: §6.6, §7.2_
 - [ ] EVDS'de altın yalnızca aylık (`TP.MK.KUL.YTL`). Haftalık "altın" kıyası için ücretsiz ve kullanım koşullarına uygun günlük gram altın (TL) kaynağı araştırıldı. Karar ADR'de
 - [ ] Uygun kaynak yoksa bültende altın yalnızca ay başından / yılbaşından kıyasında gösteriliyor ve README "Bilinen sınırlar"a yazıldı
 
-### E3 · Bülten üretimi (LLM, ücretsiz)
-
-#### E3-2 · Writer adımı ve yer tutucu renderer'ı
-_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6_
-- [ ] `prompts/writer.v1.md`: rol, kurallar, anahtar listesi + açıklamalar + yönler (değer yok), JSON çıktı şeması
-- [ ] `WriterStep`: facts → prompt → `LlmClient` → JSON parse → `WriterOutput`
-- [ ] `PlaceholderRenderer`: `{{key}}` → `FactFormatter` çıktısı
-- [ ] Ollama ile en az bir gerçek çalıştırma yapılabildiyse çıktı örneği `docs/samples/` altına kondu, yapılamadıysa Notlar'a yazıldı
-
-#### E3-3 · Bulletin ve çalışma kaydı
-_Rehber: §5.1_
-- [ ] `V7`: `app_user_ref`, `bulletin`, `bulletin_run` tabloları. `bulletin(user_id, week_start)` unique
-- [ ] `BulletinRunRecorder`: her adım için süre, token, deneme ve sonuç
-
 ### E4 · Doğrulama ve uyum
-
-#### E4-1 · NumberGuard
-_Bağımlı: E3-2 · Rehber: §4.3, §7.5_
-- [ ] Kural 1: render öncesi metinde rakam yok. Kural 2: bilinmeyen anahtar yok. Kural 3: yön tutarlılığı
-- [ ] `Violation` listesi. İhlaller bir sonraki denemede prompt'a geri bildirim olarak ekleniyor
-- [ ] ≥ 12 test: rakam sızıntısı (`3,2`, `üç virgül iki` hariç tutulur), uydurma anahtar, "düştü" + pozitif değer, temiz metin
 
 #### E4-2 · ComplianceGuard
 _Rehber: §6.3, §7.5_
@@ -167,6 +153,20 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E3-1 · LlmClient soyutlaması
+_Rehber: §4.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · f060120, (kapanış commit'i)_
+- [x] `LlmClient`, `LlmRequest`, `LlmResponse` (token, süre, model). Hatalar tek tip `LlmException` (tür: erişilemedi, hız sınırı, zaman aşımı, bozuk yanıt)
+- [x] `TemplateLlmClient`: facts'teki yön ve sıralama bilgisiyle yer tutuculu, akıcı Türkçe metin üretiyor (en az 3 farklı cümle kalıbı, tekdüze görünmesin). Her cümle türü için 3 kalıp, hafta ve fona göre seçiliyor; çıktı yazarın JSON şemasında
+- [x] `OpenAiCompatibleLlmClient`: `llm.base-url`, `llm.model`, `llm.api-key` (boş olabilir), `llm.timeout`, JSON modu. Ollama, Gemini ve Groq için örnek ayarlar `.env.example`'da. Anahtar yoksa `Authorization` gönderilmiyor (Ollama); anahtar loglanmıyor; gövde `Content-Length` ile
+- [x] `llm.provider=template|ollama|openai-compatible` ile bean seçimi. Varsayılan `template`. Ollama varsayılanları hazır (adres, `qwen2.5:7b-instruct`, 120 sn); uzak sağlayıcıda adres/model yoksa uygulama açık mesajla başlamıyor. Şablon yazar her zaman ayrı bean (yedek)
+- [x] `MockRestServiceServer` ile OpenAI formatı testleri (başarı, 429, zaman aşımı); ek olarak 5xx, 4xx, metinsiz yanıt, `response_format` kapatma (8 test) + seçim testleri (5 test)
+
+Alt görevler:
+1. [x] `LlmClient`/`LlmRequest`/`LlmResponse`, `WriterContext` (değer içermeyen yazar bağlamı), `TemplateLlmClient` + testler (10 test) · f060120
+2. [x] `OpenAiCompatibleLlmClient`, `LlmProperties`, sağlayıcı seçimi, `.env.example` örnekleri + `MockRestServiceServer` testleri · (kapanış commit'i)
+
+_Elle: compose'da açılış logu "LLM provider: template (no model, no key)", `GET /api/funds` → 200; `LLM_PROVIDER=openai-compatible` adressiz çalıştırıldığında uygulama açık mesajla başlamadı. Gerçek bir Ollama/Gemini/Groq çağrısı yapılmadı (model indirilmedi, ücretsiz anahtar yok); E3-2'de Ollama denemesi kart kriteri._
 
 ### E2-3 · BulletinFacts + FactFormatter
 _Bağımlı: E2-1 · Rehber: §7.4 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · fc8fa77, 25a1015, 20dabac_
