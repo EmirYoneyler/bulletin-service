@@ -15,12 +15,7 @@ _(boş)_
 
 ## 🟡 In Progress
 
-### E0-1 · Repo temizliği
-_Rehber: §2 · Başladı: 2026-11-05_
-- [ ] `privet_log_data.md` içindeki merge conflict işaretleri temizlendi (iki taraf da korunarak birleştirildi)
-- [x] Test paketi `com.fonbulteni.bulletinservice` olarak taşındı, `./mvnw verify` yeşil
-- [ ] Kök `.gitignore`: `target/`, `.env`, `out/`, `.idea/`, `*.iml`, `.vscode/`, `.DS_Store`
-- [ ] `application.properties` içinde `show-sql=false`
+_(boş)_
 
 ---
 
@@ -251,7 +246,12 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
-_(boş)_
+### E0-1 · Repo temizliği
+_Rehber: §2 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · 32a0216, (kapanış commit'i)_
+- [x] `privet_log_data.md` içindeki merge conflict işaretleri temizlendi (iki taraf da korunarak birleştirildi; karşı tarafta yalnızca boş satır vardı, HEAD'in iki satırı korundu)
+- [x] Test paketi `com.fonbulteni.bulletinservice` olarak taşındı, `./mvnw verify` yeşil
+- [x] Kök `.gitignore`: `target/`, `.env`, `out/`, `.idea/`, `*.iml`, `.vscode/`, `.DS_Store`
+- [x] `application.properties` içinde `show-sql=false`
 
 ---
 
