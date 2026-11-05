@@ -21,11 +21,6 @@ _(boş)_
 
 ## 🔵 To Do
 
-### E0-7 · `createdAt` saat dilimi
-_Rehber: §3 (Tarih / saat) · Kaynak: E0-4 elle doğrulaması_
-- [ ] `Fund.prePersist` `LocalDateTime.now()` ile JVM'in varsayılan saat dilimini kullanıyor; container'da bu UTC (E0-4'te `createdAt` İstanbul saatinden 3 saat geri yazıldı). `Europe/Istanbul` ile tutarlı hâle getirildi (ör. `TimeConfig` saati veya container `TZ`)
-- [ ] Mevcut kayıtlar ve `/api/funds` yanıt biçimi kırılmadı. Karar ADR'de
-
 ### E1-1 · Fon kimliği: TEFAS kodu
 _Bağımlı: E0-4_
 - [ ] `V2`: `funds.tefas_code VARCHAR(10) UNIQUE NULL`. Entity ve DTO'lar güncellendi
@@ -215,8 +210,15 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
+### E0-7 · `createdAt` saat dilimi
+_Rehber: §3 (Tarih / saat) · Kaynak: E0-4 elle doğrulaması · Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i)_
+- [x] `Fund.prePersist` `LocalDateTime.now()` ile JVM'in varsayılan saat dilimini kullanıyor; container'da bu UTC (E0-4'te `createdAt` İstanbul saatinden 3 saat geri yazıldı). `Europe/Istanbul` ile tutarlı hâle getirildi: `LocalDateTime.now(TimeConfig.ISTANBUL)`
+- [x] Mevcut kayıtlar ve `/api/funds` yanıt biçimi kırılmadı. Karar ADR'de ([010](docs/decisions/010-created-at-timezone.md)). Eski kayıtlar bilinmeyen saat dilimiyle yazıldığı için toplu düzeltilmedi
+
+_Elle (compose): container saati 14:53 UTC iken yeni kaydın `createdAt` değeri 17:53._
+
 ### E0-6 · JWT güvenliği
-_Bağımlı: E0-4 · Rehber: §7.7 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · bda2984, (kapanış commit'i)_
+_Bağımlı: E0-4 · Rehber: §7.7 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · bda2984, ddd734a_
 - [x] `JwtAuthFilter` + `SecurityConfig` yetki matrisi (GET funds açık, yazma ve `/api/admin/**` ADMIN, `/api/me/**` oturumlu). Listede olmayan her yol varsayılan olarak oturum istiyor
 - [x] `dev` profilinde `POST /api/dev/token?email=&role=` test token'ı üretiyor. Başka profilde yol 404; açılışta uyarı logu
 - [x] `@WebMvcTest` ile 401/403/200 senaryoları (`SecurityConfigTest` 17, `DevTokenControllerTest` 6 test)
@@ -224,7 +226,7 @@ _Bağımlı: E0-4 · Rehber: §7.7 · Başladı: 2026-11-05 · Bitti: 2026-11-05
 
 Alt görevler:
 1. [x] `JwtAuthFilter`, yetki matrisi, `ApiError` biçiminde 401/403, CORS preflight, testler · bda2984
-2. [x] `dev` token uç noktası + README notu · (kapanış commit'i)
+2. [x] `dev` token uç noktası + README notu · ddd734a
 
 _Elle (compose, dev profili): USER token'la `POST /api/funds` → 403, ADMIN token'la → 200._
 

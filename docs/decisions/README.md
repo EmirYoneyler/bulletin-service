@@ -14,3 +14,4 @@ Her dosya tek bir kararı kısaca anlatır: bağlam, karar, sonuçlar. Numaralar
 | 007 | Deploy hedefi (E8-4) | yazılacak |
 | [008](008-testcontainers-without-docker.md) | Docker yokken entegrasyon testleri | kabul edildi |
 | [009](009-jwt-secret-fail-fast.md) | JWT anahtarının başlangıçta doğrulanması | kabul edildi |
+| [010](010-created-at-timezone.md) | `createdAt` saat dilimi | kabul edildi |

@@ -1,5 +1,6 @@
 package com.fonbulteni.bulletinservice.entity;
 
+import com.fonbulteni.bulletinservice.common.TimeConfig;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -43,7 +44,8 @@ public class Fund {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+        // Explicit zone: the JVM default is UTC in containers (ADR 010).
+        this.createdAt = LocalDateTime.now(TimeConfig.ISTANBUL);
     }
 
     public enum Category {
