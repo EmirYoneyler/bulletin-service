@@ -165,7 +165,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E2-3 · BulletinFacts + FactFormatter
-_Bağımlı: E2-1 · Rehber: §7.4 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · fc8fa77, 25a1015, (kapanış commit'i)_
+_Bağımlı: E2-1 · Rehber: §7.4 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · fc8fa77, 25a1015, 20dabac_
 - [x] `Fact` ve `BulletinFacts` record'ları, anahtar şeması `docs/facts-keys.md` dosyasında. Kodda tek kaynak `FactKey` (Türkçe açıklamalarla); doküman tutarlılığı testli
 - [x] `FactsAssembler`: kullanıcı + hafta → facts (fonlar, portföy, kıyaslar, en çok yükselen/düşen, kaynak listesi). Kullanıcı fonları E6-1'e kadar `HoldingsProvider` arkasında (TEFAS kodlu tüm fonlar, eşit ağırlık)
 - [x] `FactFormatter` Türkçe biçim testleri (`%3,2`, `%-0,9`, `1.250,50 TL`, `null` → "veri yok"). Yüzde 1, TL 2 ondalık, `HALF_UP`, `%-0,0` yok
@@ -174,7 +174,7 @@ _Bağımlı: E2-1 · Rehber: §7.4 · Başladı: 2026-11-05 · Bitti: 2026-11-05
 Alt görevler:
 1. [x] `Fact`, `BulletinFacts`, `FactFormatter`, `FactKey` (anahtar şeması ve Türkçe açıklamalar) + `docs/facts-keys.md` + testler (29 test) · fc8fa77
 2. [x] `HoldingsProvider` (E6-1'e kadar: TEFAS kodlu tüm fonlar, adetsiz) + `FactsAssembler` + testler (9 test) · 25a1015
-3. [x] `GET /api/admin/bulletins/facts/preview` + testler + compose'da gerçek TEFAS verisiyle deneme · (kapanış commit'i)
+3. [x] `GET /api/admin/bulletins/facts/preview` + testler + compose'da gerçek TEFAS verisiyle deneme · 20dabac
 
 _Not: Kullanıcı portföyü (`user_holding`) E6-1'de geliyor. O zamana kadar izleme listesi TEFAS kodu olan tüm fonlar ve portföy eşit ağırlıklı; `HoldingsProvider` arayüzü E6-1'de değiştirilecek._
 
@@ -393,3 +393,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 | 2026-11-05 (5) | E1-6 · 174 test yeşil; BIST 100 getiri endeksi EVDS üzerinden | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-1 · FundStatsService |
 | 2026-11-05 (6) | E2-1 · 201 test yeşil; getiri/oynaklık/düşüş hesapları elle hesaplanmış testlerle | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-2 · Reel getiri ve kıyaslar (To Do'da E2-2, E2-3, E3-1) |
 | 2026-11-05 (7) | E2-2 · 222 test yeşil; kıyaslar, TÜFE orantılama ve reel getiri (sentetik EVDS verisiyle) | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-3 · BulletinFacts + FactFormatter (To Do'da E2-3, E3-1) |
+| 2026-11-05 (8) | E2-3 · 265 test yeşil; BulletinFacts, Türkçe biçim ve önizleme uç noktası gerçek TEFAS verisiyle denendi | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E3-1 · LlmClient soyutlaması (To Do'da yalnız E3-1; sıradaki seçimde Backlog'dan kart taşınacak) |
