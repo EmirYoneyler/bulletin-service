@@ -21,13 +21,6 @@ _(boş)_
 
 ## 🔵 To Do
 
-### E0-3 · Yerel geliştirme ortamı
-_Rehber: §3, §11_
-- [ ] `docker-compose.yml`: `postgres:16` (healthcheck), `mailpit` (1025/8025), `bulletin-service` (`depends_on: condition: service_healthy`), `.env` dosyasından ortam
-- [ ] `ollama` servisi `profiles: ["llm"]` altında, volume'lü. README'ye `docker compose exec ollama ollama pull qwen2.5:7b-instruct` notu
-- [ ] Mevcut `Dockerfile` çok aşamalı hâle getirildi (maven build → `eclipse-temurin:17-jre`), root olmayan kullanıcı
-- [ ] `docker compose up` sonrası `GET http://localhost:8082/api/funds` 200 dönüyor. Docker ajan ortamında yoksa bu kriter Notlar'a yazılıp CI'daki compose smoke testine (E0-5) bırakıldı
-
 ### E0-4 · Flyway ve hata yönetimi
 _Rehber: §3, §5.1_
 - [ ] Flyway eklendi. `V1__baseline.sql` mevcut `Fund` entity'sinden birebir çıkarıldı. `ddl-auto=validate`. `baseline-on-migrate=true` (mevcut veritabanları için)
@@ -239,8 +232,15 @@ _Bağımlı: E4-3_
 
 ## ✅ Done
 
+### E0-3 · Yerel geliştirme ortamı
+_Rehber: §3, §11 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i)_
+- [x] `docker-compose.yml`: `postgres:16` (healthcheck), `mailpit` (1025/8025), `bulletin-service` (`depends_on: condition: service_healthy`), `.env` dosyasından ortam. Postgres host'ta 5433'te (yerel kurulu PostgreSQL ile çakışmasın diye, `POSTGRES_HOST_PORT`)
+- [x] `ollama` servisi `profiles: ["llm"]` altında, volume'lü. README'ye `docker compose exec ollama ollama pull qwen2.5:7b-instruct` notu. Yalnızca `--profile llm config` ile doğrulandı, imaj indirilmedi
+- [x] Mevcut `Dockerfile` çok aşamalı hâle getirildi (maven build → `eclipse-temurin:17-jre`), root olmayan kullanıcı. Zaten iki aşamalıydı; `17-jdk-noble` + mvnw → `17-jre-noble`, `app` kullanıcısı (uid 999), `EXPOSE 8082`, `.dockerignore`
+- [x] `docker compose up` sonrası `GET http://localhost:8082/api/funds` 200 dönüyor (yerelde Docker Desktop ile doğrulandı, `[]`)
+
 ### E0-2 · Sırları ortam değişkenine taşı
-_Rehber: §6.5 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · (kapanış commit'i, hash bir sonraki commit'te yazılır)_
+_Rehber: §6.5 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · f39fbba_
 - [x] `spring.datasource.url/username/password` ve `jwt.secret` → `${DB_URL:...}`, `${DB_USER:...}`, `${DB_PASSWORD:}`, `${JWT_SECRET:}`. Gerçek değerler dosyadan silindi
 - [x] `JWT_SECRET` boşsa uygulama açık bir hata mesajıyla başlamayı reddediyor (`dev` profili hariç, orada sabit bir geliştirme anahtarı var). Anahtar 32 bayttan kısaysa da reddediliyor. ADR 009
 - [x] `.env.example`: bugüne kadarki tüm değişkenler, açıklamalı ve sahte değerli
