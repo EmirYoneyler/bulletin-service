@@ -25,7 +25,7 @@ _Rehber: §7.1, §6.6 · Başladı: 2026-11-05_
 
 Alt görevler:
 1. [x] Araştırma, ADR 001, canlı kaydedilmiş fixture'lar
-2. [ ] `TefasClient` + ayarlar + `MockRestServiceServer` testleri
+2. [x] `TefasClient` + ayarlar + `MockRestServiceServer` testleri (17 test)
 3. [ ] `@Tag("live")` test, varsayılan dışlama, canlı sonuç Notlar'a
 
 ---
