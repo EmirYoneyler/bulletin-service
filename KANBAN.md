@@ -24,18 +24,20 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-_(boş)_
-
----
-
-## 🔵 To Do
-
 ### E3-2 · Writer adımı ve yer tutucu renderer'ı
-_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6_
+_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6 · Başladı: 2026-11-06_
 - [ ] `prompts/writer.v1.md`: rol, kurallar, anahtar listesi + açıklamalar + yönler (değer yok), JSON çıktı şeması
 - [ ] `WriterStep`: facts → prompt → `LlmClient` → JSON parse → `WriterOutput`
 - [ ] `PlaceholderRenderer`: `{{key}}` → `FactFormatter` çıktısı
 - [ ] Ollama ile en az bir gerçek çalıştırma yapılabildiyse çıktı örneği `docs/samples/` altına kondu, yapılamadıysa Notlar'a yazıldı
+
+Alt görevler:
+1. [x] `writer.v1.md` + `PromptTemplate` (sürümlü istem dosyası) + `WriterStep` + `WriterOutput` ayrıştırıcısı + testler (29 test)
+2. [ ] `PlaceholderRenderer` + şablon yazarla uçtan uca test + Ollama denemesi (`@Tag("live")`), örnek `docs/samples/` veya Notlar
+
+---
+
+## 🔵 To Do
 
 ### E3-3 · Bulletin ve çalışma kaydı
 _Rehber: §5.1_
