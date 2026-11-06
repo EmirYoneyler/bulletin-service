@@ -82,6 +82,27 @@ class WriterStepTest {
     }
 
     @Test
+    void promptListsReadyToCopyPlaceholdersAndEveryFund() {
+        FakeLlm llm = FakeLlm.answering(ANSWER);
+
+        step(llm).write(SampleFacts.week());
+
+        String user = llm.requests.get(0).user();
+        assertThat(user)
+                .contains("- {{portfolio.return.1w}}: İzlenen fonların haftalık ortalama getirisi [UP]")
+                .contains("- {{fund.AAV.return.1w}}: AAV fonunun haftalık getirisi (önceki cuma → bu cuma) [UP]")
+                .contains("- {{fund.AHU.return.1w}}: AHU fonunun haftalık getirisi (önceki cuma → bu cuma) [DOWN]")
+                .contains("- {{fund.AU1.return.1w}}: AU1 fonunun haftalık getirisi (önceki cuma → bu cuma) [FLAT]")
+                .contains("- IJB: —")
+                .contains("- {{bench.GOLD.return.mom}}: ")
+                .contains("Şu fonların her biri için bir not yaz: AAV, AHU, AU1, IJB.")
+                .doesNotContain("${");
+        // the list offers exactly the keys of the context block, nothing more
+        assertThat(PlaceholderRenderer.keys(user)).allSatisfy(key ->
+                assertThat(SampleFacts.week().get(key)).as(key).hasValueSatisfying(f -> assertThat(f.missing()).isFalse()));
+    }
+
+    @Test
     void asksForJsonWithALowTemperatureAndATokenLimit() {
         FakeLlm llm = FakeLlm.answering(ANSWER);
 

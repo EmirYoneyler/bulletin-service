@@ -74,10 +74,13 @@ public record WriterContext(
         return benchmarks.stream().filter(f -> f.key().equals(key)).findFirst();
     }
 
-    /** The context as a marked block to place inside a prompt. */
+    /**
+     * The context as a marked block to place inside a prompt. Compact JSON: indentation roughly doubles the
+     * prompt's token count, which costs minutes on a CPU-only local model (E3-2 Ollama run).
+     */
     public String embed(ObjectMapper mapper) {
         try {
-            return START + "\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this) + "\n" + END;
+            return START + "\n" + mapper.writeValueAsString(this) + "\n" + END;
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("WriterContext could not be serialized", e);
         }

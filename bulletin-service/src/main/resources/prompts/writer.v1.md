@@ -8,6 +8,9 @@ Haftalık fon bülteni yazarının istemi (AGENT_PROMPT §4.2, §7.6).
 Değişiklik notu
 - writer.v1 (2026-11-06): İlk sürüm. Yer tutuculu metin, değer içermeyen bağlam bloğu
   (WriterContext), JSON çıktı şeması, tavsiye/tahmin/haber yasağı, ret nedenlerinin geri bildirimi.
+  Yayından önce, Ollama denemelerinden sonra (docs/samples/writer-ollama-qwen2.5-7b.md):
+  kopyalanmaya hazır yer tutucu listesi, kullanıcı mesajının sonunda kısa hatırlatma, yönün yalnızca
+  işaret olduğu, FLAT'in "veri yok" olmadığı ve oranlar için "yükseldi" denmeyeceği eklendi.
 
 Biçim: "# system", "# user" ve "# feedback" başlıkları bölümleri ayırır (PromptTemplate).
 ${...} değişkenleri Java tarafında doldurulur. Bu yorum modele gönderilmez.
@@ -32,10 +35,15 @@ bireysel bir yatırımcı. Ona "sen" diye hitap et. Selamlama, imza ve yasal uya
 
 ## Yön
 
-Her anahtarın yanında yönü var: `UP` arttı, `DOWN` azaldı, `FLAT` neredeyse değişmedi.
+Her anahtarın yanında yönü var: `UP` değer artı, `DOWN` değer eksi, `FLAT` değer sıfıra çok yakın.
+Yön yalnızca değerin işaretidir; bir önceki döneme göre karşılaştırma değildir.
 
 - Yönü doğru kelimeyle anlat: UP için "artıda kapattı", "değer kazandı", "yükseldi";
-  DOWN için "ekside kapattı", "değer kaybetti", "geriledi"; FLAT için "yatay seyretti".
+  DOWN için "ekside kapattı", "değer kaybetti", "geriledi"; FLAT için "yatay seyretti",
+  "neredeyse değişmedi".
+- FLAT, verinin olmadığı anlamına gelmez. Yer tutucusu olan bir değer için "veri yok" deme.
+- Enflasyon ve mevduat gibi oranlar için "yükseldi", "arttı", "geriledi" yazma; bunlar bir önceki
+  döneme göre değişim sanılır. "Son açıklanan aylık enflasyon {{bench.CPI.month}} oldu." gibi yaz.
 - Yön kelimesini yer tutucunun hemen yanına koyma; değer zaten işaretiyle görünecek.
   Doğru: "XYZ haftayı ekside kapattı; haftalık değişim {{fund.XYZ.return.1w}} oldu."
   Yanlış: "XYZ {{fund.XYZ.return.1w}} geriledi."
@@ -63,7 +71,8 @@ Kullanıcı mesajındaki `<<<FACTS` ve `FACTS>>>` arasındaki JSON şunları iç
 - `topGainer`, `topLoser`: haftanın en iyi ve en kötü fonu (boş olabilir)
 - `seed`: senin için değil, yok say
 
-Listede olmayan bir değer yoktur; ondan söz etme. Hiç anahtarı olmayan fon için
+Aynı anahtarlar kullanıcı mesajında hazır yer tutucu listesi olarak da verilir. Listede olmayan bir
+değer yoktur; ondan söz etme. Listede yanında yer tutucu yerine "—" olan fon için
 "bu hafta yeterli fiyat verisi yok" de.
 
 ## Çıktı
@@ -100,7 +109,13 @@ Biçim örneği (XYZ ve QWE uydurma kodlardır, yalnızca biçimi göstermek iç
 
 Bu haftanın bülten bağlamı aşağıda. Kurallara uyarak bülten metnini JSON olarak yaz.
 
+Kullanabileceğin yer tutucular (değerleri sistem dolduracak; köşeli parantezde yön):
+${placeholders}
+
 ${facts}
+
+Hatırlatma: Metne rakamla ya da yazıyla hiçbir değer yazma; değer yerine yukarıdaki listeden yer tutucuyu
+çift süslü parantezleriyle aynen kopyala. Şu fonların her biri için bir not yaz: ${funds}.
 ${feedback}
 
 # feedback

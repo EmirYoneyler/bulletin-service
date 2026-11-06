@@ -24,16 +24,7 @@ _Bağımlı: E1-5 · Engel: EVDS API anahtarı · Açıldı: 2026-11-05_
 
 ## 🟡 In Progress
 
-### E3-2 · Writer adımı ve yer tutucu renderer'ı
-_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6 · Başladı: 2026-11-06_
-- [ ] `prompts/writer.v1.md`: rol, kurallar, anahtar listesi + açıklamalar + yönler (değer yok), JSON çıktı şeması
-- [ ] `WriterStep`: facts → prompt → `LlmClient` → JSON parse → `WriterOutput`
-- [ ] `PlaceholderRenderer`: `{{key}}` → `FactFormatter` çıktısı
-- [ ] Ollama ile en az bir gerçek çalıştırma yapılabildiyse çıktı örneği `docs/samples/` altına kondu, yapılamadıysa Notlar'a yazıldı
-
-Alt görevler:
-1. [x] `writer.v1.md` + `PromptTemplate` (sürümlü istem dosyası) + `WriterStep` + `WriterOutput` ayrıştırıcısı + testler (29 test)
-2. [ ] `PlaceholderRenderer` + şablon yazarla uçtan uca test + Ollama denemesi (`@Tag("live")`), örnek `docs/samples/` veya Notlar
+_(boş)_
 
 ---
 
@@ -60,6 +51,15 @@ _Bağımlı: E3-2 · Rehber: §4.3, §7.5_
 _Kaynak: E1-5 araştırması · Rehber: §6.6, §7.2_
 - [ ] EVDS'de altın yalnızca aylık (`TP.MK.KUL.YTL`). Haftalık "altın" kıyası için ücretsiz ve kullanım koşullarına uygun günlük gram altın (TL) kaynağı araştırıldı. Karar ADR'de
 - [ ] Uygun kaynak yoksa bültende altın yalnızca ay başından / yılbaşından kıyasında gösteriliyor ve README "Bilinen sınırlar"a yazıldı
+
+### E3 · Bülten üretimi (LLM, ücretsiz)
+
+#### E3-4 · Yerel LLM: GPU, zaman aşımı ve bağlam penceresi
+_Kaynak: E3-2 Ollama denemesi ([`docs/samples/writer-ollama-qwen2.5-7b.md`](docs/samples/writer-ollama-qwen2.5-7b.md)) · Rehber: §4.1_
+- [ ] Ollama'nın bağlam penceresi açıkça ayarlandı (`OLLAMA_CONTEXT_LENGTH`, ör. 8192) ve istem uzunluğu fon sayısıyla ölçüldü. Pencereyi aşacak istem gönderilmiyor (sessiz kesilme yok, açık hata ve şablon yedeği)
+- [ ] NVIDIA GPU'lu makineler için isteğe bağlı compose eki (ör. `docker-compose.gpu.yml`); GPU'suz makinede varsayılan compose bozulmuyor. GPU'lu ve GPU'suz süreler ölçüldü
+- [ ] CPU'da süre 120 sn'yi aşıyorsa karar ADR'de: varsayılan zaman aşımını yükseltmek, daha küçük model ya da şablona düşmeyi kabul etmek (§4.1'deki 120 sn ile çelişki ADR'de açıklanır)
+- [ ] README'de yerel LLM için beklenen süre ve donanım notu
 
 ### E4 · Doğrulama ve uyum
 
@@ -155,6 +155,19 @@ _Bağımlı: E4-3_
 ---
 
 ## ✅ Done
+
+### E3-2 · Writer adımı ve yer tutucu renderer'ı
+_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6 · Başladı: 2026-11-06 · Bitti: 2026-11-06 · a9bb936, (kapanış commit'i)_
+- [x] `prompts/writer.v1.md`: rol, kurallar, anahtar listesi + açıklamalar + yönler (değer yok), JSON çıktı şeması. Başında sürüm ve değişiklik notu; `PromptTemplate` dosyayı bölümlere ayırıyor, ret nedenleri için ayrı geri bildirim bölümü var. Ollama denemelerinden sonra kopyalanmaya hazır yer tutucu listesi ve mesaj sonunda hatırlatma eklendi
+- [x] `WriterStep`: facts → prompt → `LlmClient` → JSON parse → `WriterOutput`. Sonuçta sağlayıcı, model, istem sürümü, token ve süre de var (`WriterResult`). JSON olmayan yanıt, özetsiz yanıt, bültende olmayan fon kodu ya da aynı fona iki not → `BAD_RESPONSE`
+- [x] `PlaceholderRenderer`: `{{key}}` → `FactFormatter` çıktısı. Ayraç içi boşluk kabul ediliyor; bilinmeyen anahtar hata (doğrulanmamış metin render edilmez), değeri olmayan anahtar tablolardaki gibi "veri yok"
+- [x] Ollama ile en az bir gerçek çalıştırma yapılabildiyse çıktı örneği `docs/samples/` altına kondu, yapılamadıysa Notlar'a yazıldı. Üç gerçek çağrı (`qwen2.5:7b-instruct`, yalnız CPU): [`docs/samples/writer-ollama-qwen2.5-7b.md`](docs/samples/writer-ollama-qwen2.5-7b.md). İlk taslak istemle model bütün değerleri rakamla uydurdu; son istemle rakam yok, bütün yer tutucular geçerli. Süreler 158–230 sn (E3-4)
+
+Alt görevler:
+1. [x] `writer.v1.md` + `PromptTemplate` (sürümlü istem dosyası) + `WriterStep` + `WriterOutput` ayrıştırıcısı + testler (29 test) · a9bb936
+2. [x] `PlaceholderRenderer` + şablon yazarla uçtan uca test + Ollama denemesi (`@Tag("live")`), örnek `docs/samples/` (11 test + 1 `live`) · (kapanış commit'i)
+
+_HTTP davranışı değişmedi: yazar henüz bir uç noktaya bağlı değil (E4-3). Gerçek model `WriterLlmLiveTest` ile, `LlmConfig`'in kurduğu istemciyle denendi; girdi sentetik `SampleFacts`._
 
 ### E3-1 · LlmClient soyutlaması
 _Rehber: §4.1 · Başladı: 2026-11-05 · Bitti: 2026-11-05 · f060120, 5b14852_
@@ -393,6 +406,15 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 - `WriterContext` E3-1'de tanımlandı: yazara giden, **değer içermeyen** bağlam (mevcut anahtarlar, Türkçe açıklama, yön, sıralama). İstemde `<<<FACTS … FACTS>>>` arasında JSON olarak durur; şablon yazar da gerçek model de aynı bloğu okur. E3-2'deki `writer.v1.md` bu bloğu kullanmalı.
 - Rakam içeren özel adlar var: fon kodları (`AU1`, `ZZ9`) ve `BIST 100`. "Metinde rakam yok" kuralı bunları yanlışlıkla ihlal sayar. `bulletin.llm.TextRules.withoutAllowedDigitTokens` yer tutucuları, bültenin fon kodlarını ve `BIST 100`'ü çıkarıp kalan metni kontrole bırakır. **E4-1 NumberGuard bunu kullanmalı.**
 - Şablonlar yön kelimesini sayının hemen yanına koymaz ("ekside kapattı; haftalık değişim %-0,8"), çünkü "%-0,8 geriledi" çift olumsuz okunur. E4-1'in yön tutarlılığı kuralı model çıktısı için yine geçerli.
+
+**2026-11-06 · Ollama denemesi (E3-2; E3-4, E4-1, E4-2 ve E8-3 için)**
+- `ollama/ollama:0.40.14` imajı (açılmış hâli ~8,5 GB) ve `qwen2.5:7b-instruct` (4,7 GB) bu makineye indirildi; model `ollama-models` volume'ünde duruyor. Denemelerden sonra container durduruldu.
+- Compose'daki Ollama GPU görmüyor (yalnız CPU; Docker'a 4 çekirdek, Ollama 2 iş parçacığı). Üç çağrı 158–230 sn sürdü. Varsayılan 120 sn zaman aşımıyla bu makinede Ollama yazarı her hafta şablona düşer → E3-4.
+- Ollama'nın bağlam penceresi 4096 token (KV önbelleği 224 MiB). Dört fonluk istem 2695 token; fon sayısı arttıkça istemin başı sessizce kesilebilir → E3-4.
+- İlk taslak istemle model değerlerin hepsini rakamla uydurdu (örnekte tablo var). Hazır yer tutucu listesi eklenince rakam sızıntısı kalmadı. `writer.v1` henüz hiçbir bültende kullanılmadığı için düzeltmeler aynı sürümde yapıldı; değişiklik notu dosyanın başında.
+- **E4-1 için:** model oran anahtarlarında (`bench.CPI.*`, `bench.DEPOSIT.*`) "yükseldi/arttı" yazıyor ("enflasyon %2,6 yükseldi"). Değer pozitif olduğu için yön kuralı geçer, ama cümle bir önceki döneme göre artış gibi okunur. Bu anahtarların yanındaki yön fiili ihlal sayılmalı.
+- **E4-2 ve E8-3 için:** değerlendirici ifadeler ("iyi performans gösterdi", "yüksek getiriler sağladı") ve küçük dil hataları ("İzlediğim", "bu yana de").
+- `WriterContext.embed` artık sıkıştırılmış JSON üretiyor; girinti istemi gereksiz uzatıyordu.
 
 ## Oturum Günlüğü
 | Tarih | Biten kartlar | Açık engeller | Sıradaki kart |

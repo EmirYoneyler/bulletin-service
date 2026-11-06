@@ -10,6 +10,7 @@ import com.fonbulteni.bulletinservice.bulletin.llm.WriterContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -75,10 +76,35 @@ public class WriterStep {
     }
 
     String userMessage(BulletinFacts facts, List<String> feedback) {
+        WriterContext context = WriterContext.from(facts);
         String feedbackBlock = feedback.isEmpty() ? "" : "\n" + prompt.render("feedback", Map.of(
                 "violations", feedback.stream().map(f -> "- " + f).collect(Collectors.joining("\n"))));
         return prompt.render("user", Map.of(
-                "facts", WriterContext.from(facts).embed(mapper),
+                "placeholders", placeholderList(context),
+                "funds", String.join(", ", facts.fundCodes()),
+                "facts", context.embed(mapper),
                 "feedback", feedbackBlock));
+    }
+
+    /**
+     * The same keys as the context block, one ready-to-copy placeholder per line with its description and
+     * direction. Small local models copy a placeholder far more reliably than they build one from a key.
+     * A fund without any fact gets a dash, so the model still writes a note for it.
+     */
+    static String placeholderList(WriterContext context) {
+        List<String> lines = new ArrayList<>();
+        context.portfolio().forEach(f -> lines.add(line(f)));
+        for (WriterContext.FundContext fund : context.funds()) {
+            if (fund.facts().isEmpty()) {
+                lines.add("- " + fund.code() + ": —");
+            }
+            fund.facts().forEach(f -> lines.add(line(f)));
+        }
+        context.benchmarks().forEach(f -> lines.add(line(f)));
+        return String.join("\n", lines);
+    }
+
+    private static String line(WriterContext.FactRef fact) {
+        return "- {{" + fact.key() + "}}: " + fact.description() + " [" + fact.direction() + "]";
     }
 }
