@@ -157,7 +157,7 @@ _Bağımlı: E4-3_
 ## ✅ Done
 
 ### E3-2 · Writer adımı ve yer tutucu renderer'ı
-_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6 · Başladı: 2026-11-06 · Bitti: 2026-11-06 · a9bb936, (kapanış commit'i)_
+_Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6 · Başladı: 2026-11-06 · Bitti: 2026-11-06 · a9bb936, b611dc0_
 - [x] `prompts/writer.v1.md`: rol, kurallar, anahtar listesi + açıklamalar + yönler (değer yok), JSON çıktı şeması. Başında sürüm ve değişiklik notu; `PromptTemplate` dosyayı bölümlere ayırıyor, ret nedenleri için ayrı geri bildirim bölümü var. Ollama denemelerinden sonra kopyalanmaya hazır yer tutucu listesi ve mesaj sonunda hatırlatma eklendi
 - [x] `WriterStep`: facts → prompt → `LlmClient` → JSON parse → `WriterOutput`. Sonuçta sağlayıcı, model, istem sürümü, token ve süre de var (`WriterResult`). JSON olmayan yanıt, özetsiz yanıt, bültende olmayan fon kodu ya da aynı fona iki not → `BAD_RESPONSE`
 - [x] `PlaceholderRenderer`: `{{key}}` → `FactFormatter` çıktısı. Ayraç içi boşluk kabul ediliyor; bilinmeyen anahtar hata (doğrulanmamış metin render edilmez), değeri olmayan anahtar tablolardaki gibi "veri yok"
@@ -165,7 +165,7 @@ _Bağımlı: E2-3, E3-1 · Rehber: §4.2, §7.6 · Başladı: 2026-11-06 · Bitt
 
 Alt görevler:
 1. [x] `writer.v1.md` + `PromptTemplate` (sürümlü istem dosyası) + `WriterStep` + `WriterOutput` ayrıştırıcısı + testler (29 test) · a9bb936
-2. [x] `PlaceholderRenderer` + şablon yazarla uçtan uca test + Ollama denemesi (`@Tag("live")`), örnek `docs/samples/` (11 test + 1 `live`) · (kapanış commit'i)
+2. [x] `PlaceholderRenderer` + şablon yazarla uçtan uca test + Ollama denemesi (`@Tag("live")`), örnek `docs/samples/` (11 test + 1 `live`) · b611dc0
 
 _HTTP davranışı değişmedi: yazar henüz bir uç noktaya bağlı değil (E4-3). Gerçek model `WriterLlmLiveTest` ile, `LlmConfig`'in kurduğu istemciyle denendi; girdi sentetik `SampleFacts`._
 
@@ -428,3 +428,4 @@ _(Ajan, kodda AGENT_PROMPT.md §2'den farklı bir şey bulursa, canlı doğrulan
 | 2026-11-05 (7) | E2-2 · 222 test yeşil; kıyaslar, TÜFE orantılama ve reel getiri (sentetik EVDS verisiyle) | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E2-3 · BulletinFacts + FactFormatter (To Do'da E2-3, E3-1) |
 | 2026-11-05 (8) | E2-3 · 265 test yeşil; BulletinFacts, Türkçe biçim ve önizleme uç noktası gerçek TEFAS verisiyle denendi | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E3-1 · LlmClient soyutlaması (To Do'da yalnız E3-1; sıradaki seçimde Backlog'dan kart taşınacak) |
 | 2026-11-05 (9) | E3-1 · 288 test yeşil; şablon yazar ve OpenAI uyumlu istemci (Ollama/Gemini/Groq), varsayılan anahtarsız | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY` | E3-2 · Writer adımı ve yer tutucu renderer'ı (To Do'da E3-2, E3-3, E4-1) |
+| 2026-11-06 | E3-2 · 328 test yeşil (+4 `live`); yazar istemi, `WriterStep`, yer tutucu renderer'ı; gerçek Ollama (qwen2.5:7b, CPU) ile 3 çağrı, örnek `docs/samples/` | **E1-5b (Blocked):** EVDS API anahtarı → `.env` `EVDS_API_KEY`. Yeni Backlog kartı E3-4 (yerel LLM: süre, GPU, bağlam penceresi) | E3-3 · Bulletin ve çalışma kaydı (To Do'da E3-3, E4-1) |
